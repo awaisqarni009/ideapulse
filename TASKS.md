@@ -28,15 +28,15 @@ _Goal: a running skeleton with CI, types, and tokens in place. Estimated 3 days.
 - [x] **T-0.4** Add Prettier + `prettier-plugin-tailwindcss`, and an `.editorconfig`
 - [x] **T-0.5** Install Husky + lint-staged: typecheck, lint, and format on pre-commit
 - [x] **T-0.6** Install core deps: `@supabase/supabase-js`, `@supabase/ssr`, `framer-motion`, `zod`, `date-fns`, `lucide-react`
-- [ ] **T-0.7** Install dev deps: `vitest`, `@testing-library/react`, `@playwright/test`, `supabase` CLI
-- [ ] **T-0.8** GitHub Actions: typecheck → lint → unit tests → build on every PR
+- [x] **T-0.7** Install dev deps: `vitest`, `@testing-library/react`, `@playwright/test`, `supabase` CLI
+- [x] **T-0.8** GitHub Actions: typecheck → lint → unit tests → build on every PR
 
 ### Design foundation
 
-- [ ] **T-0.9** `[!]` Write `app/globals.css` with the complete token block from `DESIGN.md` §9
-- [ ] **T-0.10** Extend `tailwind.config.ts` per `DESIGN.md` §9.1
-- [ ] **T-0.11** Load Space Grotesk via `next/font/google`, Geist Sans via the `geist` package, expose both as CSS variables on `<html>`
-- [ ] **T-0.12** Build the ambient glow layer on `<body>::before` (`DESIGN.md` §2.7)
+- [x] **T-0.9** `[!]` Write `app/globals.css` with the complete token block from `DESIGN.md` §9
+- [x] **T-0.10** Extend `tailwind.config.ts` per `DESIGN.md` §9.1
+- [x] **T-0.11** Load Space Grotesk via `next/font/google`, Geist Sans via the `geist` package, expose both as CSS variables on `<html>`
+- [x] **T-0.12** Build the ambient glow layer on `<body>::before` (`DESIGN.md` §2.7)
 - [ ] **T-0.13** Add the global `prefers-reduced-motion` reset
 - [ ] **T-0.14** Create `/dev/tokens` — a page rendering every color, type step, radius, shadow, and glow for visual verification
 

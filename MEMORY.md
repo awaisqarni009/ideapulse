@@ -20,23 +20,23 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 0 — Project foundation                                                              |
-| **Phase progress**   | 6 / 17 tasks                                                                              |
-| **Overall progress** | 6 / 178 tasks                                                                             |
-| **Status**           | In progress — Foundation scaffolded, tooling & core dependencies configured               |
-| **Blocked on**       | Nothing                                                                                   |
-| **Next action**      | T-0.7 — install dev deps (vitest, @testing-library/react, @playwright/test, supabase CLI) |
-| **Target launch**    | TBD                                                                                       |
-| **Active branch**    | `main`                                                                                    |
-| **Last deploy**      | —                                                                                         |
+| Field                | Value                                                                        |
+| -------------------- | ---------------------------------------------------------------------------- |
+| **Current phase**    | Phase 0 — Project foundation                                                 |
+| **Phase progress**   | 12 / 17 tasks                                                                |
+| **Overall progress** | 12 / 178 tasks                                                               |
+| **Status**           | In progress — Dev testing, CI, and design foundation in place                |
+| **Blocked on**       | Nothing                                                                      |
+| **Next action**      | T-0.13 — Add global prefers-reduced-motion reset (Batch 3: T-0.13 to T-0.17) |
+| **Target launch**    | TBD                                                                          |
+| **Active branch**    | `main`                                                                       |
+| **Last deploy**      | —                                                                            |
 
 ### 1.1 Phase board
 
 | Phase | Name                | Status         | Tasks | Exit gate met |
 | ----- | ------------------- | -------------- | ----- | ------------- |
-| 0     | Foundation          | 🟡 In progress | 6/17  | ❌            |
+| 0     | Foundation          | 🟡 In progress | 12/17 | ❌            |
 | 1     | Database & security | ⬜ Not started | 0/34  | ❌            |
 | 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
