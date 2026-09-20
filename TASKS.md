@@ -77,12 +77,12 @@ Write each as a numbered file in `supabase/migrations/`. Apply locally, test, th
 - [x] **T-1.14** `070_helpers.sql` — `is_admin`, `account_is_writable`, `voter_is_verified`, `log_abuse`
 - [x] **T-1.15** `[!]` `080_cast_vote.sql` — the vote RPC with the advisory lock
 - [x] **T-1.16** `085_retract_vote.sql`
-- [ ] **T-1.17** `[!]` `090_counters.sql` — `sync_vote_counters` trigger including `qualified_at`
-- [ ] **T-1.18** `[!]` `100_submission_quota.sql` — cooldown trigger, slug generation, immutability guard
-- [ ] **T-1.19** `110_cycle_engine.sql` — `open_next_cycle`, `finalize_cycle`, `rotate_cycle`
-- [ ] **T-1.20** `[!]` `120_rls.sql` — enable RLS on all tables, all policies, all column grants and revokes
-- [ ] **T-1.21** `130_views.sql` — `idea_public_stats`
-- [ ] **T-1.22** `140_seed.sql` — cycle 1, 8 test users, 15 ideas, ~60 votes (local only)
+- [x] **T-1.17** `[!]` `090_counters.sql` — `sync_vote_counters` trigger including `qualified_at`
+- [x] **T-1.18** `[!]` `100_submission_quota.sql` — cooldown trigger, slug generation, immutability guard
+- [x] **T-1.19** `110_cycle_engine.sql` — `open_next_cycle`, `finalize_cycle`, `rotate_cycle`
+- [x] **T-1.20** `[!]` `120_rls.sql` — enable RLS on all tables, all policies, all column grants and revokes
+- [x] **T-1.21** `130_views.sql` — `idea_public_stats`
+- [x] **T-1.22** `140_seed.sql` — cycle 1, 8 test users, 15 ideas, ~60 votes (local only)
 
 ### Security verification
 

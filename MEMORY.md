@@ -20,24 +20,24 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                            |
-| -------------------- | -------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 1 — Database & security                                                    |
-| **Phase progress**   | 16 / 34 tasks                                                                    |
-| **Overall progress** | 33 / 178 tasks                                                                   |
-| **Status**           | In progress — Rewards, safety tables, helper functions, and voting RPCs authored |
-| **Blocked on**       | Nothing                                                                          |
-| **Next action**      | T-1.17 — 090_counters.sql (Batch 4: T-1.17 to T-1.22)                            |
-| **Target launch**    | TBD                                                                              |
-| **Active branch**    | `main`                                                                           |
-| **Last deploy**      | —                                                                                |
+| Field                | Value                                                                              |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 1 — Database & security                                                      |
+| **Phase progress**   | 22 / 34 tasks                                                                      |
+| **Overall progress** | 39 / 178 tasks                                                                     |
+| **Status**           | In progress — All 18 database migrations authored (schema, triggers, RLS, seed)    |
+| **Blocked on**       | Nothing                                                                            |
+| **Next action**      | T-1.23 — Write supabase/tests/rls.test.sql using pgTAP (Batch 5: T-1.23 to T-1.28) |
+| **Target launch**    | TBD                                                                                |
+| **Active branch**    | `main`                                                                             |
+| **Last deploy**      | —                                                                                  |
 
 ### 1.1 Phase board
 
 | Phase | Name                | Status         | Tasks | Exit gate met |
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
-| 1     | Database & security | 🟡 In progress | 16/34 | ❌            |
+| 1     | Database & security | 🟡 In progress | 22/34 | ❌            |
 | 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
