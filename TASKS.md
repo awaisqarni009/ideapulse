@@ -67,11 +67,11 @@ Write each as a numbered file in `supabase/migrations/`. Apply locally, test, th
 
 - [x] **T-1.5** `[!]` `000_extensions.sql` — pgcrypto, citext, pg_cron
 - [x] **T-1.6** `[!]` `001_enums.sql` — all 6 enum types
-- [ ] **T-1.7** `[!]` `010_profiles.sql` — table, constraints, indexes
-- [ ] **T-1.8** `[!]` `011_handle_new_user.sql` — profile-creation trigger with username deduplication
-- [ ] **T-1.9** `[!]` `020_cycles.sql` — table, single-active partial unique index, `active_cycle_id()`
-- [ ] **T-1.10** `[!]` `030_ideas.sql` — table, all CHECK constraints, **including `ideas_id_author_uk`**
-- [ ] **T-1.11** `[!]` `040_votes.sql` — table, composite FK, `votes_no_self_vote` CHECK, unique constraints, quota index
+- [x] **T-1.7** `[!]` `010_profiles.sql` — table, constraints, indexes
+- [x] **T-1.8** `[!]` `011_handle_new_user.sql` — profile-creation trigger with username deduplication
+- [x] **T-1.9** `[!]` `020_cycles.sql` — table, single-active partial unique index, `active_cycle_id()`
+- [x] **T-1.10** `[!]` `030_ideas.sql` — table, all CHECK constraints, **including `ideas_id_author_uk`**
+- [x] **T-1.11** `[!]` `040_votes.sql` — table, composite FK, `votes_no_self_vote` CHECK, unique constraints, quota index
 - [ ] **T-1.12** `050_rewards.sql`
 - [ ] **T-1.13** `060_safety.sql` — `abuse_events`, `reports`, `admin_actions`
 - [ ] **T-1.14** `070_helpers.sql` — `is_admin`, `account_is_writable`, `voter_is_verified`, `log_abuse`
