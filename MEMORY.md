@@ -23,11 +23,11 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | Field                | Value                                                                            |
 | -------------------- | -------------------------------------------------------------------------------- |
 | **Current phase**    | Phase 1 — Database & security                                                    |
-| **Phase progress**   | 11 / 34 tasks                                                                    |
-| **Overall progress** | 28 / 178 tasks                                                                   |
-| **Status**           | In progress — Core tables (profiles, cycles, ideas, votes) and triggers authored |
+| **Phase progress**   | 16 / 34 tasks                                                                    |
+| **Overall progress** | 33 / 178 tasks                                                                   |
+| **Status**           | In progress — Rewards, safety tables, helper functions, and voting RPCs authored |
 | **Blocked on**       | Nothing                                                                          |
-| **Next action**      | T-1.12 — 050_rewards.sql (Batch 3: T-1.12 to T-1.16)                             |
+| **Next action**      | T-1.17 — 090_counters.sql (Batch 4: T-1.17 to T-1.22)                            |
 | **Target launch**    | TBD                                                                              |
 | **Active branch**    | `main`                                                                           |
 | **Last deploy**      | —                                                                                |
@@ -37,7 +37,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | Phase | Name                | Status         | Tasks | Exit gate met |
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
-| 1     | Database & security | 🟡 In progress | 11/34 | ❌            |
+| 1     | Database & security | 🟡 In progress | 16/34 | ❌            |
 | 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |

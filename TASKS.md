@@ -72,11 +72,11 @@ Write each as a numbered file in `supabase/migrations/`. Apply locally, test, th
 - [x] **T-1.9** `[!]` `020_cycles.sql` — table, single-active partial unique index, `active_cycle_id()`
 - [x] **T-1.10** `[!]` `030_ideas.sql` — table, all CHECK constraints, **including `ideas_id_author_uk`**
 - [x] **T-1.11** `[!]` `040_votes.sql` — table, composite FK, `votes_no_self_vote` CHECK, unique constraints, quota index
-- [ ] **T-1.12** `050_rewards.sql`
-- [ ] **T-1.13** `060_safety.sql` — `abuse_events`, `reports`, `admin_actions`
-- [ ] **T-1.14** `070_helpers.sql` — `is_admin`, `account_is_writable`, `voter_is_verified`, `log_abuse`
-- [ ] **T-1.15** `[!]` `080_cast_vote.sql` — the vote RPC with the advisory lock
-- [ ] **T-1.16** `085_retract_vote.sql`
+- [x] **T-1.12** `050_rewards.sql`
+- [x] **T-1.13** `060_safety.sql` — `abuse_events`, `reports`, `admin_actions`
+- [x] **T-1.14** `070_helpers.sql` — `is_admin`, `account_is_writable`, `voter_is_verified`, `log_abuse`
+- [x] **T-1.15** `[!]` `080_cast_vote.sql` — the vote RPC with the advisory lock
+- [x] **T-1.16** `085_retract_vote.sql`
 - [ ] **T-1.17** `[!]` `090_counters.sql` — `sync_vote_counters` trigger including `qualified_at`
 - [ ] **T-1.18** `[!]` `100_submission_quota.sql` — cooldown trigger, slug generation, immutability guard
 - [ ] **T-1.19** `110_cycle_engine.sql` — `open_next_cycle`, `finalize_cycle`, `rotate_cycle`
