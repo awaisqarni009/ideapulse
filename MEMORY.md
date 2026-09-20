@@ -20,24 +20,24 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                              |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 1 — Database & security                                                      |
-| **Phase progress**   | 22 / 34 tasks                                                                      |
-| **Overall progress** | 39 / 178 tasks                                                                     |
-| **Status**           | In progress — All 18 database migrations authored (schema, triggers, RLS, seed)    |
-| **Blocked on**       | Nothing                                                                            |
-| **Next action**      | T-1.23 — Write supabase/tests/rls.test.sql using pgTAP (Batch 5: T-1.23 to T-1.28) |
-| **Target launch**    | TBD                                                                                |
-| **Active branch**    | `main`                                                                             |
-| **Last deploy**      | —                                                                                  |
+| Field                | Value                                                                                         |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 1 — Database & security                                                                 |
+| **Phase progress**   | 28 / 34 tasks                                                                                 |
+| **Overall progress** | 45 / 178 tasks                                                                                |
+| **Status**           | In progress — RLS and permission pgTAP tests written (supabase/tests/rls.test.sql)            |
+| **Blocked on**       | Nothing                                                                                       |
+| **Next action**      | T-1.29 — Write anti-abuse pgTAP tests & generate TypeScript types (Batch 6: T-1.29 to T-1.34) |
+| **Target launch**    | TBD                                                                                           |
+| **Active branch**    | `main`                                                                                        |
+| **Last deploy**      | —                                                                                             |
 
 ### 1.1 Phase board
 
 | Phase | Name                | Status         | Tasks | Exit gate met |
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
-| 1     | Database & security | 🟡 In progress | 22/34 | ❌            |
+| 1     | Database & security | 🟡 In progress | 28/34 | ❌            |
 | 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |

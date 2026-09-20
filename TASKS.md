@@ -86,12 +86,12 @@ Write each as a numbered file in `supabase/migrations/`. Apply locally, test, th
 
 ### Security verification
 
-- [ ] **T-1.23** `[!]` Write `supabase/tests/rls.test.sql` using pgTAP
-- [ ] **T-1.24** Test: anonymous client cannot insert into any table
-- [ ] **T-1.25** Test: user A cannot read user B's vote rows
-- [ ] **T-1.26** Test: user cannot update their own `role` column
-- [ ] **T-1.27** `[!]` Test: self-vote rejected through `cast_vote`
-- [ ] **T-1.28** `[!]` Test: self-vote rejected through a direct PostgREST insert
+- [x] **T-1.23** `[!]` Write `supabase/tests/rls.test.sql` using pgTAP
+- [x] **T-1.24** Test: anonymous client cannot insert into any table
+- [x] **T-1.25** Test: user A cannot read user B's vote rows
+- [x] **T-1.26** Test: user cannot update their own `role` column
+- [x] **T-1.27** `[!]` Test: self-vote rejected through `cast_vote`
+- [x] **T-1.28** `[!]` Test: self-vote rejected through a direct PostgREST insert
 - [ ] **T-1.29** `[!]` Test: self-vote rejected with all triggers disabled — proves the CHECK constraint is load-bearing
 - [ ] **T-1.30** `[!]` Test: 20 concurrent votes from one account produce exactly 5 rows (`RULES.md` BR-031)
 - [ ] **T-1.31** Test: second submission within 7 days rejected with the correct next-slot timestamp
