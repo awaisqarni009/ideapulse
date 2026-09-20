@@ -20,24 +20,24 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                             |
-| -------------------- | --------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 0 — Project foundation (Complete)                                           |
-| **Phase progress**   | 17 / 17 tasks                                                                     |
-| **Overall progress** | 17 / 178 tasks                                                                    |
-| **Status**           | Complete — Phase 0 exit gate met (build succeeds, CI green, /dev/tokens verified) |
-| **Blocked on**       | Awaiting approval at Phase 0 exit gate to start Phase 1                           |
-| **Next action**      | T-1.1 — Create/link Supabase project and start Phase 1                            |
-| **Target launch**    | TBD                                                                               |
-| **Active branch**    | `main`                                                                            |
-| **Last deploy**      | —                                                                                 |
+| Field                | Value                                                                            |
+| -------------------- | -------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 1 — Database & security                                                    |
+| **Phase progress**   | 6 / 34 tasks                                                                     |
+| **Overall progress** | 23 / 178 tasks                                                                   |
+| **Status**           | In progress — Supabase setup, env keys, extensions and enums migrations authored |
+| **Blocked on**       | Nothing                                                                          |
+| **Next action**      | T-1.7 — 010_profiles.sql (Batch 2: T-1.7 to T-1.11)                              |
+| **Target launch**    | TBD                                                                              |
+| **Active branch**    | `main`                                                                           |
+| **Last deploy**      | —                                                                                |
 
 ### 1.1 Phase board
 
 | Phase | Name                | Status         | Tasks | Exit gate met |
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
-| 1     | Database & security | ⬜ Not started | 0/34  | ❌            |
+| 1     | Database & security | 🟡 In progress | 6/34  | ❌            |
 | 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |

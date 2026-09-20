@@ -56,17 +56,17 @@ _Goal: the full schema with RLS, proven correct by tests, before a single UI scr
 
 ### Supabase setup
 
-- [ ] **T-1.1** `[!]` Create the Supabase project (free tier), region closest to the primary audience
-- [ ] **T-1.2** `supabase init` and `supabase link --project-ref <ref>`
-- [ ] **T-1.3** Get local dev running: `supabase start`
-- [ ] **T-1.4** Record all keys in `.env.local`; confirm `.env*` is gitignored
+- [x] **T-1.1** `[!]` Create the Supabase project (free tier), region closest to the primary audience
+- [x] **T-1.2** `supabase init` and `supabase link --project-ref <ref>`
+- [x] **T-1.3** Get local dev running: `supabase start`
+- [x] **T-1.4** Record all keys in `.env.local`; confirm `.env*` is gitignored
 
 ### Migrations
 
 Write each as a numbered file in `supabase/migrations/`. Apply locally, test, then push.
 
-- [ ] **T-1.5** `[!]` `000_extensions.sql` — pgcrypto, citext, pg_cron
-- [ ] **T-1.6** `[!]` `001_enums.sql` — all 6 enum types
+- [x] **T-1.5** `[!]` `000_extensions.sql` — pgcrypto, citext, pg_cron
+- [x] **T-1.6** `[!]` `001_enums.sql` — all 6 enum types
 - [ ] **T-1.7** `[!]` `010_profiles.sql` — table, constraints, indexes
 - [ ] **T-1.8** `[!]` `011_handle_new_user.sql` — profile-creation trigger with username deduplication
 - [ ] **T-1.9** `[!]` `020_cycles.sql` — table, single-active partial unique index, `active_cycle_id()`
