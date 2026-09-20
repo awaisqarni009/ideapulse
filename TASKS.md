@@ -92,14 +92,14 @@ Write each as a numbered file in `supabase/migrations/`. Apply locally, test, th
 - [x] **T-1.26** Test: user cannot update their own `role` column
 - [x] **T-1.27** `[!]` Test: self-vote rejected through `cast_vote`
 - [x] **T-1.28** `[!]` Test: self-vote rejected through a direct PostgREST insert
-- [ ] **T-1.29** `[!]` Test: self-vote rejected with all triggers disabled — proves the CHECK constraint is load-bearing
-- [ ] **T-1.30** `[!]` Test: 20 concurrent votes from one account produce exactly 5 rows (`RULES.md` BR-031)
-- [ ] **T-1.31** Test: second submission within 7 days rejected with the correct next-slot timestamp
-- [ ] **T-1.32** Test: vote from a 23-hour-old account is recorded with `is_verified = false`
-- [ ] **T-1.33** Test: `qualified_at` is set exactly once, on the threshold-crossing vote
-- [ ] **T-1.34** Generate types: `supabase gen types typescript --local > lib/database.types.ts`; add to CI so drift fails the build
+- [x] **T-1.29** `[!]` Test: self-vote rejected with all triggers disabled — proves the CHECK constraint is load-bearing
+- [x] **T-1.30** `[!]` Test: 20 concurrent votes from one account produce exactly 5 rows (`RULES.md` BR-031)
+- [x] **T-1.31** Test: second submission within 7 days rejected with the correct next-slot timestamp
+- [x] **T-1.32** Test: vote from a 23-hour-old account is recorded with `is_verified = false`
+- [x] **T-1.33** Test: `qualified_at` is set exactly once, on the threshold-crossing vote
+- [x] **T-1.34** Generate types: `supabase gen types typescript --local > lib/database.types.ts`; add to CI so drift fails the build
 
-**Exit gate:** every pgTAP test passes; `supabase db reset` rebuilds the schema from zero without error; generated types compile.
+**Exit gate:** every pgTAP test passes; `supabase db reset` rebuilds the schema from zero without error; generated types compile. [PASSED]
 
 ---
 

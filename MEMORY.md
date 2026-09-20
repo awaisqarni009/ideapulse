@@ -20,24 +20,24 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                         |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 1 — Database & security                                                                 |
-| **Phase progress**   | 28 / 34 tasks                                                                                 |
-| **Overall progress** | 45 / 178 tasks                                                                                |
-| **Status**           | In progress — RLS and permission pgTAP tests written (supabase/tests/rls.test.sql)            |
-| **Blocked on**       | Nothing                                                                                       |
-| **Next action**      | T-1.29 — Write anti-abuse pgTAP tests & generate TypeScript types (Batch 6: T-1.29 to T-1.34) |
-| **Target launch**    | TBD                                                                                           |
-| **Active branch**    | `main`                                                                                        |
-| **Last deploy**      | —                                                                                             |
+| Field                | Value                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 1 — Database & security                                                         |
+| **Phase progress**   | 34 / 34 tasks (Phase 1 complete)                                                      |
+| **Overall progress** | 51 / 178 tasks                                                                        |
+| **Status**           | Phase 1 complete — Exit gate met; awaiting approval to start Phase 2 (Authentication) |
+| **Blocked on**       | Phase 1 Exit Gate approval                                                            |
+| **Next action**      | T-2.1 — Supabase SSR client factories (Phase 2: Authentication)                       |
+| **Target launch**    | TBD                                                                                   |
+| **Active branch**    | `main`                                                                                |
+| **Last deploy**      | —                                                                                     |
 
 ### 1.1 Phase board
 
 | Phase | Name                | Status         | Tasks | Exit gate met |
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
-| 1     | Database & security | 🟡 In progress | 28/34 | ❌            |
+| 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
