@@ -1,0 +1,339 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Canvas & surfaces */
+  --canvas: #0b0f19;
+  --canvas-deep: #070a11;
+  --surface-solid: #131826;
+  --surface-1: rgba(255, 255, 255, 0.03);
+  --surface-2: rgba(255, 255, 255, 0.05);
+  --surface-3: rgba(255, 255, 255, 0.08);
+  --surface-4: rgba(255, 255, 255, 0.11);
+
+  /* Accents */
+  --indigo: #6366f1;
+  --indigo-bright: #818cf8;
+  --indigo-deep: #4338ca;
+  --violet: #8b5cf6;
+  --violet-bright: #a78bfa;
+  --cyan: #22d3ee;
+  --cyan-bright: #67e8f9;
+
+  /* Semantic */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --info: #38bdf8;
+
+  /* Tints */
+  --tint-indigo: rgba(99, 102, 241, 0.12);
+  --tint-violet: rgba(139, 92, 246, 0.12);
+  --tint-cyan: rgba(34, 211, 238, 0.12);
+  --tint-success: rgba(52, 211, 153, 0.12);
+  --tint-warning: rgba(251, 191, 36, 0.12);
+  --tint-danger: rgba(248, 113, 113, 0.12);
+
+  /* Text */
+  --text-primary: #f1f4fb;
+  --text-secondary: #a9b2c8;
+  --text-tertiary: #6e778f;
+  --text-inverse: #0b0f19;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-accent: rgba(99, 102, 241, 0.45);
+  --edge-specular: rgba(255, 255, 255, 0.14);
+
+  /* Glass */
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 24px;
+  --blur-xl: 40px;
+  --saturate-sm: 120%;
+  --saturate-md: 140%;
+  --saturate-lg: 150%;
+  --saturate-xl: 160%;
+
+  /* Shadows & glows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.48);
+  --shadow-lg: 0 20px 48px -12px rgba(0, 0, 0, 0.58);
+  --shadow-xl: 0 32px 72px -16px rgba(0, 0, 0, 0.68);
+  --glow-indigo-sm: 0 0 0 1px rgba(99, 102, 241, 0.3), 0 4px 20px -4px rgba(99, 102, 241, 0.35);
+  --glow-indigo-md: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 8px 32px -6px rgba(99, 102, 241, 0.5);
+  --glow-indigo-lg: 0 0 0 1px rgba(99, 102, 241, 0.5), 0 12px 48px -8px rgba(99, 102, 241, 0.62);
+  --glow-violet-md: 0 0 0 1px rgba(139, 92, 246, 0.4), 0 8px 32px -6px rgba(139, 92, 246, 0.5);
+  --glow-cyan-md: 0 0 0 1px rgba(34, 211, 238, 0.4), 0 8px 32px -6px rgba(34, 211, 238, 0.45);
+  --glow-danger-md: 0 0 0 1px rgba(248, 113, 113, 0.4), 0 8px 28px -8px rgba(248, 113, 113, 0.42);
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Layout */
+  --container-max: 1200px;
+  --container-narrow: 760px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --header-height: 64px;
+  --measure: 68ch;
+
+  /* Type */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Geist Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --numeric: tabular-nums lining-nums;
+
+  /* Motion */
+  --dur-instant: 90ms;
+  --dur-xs: 140ms;
+  --dur-sm: 200ms;
+  --dur-md: 280ms;
+  --dur-lg: 400ms;
+  --dur-xl: 640ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Z-index */
+  --z-base: 0;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-dropdown: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 401;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}
+
+/* Ambient lighting on body (DESIGN.md §2.7) */
+body {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--canvas);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 12% -6%, rgba(99, 102, 241, 0.16), transparent 62%),
+    radial-gradient(52rem 36rem at 92% 108%, rgba(34, 211, 238, 0.12), transparent 60%),
+    radial-gradient(40rem 30rem at 68% 24%, rgba(139, 92, 246, 0.07), transparent 66%);
+}
+
+/* Typography tokens */
+.type-display {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 56px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.type-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 40px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.type-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 30px);
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.type-h3 {
+  font-family: var(--font-display);
+  font-size: clamp(19px, 2.5vw, 22px);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.type-h4 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.type-body-lg {
+  font-size: 17px;
+  line-height: 28px;
+  font-weight: 400;
+}
+
+.type-body {
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.type-body-sm {
+  font-size: 13.5px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.type-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.type-count-xl {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 44px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: var(--numeric);
+}
+
+.type-count {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: var(--numeric);
+}
+
+.numeric {
+  font-variant-numeric: var(--numeric);
+}
+
+/* Glass system recipes (DESIGN.md §4) */
+.glass-ambient {
+  background: var(--surface-1);
+  backdrop-filter: blur(var(--blur-sm)) saturate(var(--saturate-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(var(--saturate-sm));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow:
+    inset 0 1px 0 var(--edge-specular),
+    var(--shadow-sm);
+}
+
+.glass {
+  position: relative;
+  background: var(--surface-2);
+  backdrop-filter: blur(var(--blur-md)) saturate(var(--saturate-md));
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(var(--saturate-md));
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 0 1px 0 var(--edge-specular),
+    var(--shadow-md);
+}
+
+.glass-floating {
+  background: var(--surface-3);
+  backdrop-filter: blur(var(--blur-lg)) saturate(var(--saturate-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(var(--saturate-lg));
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    inset 0 1px 0 var(--edge-specular),
+    var(--shadow-lg);
+}
+
+.glass-overlay {
+  background: var(--surface-4);
+  backdrop-filter: blur(var(--blur-xl)) saturate(var(--saturate-xl));
+  -webkit-backdrop-filter: blur(var(--blur-xl)) saturate(var(--saturate-xl));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    inset 0 1px 0 var(--edge-specular),
+    var(--shadow-xl);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-ambient,
+  .glass,
+  .glass-floating,
+  .glass-overlay {
+    background: var(--surface-solid);
+  }
+}
+
+/* Form inputs (DESIGN.md §7.7) */
+.input {
+  background: var(--surface-2);
+  backdrop-filter: blur(var(--blur-sm)) saturate(var(--saturate-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(var(--saturate-sm));
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  color: var(--text-primary);
+  font: 400 15px/1.4 var(--font-body);
+  transition:
+    border-color var(--dur-xs) var(--ease-standard),
+    box-shadow var(--dur-xs) var(--ease-standard);
+}
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+.input:hover {
+  border-color: var(--border-strong);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--indigo);
+  box-shadow: var(--glow-indigo-sm);
+}
+.input[aria-invalid='true'] {
+  border-color: var(--danger);
+  box-shadow: var(--glow-danger-md);
+}
+
+/* Global Accessibility Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--indigo-bright);
+  outline-offset: 2px;
+}
+
+/* Reduced motion reset (DESIGN.md §6.5) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
