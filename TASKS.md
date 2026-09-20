@@ -12,7 +12,7 @@ Version 1.0 · 9 phases · Estimated 7–8 weeks for one full-stack developer
 - `[!]` marks a blocking task — nothing downstream in the phase can proceed without it.
 - Task IDs are stable. Reference them in commit messages: `feat(votes): cast_vote RPC [T-3.2]`.
 
-**Progress:** Phase 0 ▢ · 1 ▢ · 2 ▢ · 3 ▢ · 4 ▢ · 5 ▢ · 6 ▢ · 7 ▢ · 8 ▢
+**Progress:** Phase 0 ▣ · 1 ▢ · 2 ▢ · 3 ▢ · 4 ▢ · 5 ▢ · 6 ▢ · 7 ▢ · 8 ▢
 
 ---
 
@@ -37,16 +37,16 @@ _Goal: a running skeleton with CI, types, and tokens in place. Estimated 3 days.
 - [x] **T-0.10** Extend `tailwind.config.ts` per `DESIGN.md` §9.1
 - [x] **T-0.11** Load Space Grotesk via `next/font/google`, Geist Sans via the `geist` package, expose both as CSS variables on `<html>`
 - [x] **T-0.12** Build the ambient glow layer on `<body>::before` (`DESIGN.md` §2.7)
-- [ ] **T-0.13** Add the global `prefers-reduced-motion` reset
-- [ ] **T-0.14** Create `/dev/tokens` — a page rendering every color, type step, radius, shadow, and glow for visual verification
+- [x] **T-0.13** Add the global `prefers-reduced-motion` reset
+- [x] **T-0.14** Create `/dev/tokens` — a page rendering every color, type step, radius, shadow, and glow for visual verification
 
 ### Shared constants
 
-- [ ] **T-0.15** `[!]` `lib/constants.ts` — one source of truth for `VOTE_LIMIT_PER_DAY`, `SUBMISSION_COOLDOWN_DAYS`, `QUALIFY_THRESHOLD`, `RETRACTION_WINDOW_MIN`, field length bounds, category list
-- [ ] **T-0.16** `lib/errors.ts` — the `IP_*` error code union and one user-facing message per code (`RULES.md` §7)
-- [ ] **T-0.17** `lib/validation.ts` — zod schemas built from `constants.ts` so client validation cannot drift from the database `CHECK` constraints
+- [x] **T-0.15** `[!]` `lib/constants.ts` — one source of truth for `VOTE_LIMIT_PER_DAY`, `SUBMISSION_COOLDOWN_DAYS`, `QUALIFY_THRESHOLD`, `RETRACTION_WINDOW_MIN`, field length bounds, category list
+- [x] **T-0.16** `lib/errors.ts` — the `IP_*` error code union and one user-facing message per code (`RULES.md` §7)
+- [x] **T-0.17** `lib/validation.ts` — zod schemas built from `constants.ts` so client validation cannot drift from the database `CHECK` constraints
 
-**Exit gate:** `npm run build` succeeds, CI is green, `/dev/tokens` renders every token correctly in the browser.
+**Exit gate:** `npm run build` succeeds, CI is green, `/dev/tokens` renders every token correctly in the browser. [PASSED]
 
 ---
 
