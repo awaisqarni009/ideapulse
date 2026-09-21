@@ -45,9 +45,19 @@ export interface VoteQuotaResult {
 export async function castVoteAction(ideaId: string): Promise<CastVoteResult> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc('cast_vote', {
+  let { data, error } = await supabase.rpc('cast_vote', {
     p_idea_id: ideaId,
   });
+
+  // T-5.7: Handle IP_NO_ACTIVE_CYCLE during rotation: automatic retry after 3 s (RULES.md BR-043)
+  if (error && (error.message?.includes('IP_NO_ACTIVE_CYCLE') || error.code === '503')) {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const retry = await supabase.rpc('cast_vote', {
+      p_idea_id: ideaId,
+    });
+    data = retry.data;
+    error = retry.error;
+  }
 
   if (error) {
     return {

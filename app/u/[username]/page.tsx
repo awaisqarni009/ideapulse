@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProfileHeader } from '@/app/components/profile/profile-header';
+import { ProfileRewards } from '@/app/components/profile/profile-rewards';
 import { IdeaCard } from '@/app/components/ideas/idea-card';
 import { PlusCircle, Lightbulb } from 'lucide-react';
 
@@ -100,12 +101,43 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     0,
   );
 
-  // 5. Query cycles won (rewards with rank <= 3)
-  const { count: cyclesWonCount } = await supabase
+  // 5. Query cycles won and full rewards list [T-5.11]
+  const { data: userRewards } = await supabase
     .from('rewards')
-    .select('*', { count: 'exact', head: true })
+    .select(
+      `
+      id,
+      rank,
+      title,
+      verified_votes,
+      cycles (
+        cycle_number
+      ),
+      ideas (
+        title,
+        slug
+      )
+    `,
+    )
     .eq('recipient_id', profile.id)
-    .lte('rank', 3);
+    .order('rank', { ascending: true })
+    .order('created_at', { ascending: false });
+
+  const formattedRewards = (userRewards || []).map((r) => {
+    const cycle = Array.isArray(r.cycles) ? r.cycles[0] : r.cycles;
+    const idea = Array.isArray(r.ideas) ? r.ideas[0] : r.ideas;
+    return {
+      id: r.id,
+      rank: r.rank,
+      title: r.title,
+      verified_votes: r.verified_votes,
+      cycle_number: cycle?.cycle_number || 1,
+      idea_title: idea?.title || r.title,
+      idea_slug: idea?.slug || '',
+    };
+  });
+
+  const cyclesWonCount = formattedRewards.filter((r) => r.rank <= 3).length;
 
   // 6. Check viewer's vote status on these ideas if authenticated
   const viewerVoteMap = new Map<string, string>();
@@ -132,13 +164,27 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           stats={{
             ideasCount: authoredIdeas.length,
             votesReceived: totalVotesReceived,
-            cyclesWon: cyclesWonCount || 0,
+            cyclesWon: cyclesWonCount,
           }}
           isOwner={isOwner}
         />
 
-        {/* Authored Ideas Section */}
+        {/* Cycle Rewards Section per T-5.11 */}
         <div className="mt-12">
+          <div className="mb-6 border-b border-[var(--border-subtle)] pb-3">
+            <h2 className="font-display text-xl font-bold text-[var(--text-primary)] sm:text-2xl">
+              Cycle Honors & Awards
+            </h2>
+            <p className="mt-0.5 text-xs text-[var(--text-secondary)] sm:text-sm">
+              Recognitions earned by proposals qualifying in weekly cycle closes.
+            </p>
+          </div>
+
+          <ProfileRewards rewards={formattedRewards} displayName={profile.display_name} />
+        </div>
+
+        {/* Authored Ideas Section */}
+        <div className="mt-14">
           <div className="mb-8 flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
             <div>
               <h2 className="font-display text-xl font-bold text-[var(--text-primary)] sm:text-2xl">

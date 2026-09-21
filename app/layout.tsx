@@ -8,6 +8,7 @@ import { UnconfirmedBanner } from '@/app/components/auth/unconfirmed-banner';
 
 import { ToastProvider } from '@/app/components/ui/toast';
 import { Header } from '@/app/components/ui/header';
+import { WinnerModal } from '@/app/components/cycles/winner-modal';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -30,6 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <ToastProvider>
             <Header />
             <UnconfirmedBanner />
+            <WinnerModal />
             {children}
           </ToastProvider>
         </UserProvider>

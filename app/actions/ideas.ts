@@ -77,24 +77,36 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
 
   const supabase = await createClient();
 
-  // 2. Fetch the active cycle
-  const { data: cycle, error: cycleError } = await supabase
+  // 2. Fetch the active cycle (with T-5.7 3s retry if rotation is in progress per BR-043)
+  let { data: cycle, error: cycleError } = await supabase
     .from('cycles')
     .select('id, status')
     .eq('status', 'active')
-    .single();
+    .maybeSingle();
+
+  if (cycleError || !cycle) {
+    // Wait 3 seconds and retry once
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const retry = await supabase
+      .from('cycles')
+      .select('id, status')
+      .eq('status', 'active')
+      .maybeSingle();
+    cycle = retry.data;
+    cycleError = retry.error;
+  }
 
   if (cycleError || !cycle) {
     return {
       success: false,
       code: 'IP_NO_ACTIVE_CYCLE',
-      error: 'No active cycle is currently accepting submissions.',
+      error: 'The weekly cycle is closing right now. Try again in a moment.',
     };
   }
 
   // 3. Insert into ideas table
   // The PostgreSQL trigger `ideas_enforce_submission` validates cooldown with advisory lock (BR-020, BR-031)
-  const { data: insertedIdea, error: insertError } = await supabase
+  let { data: insertedIdea, error: insertError } = await supabase
     .from('ideas')
     .insert({
       author_id: user.id,
@@ -108,6 +120,29 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     })
     .select('id, slug')
     .single();
+
+  if (
+    insertError &&
+    (insertError.message?.includes('IP_NO_ACTIVE_CYCLE') || insertError.code === '503')
+  ) {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const retryInsert = await supabase
+      .from('ideas')
+      .insert({
+        author_id: user.id,
+        cycle_id: cycle.id,
+        title: validation.data.title,
+        summary: validation.data.summary,
+        body: validation.data.body,
+        category: validation.data.category,
+        tags: validation.data.tags,
+        status: 'published',
+      })
+      .select('id, slug')
+      .single();
+    insertedIdea = retryInsert.data;
+    insertError = retryInsert.error;
+  }
 
   if (insertError) {
     const msg = insertError.message || '';
@@ -135,6 +170,13 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     return {
       success: false,
       error: msg || 'An error occurred while submitting your idea.',
+    };
+  }
+
+  if (!insertedIdea) {
+    return {
+      success: false,
+      error: 'An unexpected error occurred while saving the idea.',
     };
   }
 

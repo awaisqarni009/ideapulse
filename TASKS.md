@@ -207,11 +207,11 @@ _Goal: a cycle opens, runs, closes, and pays out without a human touching it. Es
 - [x] **T-5.4** `[!]` Test the `qualified_at` tie-break with two ideas at identical vote counts
 - [x] **T-5.5** Test the zero-qualifier path: cycle finalizes cleanly with the public note (`RULES.md` BR-048)
 - [x] **T-5.6** Test that a duplicate `open_next_cycle()` call fails on the partial unique index
-- [ ] **T-5.7** Handle `IP_NO_ACTIVE_CYCLE` during rotation: user-facing message plus one automatic retry after 3 s
-- [ ] **T-5.8** `/cycles/[n]` archive page — final standings, reward recipients, statically generated after finalization
-- [ ] **T-5.9** Cycle-close result modal for winners, shown once (`localStorage` flag)
-- [ ] **T-5.10** The one-time cycle-close sweep animation on qualified rows
-- [ ] **T-5.11** Rewards section on the profile page
+- [x] **T-5.7** Handle `IP_NO_ACTIVE_CYCLE` during rotation: user-facing message plus one automatic retry after 3 s
+- [x] **T-5.8** `/cycles/[n]` archive page — final standings, reward recipients, statically generated after finalization
+- [x] **T-5.9** Cycle-close result modal for winners, shown once (`localStorage` flag)
+- [x] **T-5.10** The one-time cycle-close sweep animation on qualified rows
+- [x] **T-5.11** Rewards section on the profile page
 - [ ] **T-5.12** Heartbeat row written by `rotate_cycle`; alert if no transition occurs within 30 minutes of the boundary
 - [ ] **T-5.13** Manually simulate three consecutive cycles on staging by shifting `cycles.ends_at`
 

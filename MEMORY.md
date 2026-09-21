@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                           |
-| -------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 5 — Cycles & rewards                                                                                      |
-| **Phase progress**   | 6 / 13 tasks (T-5.1 to T-5.6 complete)                                                                          |
-| **Overall progress** | 116 / 178 tasks                                                                                                 |
-| **Status**           | Phase 5 Batch 1 Complete! 74 Vitest unit tests passing (100% green). E2E tests deferred per user instruction.   |
-| **Blocked on**       | None                                                                                                            |
-| **Next action**      | Phase 5 Batch 2 (T-5.7 to T-5.11): Rotation retry, `/cycles/[n]` archive, winner modal, profile rewards section |
-| **Target launch**    | TBD                                                                                                             |
-| **Active branch**    | `main`                                                                                                          |
-| **Last deploy**      | —                                                                                                               |
+| Field                | Value                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 5 — Cycles & rewards                                                                                    |
+| **Phase progress**   | 11 / 13 tasks (T-5.1 to T-5.11 complete)                                                                      |
+| **Overall progress** | 121 / 178 tasks                                                                                               |
+| **Status**           | Phase 5 Batch 2 Complete! 79 Vitest unit tests passing (100% green). E2E tests deferred per user instruction. |
+| **Blocked on**       | None                                                                                                          |
+| **Next action**      | Phase 5 Batch 3 (T-5.12, T-5.13): Heartbeat logging, multi-cycle rotation simulation & Phase 5 Exit Gate      |
+| **Target launch**    | TBD                                                                                                           |
+| **Active branch**    | `main`                                                                                                        |
+| **Last deploy**      | —                                                                                                             |
 
 ### 1.1 Phase board
 
@@ -436,6 +436,33 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 - Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
 
 ---
+
+### 2026-09-21 — Session 10 (Phase 5 Batch 2: Rotation Retry, Cycle Archive, Winner Modal & Rewards)
+
+**Phase:** Phase 5 — Cycles & rewards
+**Duration:** ~40m
+**Tasks completed:** T-5.7, T-5.8, T-5.9, T-5.10, T-5.11
+
+**What shipped**
+
+- `app/actions/votes.ts` & `app/actions/ideas.ts`: Integrated 3-second automatic retry on `IP_NO_ACTIVE_CYCLE` to handle brief closing states during cycle rotation per `RULES.md` BR-043 [T-5.7].
+- `app/cycles/[n]/page.tsx`: Full `/cycles/[n]` archive page displaying cycle dates with timezone/UTC offset, metadata, zero-qualifiers note per `BR-048`, winners podium cards (Rank 1, 2, 3), and complete final standings table [T-5.8].
+- `app/actions/rewards.ts`: Created `getWinnerRewardsAction()` fetching recent rewards awarded to the current authenticated user [T-5.9].
+- `app/components/cycles/winner-modal.tsx`: Winner celebration modal dialog with violet glow, trophy animation, and `localStorage` persistence (`ideapulse:winner_seen:${reward.id}`) [T-5.9].
+- `app/layout.tsx`: Mounted `<WinnerModal />` globally inside root layout [T-5.9].
+- `app/components/cycles/cycle-sweep.tsx` & `app/globals.css`: Implemented 900ms one-time celebratory soft violet sweep across qualified rows on finalized boards per `DESIGN.md` §6.4 with `localStorage` (`ideapulse:sweep_celebration:${cycle.id}`) [T-5.10].
+- `app/components/profile/profile-rewards.tsx`: Created ProfileRewards component rendering user's earned cycle honors, rank badges, verified vote count, and cycle links with contextual empty states [T-5.11].
+- `app/u/[username]/page.tsx`: Embedded ProfileRewards section into public profile page [T-5.11].
+- `tests/cycles-archive.test.ts`: Added test suite covering archive filtering, BR-048 public note, localStorage keys, and rotation retry logic (79/79 Vitest tests passing).
+
+**Decisions made**
+
+- Wrapped both vote casting and idea submission with automatic 3s retries on `IP_NO_ACTIVE_CYCLE` to ensure zero user friction during weekly Sunday midnight rotation transactions.
+- Mounted the winner modal in RootLayout so winning creators receive celebration upon logging in regardless of landing page.
+
+**Next session starts with**
+
+- Phase 5 Batch 3 (T-5.12, T-5.13 + Phase 5 Exit Gate): Heartbeat tracking, multi-cycle rotation simulation on staging.
 
 ### 2026-09-21 — Session 09 (Phase 5 Batch 1: Cycle Engine & Automated Rotation)
 
