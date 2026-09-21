@@ -2,36 +2,48 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 import type { LeaderboardItem } from '@/lib/leaderboard';
 import { formatRank } from '@/lib/leaderboard';
+import { spring } from '@/lib/motion';
 import { Zap, CheckCircle2 } from 'lucide-react';
 
 interface LeaderboardRowProps {
   item: LeaderboardItem;
+  isFlashing?: boolean;
   className?: string;
 }
 
 /**
- * LeaderboardRow Component per DESIGN.md §7.6 and TASKS.md [T-4.10]
+ * LeaderboardRow Component per DESIGN.md §7.6 and TASKS.md [T-4.10, T-4.12]
  * - L1 glass container, radius-md, h 72px
- * - Semantic <li> inside an <ol>
+ * - Semantic <motion.li> inside an <ol>
+ * - Framer layout rank reorder with spring.rank
  * - Rank 1 gets gradient ring and --glow-violet-md
+ * - Cyan border flash for rows that moved up in realtime
  * - Ranks 1–3 numeral in --violet-bright; ranks 4+ in --text-tertiary. No emojis!
  * - Whole row is a link to /idea/[slug]
  */
-export function LeaderboardRow({ item, className = '' }: LeaderboardRowProps) {
+export function LeaderboardRow({ item, isFlashing = false, className = '' }: LeaderboardRowProps) {
+  const reduce = useReducedMotion();
   const isRank1 = item.cycle_rank === 1;
   const isTop3 = item.cycle_rank <= 3;
   const formattedRank = formatRank(item.cycle_rank);
 
   return (
-    <li className={`list-none ${className}`}>
+    <motion.li
+      layout={!reduce}
+      transition={spring.rank}
+      className={`w-full list-none ${className}`}
+    >
       <Link
         href={`/idea/${item.slug}`}
-        className={`group relative flex min-h-[72px] items-center justify-between gap-4 rounded-[var(--radius-md)] border px-5 py-3.5 backdrop-blur-[var(--blur-sm)] transition-all duration-200 hover:-translate-y-[1px] ${
-          isRank1
-            ? 'border-[rgba(139,92,246,0.45)] bg-[rgba(139,92,246,0.06)] shadow-[var(--glow-violet-md)] ring-1 ring-[var(--violet-bright)]'
-            : 'border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)] hover:shadow-[var(--glow-indigo-sm)]'
+        className={`group relative flex min-h-[72px] items-center justify-between gap-4 rounded-[var(--radius-md)] border px-5 py-3.5 backdrop-blur-[var(--blur-sm)] transition-all duration-300 hover:-translate-y-[1px] ${
+          isFlashing
+            ? 'border-l-4 border-l-[var(--cyan-bright)] bg-[rgba(34,211,238,0.08)] shadow-[0_0_16px_rgba(34,211,238,0.35)]'
+            : isRank1
+              ? 'border-[rgba(139,92,246,0.45)] bg-[rgba(139,92,246,0.06)] shadow-[var(--glow-violet-md)] ring-1 ring-[var(--violet-bright)]'
+              : 'border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)] hover:shadow-[var(--glow-indigo-sm)]'
         }`}
         style={{
           boxShadow: isRank1
@@ -88,6 +100,6 @@ export function LeaderboardRow({ item, className = '' }: LeaderboardRowProps) {
           </div>
         </div>
       </Link>
-    </li>
+    </motion.li>
   );
 }

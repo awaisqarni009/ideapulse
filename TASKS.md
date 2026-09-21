@@ -184,10 +184,10 @@ _Goal: users can find ideas and follow the race. Estimated 6 days._
 - [x] **T-4.8** Skeleton loaders matching the exact card dimensions so nothing shifts on load
 - [x] **T-4.9** `[!]` `/leaderboard` — top 20 from `idea_public_stats`, ranked
 - [x] **T-4.10** `<LeaderboardRow />` per `DESIGN.md` §7.6, in a semantic `<ol>`
-- [ ] **T-4.11** `[!]` Realtime subscription on `ideas` filtered by `cycle_id`
-- [ ] **T-4.12** `[!]` Framer `layout` rank reorder with spring `rank` + the cyan flash for rows that moved up
-- [ ] **T-4.13** Verify realtime is **not** enabled on `votes` — the ledger must never be published
-- [ ] **T-4.14** Cycle countdown in the header, local time with the UTC offset
+- [x] **T-4.11** `[!]` Realtime subscription on `ideas` filtered by `cycle_id`
+- [x] **T-4.12** `[!]` Framer `layout` rank reorder with spring `rank` + the cyan flash for rows that moved up
+- [x] **T-4.13** Verify realtime is **not** enabled on `votes` — the ledger must never be published
+- [x] **T-4.14** Cycle countdown in the header, local time with the UTC offset
 - [ ] **T-4.15** `/u/[username]` profile page: authored ideas, votes received, cycles won
 - [ ] **T-4.16** Landing page: hero, live top 3, the rules stated in three lines, a single CTA
 - [ ] **T-4.17** `/rules` page generated from `RULES.md`, with anchor IDs matching every `BR-###` so errors can deep-link

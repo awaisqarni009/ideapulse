@@ -1,8 +1,8 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { getLeaderboardAction } from '@/app/actions/leaderboard';
-import { LeaderboardRow } from '@/app/components/leaderboard/leaderboard-row';
-import { Trophy, ShieldCheck, Clock } from 'lucide-react';
+import { RealtimeLeaderboard } from '@/app/components/leaderboard/realtime-leaderboard';
+import { Trophy, ShieldCheck } from 'lucide-react';
 import { formatDistanceToNowStrict } from 'date-fns';
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * Renders top 20 ranked proposals in a semantic <ol> list from idea_public_stats.
  */
 export default async function LeaderboardPage() {
-  const { cycleNumber, endsAt, items } = await getLeaderboardAction();
+  const { cycleId, cycleNumber, endsAt, items } = await getLeaderboardAction();
 
   let endsText = 'soon';
   if (endsAt) {
@@ -54,28 +54,8 @@ export default async function LeaderboardPage() {
           </div>
         </div>
 
-        {/* Semantic Ordered List <ol> per T-4.10 and DESIGN.md §7.6 */}
-        {items.length > 0 ? (
-          <ol
-            role="list"
-            className="space-y-3"
-            aria-label={`Cycle #${cycleNumber} top ranked ideas`}
-          >
-            {items.map((item) => (
-              <LeaderboardRow key={item.idea_id} item={item} />
-            ))}
-          </ol>
-        ) : (
-          <div className="glass-panel rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
-            <Clock className="mx-auto h-8 w-8 text-[var(--text-tertiary)]" />
-            <h3 className="mt-3 font-display text-base font-bold text-[var(--text-primary)]">
-              No ranked ideas yet
-            </h3>
-            <p className="mt-1 text-xs text-[var(--text-secondary)]">
-              Cast your daily votes to help community proposals rise on the leaderboard.
-            </p>
-          </div>
-        )}
+        {/* Realtime Animated Ordered List <ol> per T-4.10, T-4.11, T-4.12 */}
+        <RealtimeLeaderboard initialItems={items} cycleId={cycleId} cycleNumber={cycleNumber} />
       </div>
     </main>
   );

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import type { LeaderboardItem } from '@/lib/leaderboard';
 
 export interface LeaderboardResult {
+  cycleId: string | null;
   cycleNumber: number;
   endsAt: string | null;
   items: LeaderboardItem[];
@@ -25,6 +26,7 @@ export async function getLeaderboardAction(): Promise<LeaderboardResult> {
 
   if (!cycle) {
     return {
+      cycleId: null,
       cycleNumber: 1,
       endsAt: null,
       items: [],
@@ -40,6 +42,7 @@ export async function getLeaderboardAction(): Promise<LeaderboardResult> {
   if (error || !data) {
     console.error('Failed to fetch leaderboard:', error);
     return {
+      cycleId: cycle.id,
       cycleNumber: cycle.cycle_number,
       endsAt: cycle.ends_at,
       items: [],
@@ -65,6 +68,7 @@ export async function getLeaderboardAction(): Promise<LeaderboardResult> {
   }));
 
   return {
+    cycleId: cycle.id,
     cycleNumber: cycle.cycle_number,
     endsAt: cycle.ends_at,
     items,

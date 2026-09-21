@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/auth/use-user';
 import { QuotaHUD } from '@/app/components/votes/quota-hud';
+import { CycleCountdown } from '@/app/components/layout/cycle-countdown';
 import { signOutAction } from '@/app/actions/auth';
 import { Sparkles, PlusCircle, Trophy, User, LogOut } from 'lucide-react';
 
@@ -62,6 +63,9 @@ export function Header() {
             })}
           </nav>
         </div>
+
+        {/* Center: Cycle Countdown in header [T-4.14] */}
+        <CycleCountdown />
 
         {/* Right: Actions, QuotaHUD & User */}
         <div className="flex items-center gap-3 sm:gap-4">

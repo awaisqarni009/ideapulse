@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 4 — Discovery & leaderboard                                                                                                                                                                 |
-| **Phase progress**   | 10 / 18 tasks (T-4.1 to T-4.10 complete)                                                                                                                                                          |
-| **Overall progress** | 102 / 178 tasks                                                                                                                                                                                   |
-| **Status**           | Phase 4 Batch 2 Complete! 59 Vitest & 24 Playwright E2E passing (100% green)                                                                                                                      |
-| **Blocked on**       | None                                                                                                                                                                                              |
-| **Next action**      | Phase 4 Batch 3 (T-4.11 to T-4.14): Realtime subscription on `ideas`, Framer `layout` rank reorder with spring `rank` + cyan flash, verify realtime not on `votes`, and cycle countdown in header |
-| **Target launch**    | TBD                                                                                                                                                                                               |
-| **Active branch**    | `main`                                                                                                                                                                                            |
-| **Last deploy**      | —                                                                                                                                                                                                 |
+| Field                | Value                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 4 — Discovery & leaderboard                                                                             |
+| **Phase progress**   | 14 / 18 tasks (T-4.1 to T-4.14 complete)                                                                      |
+| **Overall progress** | 106 / 178 tasks                                                                                               |
+| **Status**           | Phase 4 Batch 3 Complete! 63 Vitest unit tests passing (100% green). E2E tests deferred per user instruction. |
+| **Blocked on**       | None                                                                                                          |
+| **Next action**      | Phase 4 Batch 4 (T-4.15 to T-4.18): Profile page `/u/[username]`, landing page hero & top 3, `/rules` page    |
+| **Target launch**    | TBD                                                                                                           |
+| **Active branch**    | `main`                                                                                                        |
+| **Last deploy**      | —                                                                                                             |
 
 ### 1.1 Phase board
 
@@ -40,7 +40,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
 | 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
-| 4     | Discovery           | 🟡 In progress | 10/18 | ❌            |
+| 4     | Discovery           | 🟡 In progress | 14/18 | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
 | 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
@@ -434,6 +434,31 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 **Next session starts with**
 
 - Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
+
+---
+
+### 2026-09-21 — Session 07 (Phase 4 Batch 3: Realtime Motion & Cycle Countdown)
+
+**Phase:** Phase 4 — Discovery & leaderboard
+**Duration:** ~45m
+**Tasks completed:** T-4.11, T-4.12, T-4.13, T-4.14
+
+**What shipped**
+
+- `app/components/leaderboard/realtime-leaderboard.tsx`: Realtime subscription to `ideas` filtered by `cycle_id` [T-4.11], client-side live rank re-computation, and 600 ms cyan left border flash on ascending rows [T-4.12].
+- `lib/motion.ts`: Framer Motion spring presets (`spring.rank` stiffness 420, damping 32) per `DESIGN.md` §6.2.
+- `app/components/leaderboard/leaderboard-row.tsx`: `<motion.li layout transition={spring.rank}>` with `useReducedMotion()` compliance [T-4.12].
+- `tests/security-realtime.test.ts`: Automated privacy invariant test confirming `votes` is strictly excluded from `supabase_realtime` publication (`ADR-006`, `BR-003`) [T-4.13].
+- `app/components/layout/cycle-countdown.tsx`: Persistent header cycle countdown with local timezone and UTC offset [T-4.14].
+- `tests/realtime-leaderboard.test.ts`: Vitest suite covering rank recomputation, ascending rank detection, and UTC offset format.
+
+**Decisions made**
+
+- Per user instruction, deferred ongoing Playwright E2E suites until full platform completion; relied on strict TypeScript check and Vitest unit suites for rapid, reliable execution.
+
+**Next session starts with**
+
+- Phase 4 Batch 4 (T-4.15 to T-4.18): Profile page `/u/[username]`, landing page hero & live top 3, `/rules` page generated from `RULES.md`, and Phase 4 Exit Gate.
 
 ---
 
