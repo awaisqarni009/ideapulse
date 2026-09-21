@@ -87,3 +87,41 @@ export const voteActionSchema = z.object({
 export const retractVoteSchema = z.object({
   voteId: z.string().uuid('Invalid vote identifier.'),
 });
+
+/**
+ * Registration validation per AC-01.1 and AC-01.4:
+ * - Valid email
+ * - Password at least 10 characters
+ * - Password must contain at least one digit
+ */
+export const registerSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Please enter your email address.')
+    .email('Please enter a valid email address.')
+    .trim()
+    .toLowerCase(),
+  password: z
+    .string()
+    .min(10, 'Password must be at least 10 characters long.')
+    .regex(/\d/, 'Password must contain at least one digit (0-9).'),
+});
+
+export type RegisterInput = z.infer<typeof registerSchema>;
+
+/**
+ * Login validation per AC-02.1:
+ * - Valid email
+ * - Non-empty password
+ */
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Please enter your email address.')
+    .email('Please enter a valid email address.')
+    .trim()
+    .toLowerCase(),
+  password: z.string().min(1, 'Please enter your password.'),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;

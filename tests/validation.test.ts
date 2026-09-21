@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { ideaSubmissionSchema, profileUpdateSchema } from '../lib/validation';
+import {
+  ideaSubmissionSchema,
+  profileUpdateSchema,
+  registerSchema,
+  loginSchema,
+} from '../lib/validation';
 import { CATEGORIES, IDEA_LIMITS } from '../lib/constants';
 import { getIpErrorMessage } from '../lib/errors';
 
@@ -71,5 +76,55 @@ describe('Constants & Validation Schemas [T-0.15, T-0.16, T-0.17]', () => {
     expect(getIpErrorMessage('IP_VOTE_QUOTA', { duration: '3h 41m' })).toBe(
       "You've used all 5 votes. Your next vote unlocks in 3h 41m.",
     );
+  });
+
+  describe('Auth validation [T-2.5, T-2.6]', () => {
+    it('accepts valid registration input', () => {
+      const valid = {
+        email: 'User@Example.Com',
+        password: 'ValidPass123',
+      };
+      const parsed = registerSchema.safeParse(valid);
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.email).toBe('user@example.com');
+      }
+    });
+
+    it('rejects password under 10 characters (AC-01.4)', () => {
+      const result = registerSchema.safeParse({
+        email: 'test@example.com',
+        password: 'Short9',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toContain('at least 10 characters');
+      }
+    });
+
+    it('rejects password missing a digit (AC-01.4)', () => {
+      const result = registerSchema.safeParse({
+        email: 'test@example.com',
+        password: 'NoDigitsHere',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toContain('at least one digit');
+      }
+    });
+
+    it('validates login input', () => {
+      const valid = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'password123',
+      });
+      expect(valid.success).toBe(true);
+
+      const invalid = loginSchema.safeParse({
+        email: 'not-an-email',
+        password: '',
+      });
+      expect(invalid.success).toBe(false);
+    });
   });
 });

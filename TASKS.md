@@ -107,12 +107,12 @@ Write each as a numbered file in `supabase/migrations/`. Apply locally, test, th
 
 _Goal: a user can register, confirm, sign in, and edit their profile. Estimated 4 days._
 
-- [ ] **T-2.1** `[!]` `lib/supabase/client.ts`, `server.ts`, `middleware.ts` — the three `@supabase/ssr` client factories
-- [ ] **T-2.2** `[!]` `middleware.ts` — session refresh on every request, route guards for `/submit` and `/settings`, 404 rewrite for `/admin/*`
-- [ ] **T-2.3** Configure Supabase Auth: confirm-email required, redirect URLs, session length
-- [ ] **T-2.4** Customize the confirmation and password-reset email templates to match the brand voice
-- [ ] **T-2.5** `/register` — form, zod validation, generic success response (no account enumeration, `AC-01.3`)
-- [ ] **T-2.6** `/login` — form, `?next=` redirect handling, specific-but-safe error messages
+- [x] **T-2.1** `[!]` `lib/supabase/client.ts`, `server.ts`, `middleware.ts` — the three `@supabase/ssr` client factories
+- [x] **T-2.2** `[!]` `middleware.ts` — session refresh on every request, route guards for `/submit` and `/settings`, 404 rewrite for `/admin/*`
+- [x] **T-2.3** Configure Supabase Auth: confirm-email required, redirect URLs, session length
+- [x] **T-2.4** Customize the confirmation and password-reset email templates to match the brand voice
+- [x] **T-2.5** `/register` — form, zod validation, generic success response (no account enumeration, `AC-01.3`)
+- [x] **T-2.6** `/login` — form, `?next=` redirect handling, specific-but-safe error messages
 - [ ] **T-2.7** `/auth/callback` — code exchange route handler
 - [ ] **T-2.8** `/auth/confirm` — post-confirmation landing with a clear next action
 - [ ] **T-2.9** Password reset request + update flows

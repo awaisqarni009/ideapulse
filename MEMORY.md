@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 1 — Database & security                                                         |
-| **Phase progress**   | 34 / 34 tasks (Phase 1 complete)                                                      |
-| **Overall progress** | 51 / 178 tasks                                                                        |
-| **Status**           | Phase 1 complete — Exit gate met; awaiting approval to start Phase 2 (Authentication) |
-| **Blocked on**       | Phase 1 Exit Gate approval                                                            |
-| **Next action**      | T-2.1 — Supabase SSR client factories (Phase 2: Authentication)                       |
-| **Target launch**    | TBD                                                                                   |
-| **Active branch**    | `main`                                                                                |
-| **Last deploy**      | —                                                                                     |
+| Field                | Value                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 2 — Authentication                                                                       |
+| **Phase progress**   | 6 / 16 tasks                                                                                   |
+| **Overall progress** | 57 / 178 tasks                                                                                 |
+| **Status**           | In progress — SSR clients, middleware, auth config, branded templates, /register & /login done |
+| **Blocked on**       | Nothing                                                                                        |
+| **Next action**      | T-2.7 — /auth/callback code exchange route (Batch 2: T-2.7 to T-2.12)                          |
+| **Target launch**    | TBD                                                                                            |
+| **Active branch**    | `main`                                                                                         |
+| **Last deploy**      | —                                                                                              |
 
 ### 1.1 Phase board
 
@@ -38,7 +38,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
-| 2     | Authentication      | ⬜ Not started | 0/16  | ❌            |
+| 2     | Authentication      | 🟡 In progress | 6/16  | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
