@@ -6,6 +6,8 @@ import { UserProvider } from '@/lib/auth/use-user';
 import { getCurrentUser } from '@/lib/auth/user';
 import { UnconfirmedBanner } from '@/app/components/auth/unconfirmed-banner';
 
+import { ToastProvider } from '@/app/components/ui/toast';
+
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-display',
@@ -24,8 +26,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en" className={`${spaceGrotesk.variable} ${GeistSans.variable} dark`}>
       <body className="min-h-screen bg-canvas text-ink-1 antialiased selection:bg-indigo/30 selection:text-white">
         <UserProvider initialUser={user} initialProfile={profile}>
-          <UnconfirmedBanner />
-          {children}
+          <ToastProvider>
+            <UnconfirmedBanner />
+            {children}
+          </ToastProvider>
         </UserProvider>
       </body>
     </html>

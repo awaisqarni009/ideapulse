@@ -149,3 +149,76 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     ideaId: insertedIdea.id,
   };
 }
+
+export type WithdrawIdeaResult =
+  { success: true } | { success: false; error: string; code?: string };
+
+/**
+ * withdrawIdeaAction() Server Action [T-3.8]
+ * Withdraws an idea authored by the caller per RULES.md BR-023.
+ */
+export async function withdrawIdeaAction(ideaId: string): Promise<WithdrawIdeaResult> {
+  const { user } = await getCurrentUser();
+
+  if (!user) {
+    return {
+      success: false,
+      code: 'IP_UNAUTHENTICATED',
+      error: 'You must be signed in to withdraw an idea.',
+    };
+  }
+
+  const supabase = await createClient();
+
+  // 1. Fetch idea to confirm author ownership
+  const { data: idea, error: fetchError } = await supabase
+    .from('ideas')
+    .select('id, author_id, status, slug')
+    .eq('id', ideaId)
+    .single();
+
+  if (fetchError || !idea) {
+    return {
+      success: false,
+      code: 'IP_IDEA_NOT_FOUND',
+      error: 'Idea not found.',
+    };
+  }
+
+  if (idea.author_id !== user.id) {
+    return {
+      success: false,
+      error: 'You can only withdraw ideas that you authored.',
+    };
+  }
+
+  if (idea.status === 'withdrawn') {
+    return {
+      success: false,
+      error: 'This idea has already been withdrawn.',
+    };
+  }
+
+  // 2. Perform update
+  const { error: updateError } = await supabase
+    .from('ideas')
+    .update({
+      status: 'withdrawn',
+      withdrawn_at: new Date().toISOString(),
+    })
+    .eq('id', ideaId)
+    .eq('author_id', user.id);
+
+  if (updateError) {
+    return {
+      success: false,
+      error: updateError.message || 'Failed to withdraw idea.',
+    };
+  }
+
+  revalidatePath('/');
+  revalidatePath(`/idea/${idea.slug}`);
+  revalidatePath('/leaderboard');
+
+  return { success: true };
+}

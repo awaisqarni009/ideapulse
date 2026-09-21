@@ -29,6 +29,62 @@ export function IdeaForm({ cycleId: _cycleId }: IdeaFormProps) {
   const [editorTab, setEditorTab] = useState<'write' | 'preview' | 'split'>('write');
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [serverError, setServerError] = useState<string | null>(null);
+  const [restoredDraftTime, setRestoredDraftTime] = useState<string | null>(null);
+
+  // Draft Autosave & Restore [T-3.6]
+  // 1. Restore draft on mount
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ideapulse_submission_draft');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.title || parsed.summary || parsed.body || parsed.tags?.length) {
+          if (parsed.title) setTitle(parsed.title);
+          if (parsed.category) setCategory(parsed.category);
+          if (parsed.summary) setSummary(parsed.summary);
+          if (parsed.body) setBody(parsed.body);
+          if (Array.isArray(parsed.tags)) setTags(parsed.tags);
+          setRestoredDraftTime(parsed.savedAt || 'earlier');
+        }
+      }
+    } catch {
+      // Ignore localStorage read errors
+    }
+  }, []);
+
+  // 2. Autosave draft debounced 500ms
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      if (title.trim() || summary.trim() || body.trim() || tags.length > 0) {
+        try {
+          const draft = {
+            title,
+            category,
+            summary,
+            body,
+            tags,
+            savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          };
+          localStorage.setItem('ideapulse_submission_draft', JSON.stringify(draft));
+        } catch {
+          // Ignore quota/private mode errors
+        }
+      }
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [title, category, summary, body, tags]);
+
+  const handleDiscardDraft = () => {
+    try {
+      localStorage.removeItem('ideapulse_submission_draft');
+    } catch {}
+    setTitle('');
+    setCategory('product');
+    setSummary('');
+    setBody('');
+    setTags([]);
+    setRestoredDraftTime(null);
+  };
 
   // Tag management
   const handleAddTag = () => {
@@ -109,13 +165,32 @@ export function IdeaForm({ cycleId: _cycleId }: IdeaFormProps) {
         return;
       }
 
-      // Success path [T-3.7]: redirect to /idea/[slug]
-      router.push(`/idea/${result.slug}`);
+      // Clear draft on successful submission per T-3.6
+      try {
+        localStorage.removeItem('ideapulse_submission_draft');
+      } catch {}
+
+      // Success path per T-3.7: redirect to /idea/[slug]?created=1
+      router.push(`/idea/${result.slug}?created=1`);
     });
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      {/* Restored draft notice [T-3.6] */}
+      {restoredDraftTime && (
+        <div className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-2.5 text-xs text-[var(--text-secondary)]">
+          <span>Restored from unsaved draft (saved at {restoredDraftTime}).</span>
+          <button
+            type="button"
+            onClick={handleDiscardDraft}
+            className="font-medium text-[var(--accent-warning)] hover:underline focus:outline-none"
+          >
+            Discard draft
+          </button>
+        </div>
+      )}
+
       {serverError && (
         <div
           role="alert"

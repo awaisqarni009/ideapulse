@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                    |
-| -------------------- | ---------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 3 — Core loop: submit & vote                                                       |
-| **Phase progress**   | 5 / 25 tasks (Phase 3)                                                                   |
-| **Overall progress** | 72 / 178 tasks                                                                           |
-| **Status**           | Phase 3 Batch 1 Complete (T-3.1–T-3.5); Typecheck, Vitest, and Playwright E2E passing    |
-| **Blocked on**       | None. Next batch queued: T-3.6 to T-3.8                                                  |
-| **Next action**      | Implement Batch 2: Draft autosave, submission redirect & toast, and idea withdrawal flow |
-| **Target launch**    | TBD                                                                                      |
-| **Active branch**    | `main`                                                                                   |
-| **Last deploy**      | —                                                                                        |
+| Field                | Value                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 3 — Core loop: submit & vote                                                                |
+| **Phase progress**   | 8 / 25 tasks (Submission section 100% complete)                                                   |
+| **Overall progress** | 75 / 178 tasks                                                                                    |
+| **Status**           | Phase 3 Batch 2 Complete (T-3.6–T-3.8); All 32 Vitest and 11 Playwright E2E tests passing         |
+| **Blocked on**       | None. Next batch queued: Voting flow T-3.9 to T-3.13                                              |
+| **Next action**      | Obtain batch approval and implement Voting flow: castVote(), VoteButton (8 states), optimistic UI |
+| **Target launch**    | TBD                                                                                               |
+| **Active branch**    | `main`                                                                                            |
+| **Last deploy**      | —                                                                                                 |
 
 ### 1.1 Phase board
 
@@ -39,7 +39,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
-| 3     | Core loop           | 🟡 In progress | 5/25  | ❌            |
+| 3     | Core loop           | 🟡 In progress | 8/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
@@ -327,6 +327,34 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 - Wrapped root layout with `UserProvider` initialized with server-fetched user session and profile row to avoid hydration flicker.
 
 **Blockers hit**
+
+### 2026-09-21 — Session 05 (Phase 3 Batch 2: Draft Autosave, Details & Withdrawal)
+
+**Phase:** Phase 3 — Core loop: submit & vote
+**Duration:** ~1h
+**Tasks completed:** T-3.6, T-3.7, T-3.8
+**Tasks started:** T-3.9
+
+**What shipped**
+
+- `app/components/ideas/idea-form.tsx`: LocalStorage draft autosave (debounced 500ms), draft recovery on mount with saved time banner and "Discard draft" trigger, and draft cleanup on successful submission [T-3.6].
+- `app/components/ui/toast.tsx` & `app/layout.tsx`: Design-system compliant L4 glass toast notifications (`DESIGN.md` §7.10) with automatic stacking, dismiss, and queue capping [T-3.7].
+- `app/idea/[slug]/page.tsx` & `idea-actions.tsx`: Idea detail view displaying proposal markdown, author information, status badges, qualification progress bar (`DESIGN.md` §7.5), and `?created=1` confirmation toast [T-3.7].
+- `app/actions/ideas.ts`: `withdrawIdeaAction()` Server Action verifying author permissions, updating `ideas.status = 'withdrawn'`, and revalidating public views [T-3.8].
+- `app/components/ideas/withdraw-modal.tsx`: L4 glass modal (`DESIGN.md` §7.9) featuring verbatim consequence warning per `RULES.md` BR-023 [T-3.8].
+- `tests/ideas-lifecycle.test.ts`: Vitest suite with 4 tests covering draft serialization and withdrawal rule assertions.
+- `e2e/submit-lifecycle.spec.ts`: Playwright E2E suite verifying draft restoration after page reload, idea detail rendering, and modal cancellation/consequence verification.
+
+**Decisions made**
+
+- `ToastProvider` mounted at root layout so notifications can be triggered from any client page or action seamlessly.
+- Idea Detail page handles both single object and array returns from Supabase joined relations gracefully.
+
+**Next session starts with**
+
+- Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
+
+---
 
 ### 2026-09-21 — Session 04 (Phase 3 Batch 1: Idea Submission)
 

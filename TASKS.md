@@ -139,9 +139,9 @@ _Goal: the product's reason to exist. Estimated 8 days._
 - [x] **T-3.3** `submitIdea()` server action, mapping `IP_SUBMIT_COOLDOWN` to a precise next-slot message
 - [x] **T-3.4** `<CooldownPanel />` — live countdown to the exact reopen time, in local time with the UTC offset shown
 - [x] **T-3.5** Live markdown preview (sanitized, restricted subset: bold, italic, links, lists, code)
-- [ ] **T-3.6** Draft autosave to `localStorage`, restored on return, cleared on successful submit
-- [ ] **T-3.7** Success path: redirect to `/idea/[slug]` with a confirmation toast
-- [ ] **T-3.8** Withdraw flow with the full-consequence confirmation copy (`RULES.md` BR-023)
+- [x] **T-3.6** Draft autosave to `localStorage`, restored on return, cleared on successful submit
+- [x] **T-3.7** Success path: redirect to `/idea/[slug]` with a confirmation toast
+- [x] **T-3.8** Withdraw flow with the full-consequence confirmation copy (`RULES.md` BR-023)
 
 ### Voting
 
