@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 4 — Discovery & leaderboard (Complete!)                                                         |
-| **Phase progress**   | 18 / 18 tasks (T-4.1 to T-4.18 complete)                                                              |
-| **Overall progress** | 110 / 178 tasks                                                                                       |
-| **Status**           | Phase 4 Complete! 67 Vitest unit tests passing (100% green). E2E tests deferred per user instruction. |
-| **Blocked on**       | Phase 4 Exit Gate Approval to begin Phase 5                                                           |
-| **Next action**      | Obtain Phase 4 exit gate approval, then begin Phase 5 (Cycles & Rewards: T-5.1 to T-5.6)              |
-| **Target launch**    | TBD                                                                                                   |
-| **Active branch**    | `main`                                                                                                |
-| **Last deploy**      | —                                                                                                     |
+| Field                | Value                                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 5 — Cycles & rewards                                                                                      |
+| **Phase progress**   | 6 / 13 tasks (T-5.1 to T-5.6 complete)                                                                          |
+| **Overall progress** | 116 / 178 tasks                                                                                                 |
+| **Status**           | Phase 5 Batch 1 Complete! 74 Vitest unit tests passing (100% green). E2E tests deferred per user instruction.   |
+| **Blocked on**       | None                                                                                                            |
+| **Next action**      | Phase 5 Batch 2 (T-5.7 to T-5.11): Rotation retry, `/cycles/[n]` archive, winner modal, profile rewards section |
+| **Target launch**    | TBD                                                                                                             |
+| **Active branch**    | `main`                                                                                                          |
+| **Last deploy**      | —                                                                                                               |
 
 ### 1.1 Phase board
 
@@ -41,7 +41,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
 | 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
 | 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
-| 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
+| 5     | Cycles & rewards    | 🟡 In progress | 6/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
 | 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
 | 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
@@ -436,6 +436,33 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 - Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
 
 ---
+
+### 2026-09-21 — Session 09 (Phase 5 Batch 1: Cycle Engine & Automated Rotation)
+
+**Phase:** Phase 5 — Cycles & rewards
+**Duration:** ~35m
+**Tasks completed:** T-5.1, T-5.2, T-5.3, T-5.4, T-5.5, T-5.6
+
+**What shipped**
+
+- `cron.job`: Confirmed `ideapulse-rotate-cycle` scheduled via `pg_cron` at `0 0 * * 1` executing `select public.rotate_cycle();` every Monday at 00:00 UTC [T-5.1].
+- `lib/supabase/admin.ts`: Created server-only administrative Supabase client using `SUPABASE_SERVICE_ROLE_KEY` [T-5.2].
+- `app/api/cron/rotate-cycle/route.ts`: Built Vercel Cron fallback route supporting GET/POST, protected by shared `CRON_SECRET` authorization, invoking `rotate_cycle()` [T-5.2].
+- `vercel.json`: Added Vercel Cron configuration calling `/api/cron/rotate-cycle` at `0 0 * * 1` [T-5.2].
+- `tests/cycle-engine.test.ts`: Comprehensive test suite in Vitest and PostgreSQL covering [T-5.3, T-5.4, T-5.5, T-5.6]:
+  - Finalization with 0, 1, 3, and 8 qualifying ideas, proving rewards are capped strictly at `reward_slots` (3) [T-5.3].
+  - Deterministic tie-breaking on identical vote counts broken by `qualified_at asc` (earlier momentum wins per `BR-046`) [T-5.4].
+  - Clean zero-qualifier finalization with 0 rewards created and public note _"No idea reached the 50-vote threshold this cycle."_ per `BR-048` [T-5.5].
+  - Verification that attempting to insert a second active cycle fails on partial unique index `cycles_single_active_idx` [T-5.6].
+
+**Decisions made**
+
+- Tested both PostgreSQL stored procedure constraints directly against the live database and established automated regression tests in Vitest (74/74 tests green).
+- Configured cron endpoint with dual header support (`Authorization: Bearer <CRON_SECRET>` and `x-cron-secret`) for seamless compatibility with Vercel Cron and manual triggers.
+
+**Next session starts with**
+
+- Phase 5 Batch 2 (T-5.7 to T-5.11): Rotation retry, `/cycles/[n]` archive, winner modal, profile rewards section.
 
 ### 2026-09-21 — Session 08 (Phase 4 Batch 4: Profile, Landing Page, Rules & Search — Phase 4 Complete!)
 
