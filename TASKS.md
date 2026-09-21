@@ -234,9 +234,9 @@ _Goal: the operator can see and fix what goes wrong. Estimated 5 days._
 - [x] **T-6.9** `recount_required` cycle state and its public banner
 - [x] **T-6.10** Ring-detection job: pairwise Jaccard overlap → review queue, **no automatic punishment**
 - [x] **T-6.11** `/admin/clusters` — flagged clusters with the signals that triggered them
-- [ ] **T-6.12** Edge rate limiting (Vercel KV or Upstash) on the limits in `RULES.md` BR-032
-- [ ] **T-6.13** `ip_hash` with a daily rotating salt; verify no raw IP is ever persisted
-- [ ] **T-6.14** 180-day retention job purging old `abuse_events`
+- [x] **T-6.12** Edge rate limiting (Vercel KV or Upstash) on the limits in `RULES.md` BR-032
+- [x] **T-6.13** `ip_hash` with a daily rotating salt; verify no raw IP is ever persisted
+- [x] **T-6.14** 180-day retention job purging old `abuse_events`
 
 **Exit gate:** `US-10` passes; a non-admin receives a 404 on every `/admin` route; every admin mutation appears in `admin_actions`.
 

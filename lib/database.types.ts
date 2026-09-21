@@ -733,6 +733,7 @@ export type Database = {
         Returns: Json;
       };
       open_next_cycle: { Args: never; Returns: string };
+      purge_old_abuse_events: { Args: never; Returns: Json };
       retract_vote: { Args: { p_idea_id: string }; Returns: Json };
       rotate_cycle: { Args: never; Returns: Json };
       voter_is_verified: { Args: { uid: string }; Returns: boolean };

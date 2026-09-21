@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/rotate-cycle",
       "schedule": "0 0 * * 1"
+    },
+    {
+      "path": "/api/cron/purge-abuse",
+      "schedule": "0 3 * * *"
     }
   ]
 }
