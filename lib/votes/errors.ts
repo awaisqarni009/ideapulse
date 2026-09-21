@@ -15,6 +15,8 @@ export type VoteErrorCode =
   | 'IP_IDEA_NOT_FOUND'
   | 'IP_NO_ACTIVE_CYCLE'
   | 'IP_RATE_LIMITED'
+  | 'IP_RETRACTION_WINDOW_CLOSED'
+  | 'IP_VOTE_NOT_FOUND'
   | 'UNKNOWN';
 
 export interface VoteError {
@@ -129,6 +131,22 @@ export function parseVoteError(error: any): VoteError {
     return {
       code: 'IP_RATE_LIMITED',
       message: 'Too many votes in a short window. Please wait a moment.',
+    };
+  }
+
+  // 10. Retraction Window Closed (RULES.md BR-014)
+  if (rawMessage.includes('IP_RETRACTION_WINDOW_CLOSED')) {
+    return {
+      code: 'IP_RETRACTION_WINDOW_CLOSED',
+      message: 'Votes can only be taken back within 10 minutes.',
+    };
+  }
+
+  // 11. Vote Not Found for Retraction
+  if (rawMessage.includes('IP_VOTE_NOT_FOUND')) {
+    return {
+      code: 'IP_VOTE_NOT_FOUND',
+      message: "There's no vote here to take back.",
     };
   }
 

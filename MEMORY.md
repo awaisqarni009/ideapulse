@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------ |
-| **Current phase**    | Phase 3 — Core loop: submit & vote                                                         |
-| **Phase progress**   | 13 / 25 tasks (Submission 8/8, Voting 5/12)                                                |
-| **Overall progress** | 80 / 178 tasks                                                                             |
-| **Status**           | Phase 3 Batch 3 Complete (T-3.9–T-3.13); All 43 Vitest and 14 Playwright E2E tests passing |
-| **Blocked on**       | None. Next batch queued: Voting interactions T-3.14 to T-3.18                              |
-| **Next action**      | Implement Phase 3 Batch 4 (T-3.14–T-3.18): vote animation, QuotaHUD, retraction affordance |
-| **Target launch**    | TBD                                                                                        |
-| **Active branch**    | `main`                                                                                     |
-| **Last deploy**      | —                                                                                          |
+| Field                | Value                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 3 — Core loop: submit & vote                                                          |
+| **Phase progress**   | 19 / 25 tasks (Submission 8/8, Voting 11/12)                                                |
+| **Overall progress** | 86 / 178 tasks                                                                              |
+| **Status**           | Phase 3 Batch 4 Complete (T-3.14–T-3.18, T-3.20); All 45 Vitest & 15 Playwright passing     |
+| **Blocked on**       | None. Next batch queued: Phase 3 Batch 5 (T-3.19, T-3.21 to T-3.25)                         |
+| **Next action**      | Implement Phase 3 Batch 5: IdeaCard, QualificationBar, vote divergence display, auth replay |
+| **Target launch**    | TBD                                                                                         |
+| **Active branch**    | `main`                                                                                      |
+| **Last deploy**      | —                                                                                           |
 
 ### 1.1 Phase board
 
@@ -39,7 +39,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
-| 3     | Core loop           | 🟡 In progress | 13/25 | ❌            |
+| 3     | Core loop           | 🟡 In progress | 19/25 | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
@@ -325,6 +325,34 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 **Decisions made**
 
 - Wrapped root layout with `UserProvider` initialized with server-fetched user session and profile row to avoid hydration flicker.
+
+### 2026-09-21 — Session 07 (Phase 3 Batch 4: Vote Animations, QuotaHUD & Retraction)
+
+**Phase:** Phase 3 — Core loop: submit & vote
+**Duration:** ~1h
+**Tasks completed:** T-3.14, T-3.15, T-3.16, T-3.17, T-3.18, T-3.20
+**Tasks started:** T-3.19, T-3.21
+
+**What shipped**
+
+- `app/components/votes/motion.ts`: Framer Motion variants implementing signature 640ms vote sequence (`voteRing`, `countRoll`, `iconPop`, `rejectionShake`) with full `prefers-reduced-motion` support [T-3.14, T-3.15, T-3.20].
+- `app/actions/votes.ts`: `retractVoteAction(ideaId)` Server Action calling `retract_vote` RPC, validating 10-minute window, and maintaining quota slot consumption per `RULES.md` BR-014 and `ADR-004` [T-3.18].
+- `app/actions/votes.ts`: `getVoteQuotaAction()` Server Action retrieving rolling 24-hour quota, remaining count, and `nextSlotAt` timestamp [T-3.17].
+- `app/components/votes/quota-hud.tsx`: Header `<QuotaHUD />` pill (L3 glass, 36px, radius-full) with 5 pips, cyan glow on active votes, pip extinguish animation on vote, warning styling at 1 left, and 30-second client re-derivation without clock drift [T-3.16, T-3.17].
+- `app/components/votes/vote-button.tsx`: Added retraction countdown affordance `×` during the 10-minute window, toast feedback, and event synchronization with header `<QuotaHUD />` [T-3.14, T-3.18].
+- `app/components/ui/header.tsx`: Global 64px header mounted in `app/layout.tsx` featuring IdeaPulse brand, feed navigation, QuotaHUD, and auth controls [T-3.16].
+- `tests/votes.test.ts`: Added unit tests for retraction error codes and motion variants (now 13 tests in suite, 45 total across all suites).
+- `e2e/voting.spec.ts`: Playwright suite covering QuotaHUD rendering with 5 pips, vote cast with count roll, and 10-minute retraction with BR-014 notice (15 total E2E tests passing).
+
+**Decisions made**
+
+- Header QuotaHUD communicates with page-level VoteButtons via custom `ideapulse:vote-update` window events for instant zero-latency pip extinction and count updates without full page reloads.
+
+**Next session starts with**
+
+- Phase 3 Batch 5 (T-3.19, T-3.21 to T-3.25): Anonymous vote auth modal replay, `<IdeaCard />`, full idea detail view `/idea/[slug]` refinements, `<QualificationBar />`, and vote divergence display.
+
+---
 
 ### 2026-09-21 — Session 06 (Phase 3 Batch 3: Voting Core & VoteButton)
 

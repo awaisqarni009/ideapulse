@@ -76,6 +76,16 @@ describe('Vote Error Mapper [T-3.10, RULES.md §7]', () => {
     expect(rateLimit.message).toBe('Too many votes in a short window. Please wait a moment.');
   });
 
+  it('maps retraction window closed and vote not found (BR-014) [T-3.18]', () => {
+    const closed = parseVoteError({ message: 'IP_RETRACTION_WINDOW_CLOSED' });
+    expect(closed.code).toBe('IP_RETRACTION_WINDOW_CLOSED');
+    expect(closed.message).toBe('Votes can only be taken back within 10 minutes.');
+
+    const notFound = parseVoteError({ message: 'IP_VOTE_NOT_FOUND' });
+    expect(notFound.code).toBe('IP_VOTE_NOT_FOUND');
+    expect(notFound.message).toBe("There's no vote here to take back.");
+  });
+
   it('provides safe fallback for unexpected errors', () => {
     const unknown = parseVoteError({ message: 'Internal server connection timeout' });
     expect(unknown.code).toBe('UNKNOWN');
@@ -99,5 +109,29 @@ describe('formatQuotaDuration', () => {
     expect(formatQuotaDuration(past)).toBe('shortly');
     expect(formatQuotaDuration(undefined)).toBe('in 24 hours');
     expect(formatQuotaDuration('invalid-date')).toBe('in 24 hours');
+  });
+});
+
+describe('Vote Motion Variants [DESIGN.md §6.3, TASKS.md T-3.14, T-3.20]', () => {
+  it('defines signature vote sequence and reduced motion variants', async () => {
+    const { voteRing, countRoll, iconPop, rejectionShake } =
+      await import('@/app/components/votes/motion');
+
+    expect(voteRing).toBeDefined();
+    expect(voteRing.initial).toEqual({ scale: 0.8, opacity: 0 });
+    expect(voteRing.animate).toBeDefined();
+
+    expect(typeof countRoll.initial).toBe('function');
+    // Reduced motion returns y: 0, non-reduced returns y: 14
+    expect((countRoll.initial as any)(true)).toEqual({ y: 0, opacity: 1 });
+    expect((countRoll.initial as any)(false)).toEqual({ y: 14, opacity: 0 });
+
+    expect(typeof iconPop.pop).toBe('function');
+    expect((iconPop.pop as any)(true)).toEqual({ scale: 1 });
+    expect((iconPop.pop as any)(false).scale).toEqual([1, 1.18, 1]);
+
+    expect(typeof rejectionShake.shake).toBe('function');
+    expect((rejectionShake.shake as any)(true)).toEqual({ x: 0 });
+    expect((rejectionShake.shake as any)(false).x).toEqual([0, -6, 5, -3, 0]);
   });
 });

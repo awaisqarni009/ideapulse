@@ -1,6 +1,29 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Voting Core (T-3.9 – T-3.13)', () => {
+test.describe('Voting Core & Animations (T-3.9 – T-3.18)', () => {
+  test('header displays QuotaHUD for authenticated user with 5 pips [T-3.16, T-3.17]', async ({
+    page,
+  }) => {
+    // 1. Sign in as qarnia788
+    await page.goto('/login?next=%2Fsubmit');
+    await page.fill('#email', 'qarnia788@gmail.com');
+    await page.fill('#password', 'Password123!');
+    await page.getByRole('button', { name: /sign in/i }).click();
+
+    await expect(page).toHaveURL(/\/submit/, { timeout: 15000 });
+
+    // 2. Locate QuotaHUD in the sticky header
+    const quotaHud = page.locator('header [role="status"]');
+    await expect(quotaHud).toBeVisible({ timeout: 10000 });
+
+    // 3. Verify QuotaHUD contains 5 pips
+    const pips = quotaHud.locator('span.rounded-full');
+    await expect(pips).toHaveCount(5);
+
+    // 4. Verify quota text contains "left"
+    await expect(quotaHud).toContainText(/left/i);
+  });
+
   test('own idea displays disabled lock state per BR-011 and DESIGN.md §7.2 [T-3.11, T-3.25]', async ({
     page,
   }) => {
@@ -44,16 +67,16 @@ test.describe('Voting Core (T-3.9 – T-3.13)', () => {
     );
   });
 
-  test('eligible non-author user can cast vote with optimistic transition [T-3.9, T-3.11, T-3.12]', async ({
+  test('vote cast and 10-minute retraction flow with BR-014 notice [T-3.9, T-3.14, T-3.18]', async ({
     page,
   }) => {
-    // 1. Sign in as qarnia788
-    await page.goto('/login?next=%2Fidea%2Foffline-first-sync-field-research-teams-a1b2c3');
+    // 1. Sign in as qarnia788 and go to unvoted idea
+    await page.goto('/login?next=%2Fidea%2Flocally-cached-llm-inference-consumer-gpus-b2c3d4');
     await page.fill('#email', 'qarnia788@gmail.com');
     await page.fill('#password', 'Password123!');
     await page.getByRole('button', { name: /sign in/i }).click();
 
-    await expect(page).toHaveURL(/\/idea\/offline-first-sync-field-research-teams-a1b2c3/, {
+    await expect(page).toHaveURL(/\/idea\/locally-cached-llm-inference-consumer-gpus-b2c3d4/, {
       timeout: 15000,
     });
 
@@ -61,19 +84,30 @@ test.describe('Voting Core (T-3.9 – T-3.13)', () => {
     const voteBtn = page.getByRole('button', { name: /vote on idea/i });
     await expect(voteBtn).toBeVisible();
 
-    const titleAttr = await voteBtn.getAttribute('title');
+    // Get initial votes from aria-label
+    const initialAria = await voteBtn.getAttribute('aria-label');
+    const initialVotes = parseInt(initialAria?.match(/\d+/)?.[0] || '0', 10);
 
-    // If not already voted, test voting click and optimistic update
-    if (titleAttr !== 'You voted for this.') {
-      await expect(voteBtn).not.toBeDisabled();
-      await voteBtn.click();
+    // 3. Cast vote
+    await voteBtn.click();
 
-      // Should transition to voted state
-      await expect(voteBtn).toHaveAttribute('title', 'You voted for this.', { timeout: 10000 });
-      await expect(voteBtn).toBeDisabled();
-    } else {
-      // Already voted in prior run, verify voted state is preserved
-      await expect(voteBtn).toHaveAttribute('title', 'You voted for this.');
-    }
+    // 4. Button enters retractable / voted state within 10m window [T-3.18]
+    const retractAffordance = page.getByRole('button', { name: /retract vote/i });
+    await expect(retractAffordance).toBeVisible({ timeout: 10000 });
+
+    // Verify count incremented
+    await expect(voteBtn).toContainText(String(initialVotes + 1));
+
+    // 5. Retract vote inside 10-minute window
+    await retractAffordance.click();
+
+    // 6. Verify toast notification per BR-014
+    await expect(page.getByText(/quota slot remains consumed per BR-014/i)).toBeVisible({
+      timeout: 10000,
+    });
+
+    // 7. Button reverts back to unvoted state and count rolls back
+    await expect(retractAffordance).not.toBeVisible();
+    await expect(voteBtn).toContainText(String(initialVotes));
   });
 });

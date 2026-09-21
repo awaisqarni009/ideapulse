@@ -150,13 +150,13 @@ _Goal: the product's reason to exist. Estimated 8 days._
 - [x] **T-3.11** `[!]` `<VoteButton />` with all 8 states from `DESIGN.md` §7.2
 - [x] **T-3.12** `[!]` Optimistic update via `useOptimistic`, reconciled against the server response
 - [x] **T-3.13** `[!]` Rollback on rejection with the specific inline reason — never a generic error
-- [ ] **T-3.14** The vote animation sequence (`DESIGN.md` §6.3): press, ring, count roll, icon swap, pip extinguish
-- [ ] **T-3.15** Rejection shake animation
-- [ ] **T-3.16** `<QuotaHUD />` in the header: 5 pips, remaining count, next-slot countdown
-- [ ] **T-3.17** Quota state from a server-provided `nextSlotAt`, re-derived every 30 s — never an accumulating client clock
-- [ ] **T-3.18** Retraction affordance during the 10-minute window, with the remaining time in the tooltip
+- [x] **T-3.14** The vote animation sequence (`DESIGN.md` §6.3): press, ring, count roll, icon swap, pip extinguish
+- [x] **T-3.15** Rejection shake animation
+- [x] **T-3.16** `<QuotaHUD />` in the header: 5 pips, remaining count, next-slot countdown
+- [x] **T-3.17** Quota state from a server-provided `nextSlotAt`, re-derived every 30 s — never an accumulating client clock
+- [x] **T-3.18** Retraction affordance during the 10-minute window, with the remaining time in the tooltip
 - [ ] **T-3.19** Anonymous vote → sign-in modal → replay the intended vote after auth (`AC-06.2`)
-- [ ] **T-3.20** `prefers-reduced-motion` variant: instant state change, feedback preserved
+- [x] **T-3.20** `prefers-reduced-motion` variant: instant state change, feedback preserved
 
 ### Idea display
 

@@ -7,6 +7,7 @@ import { getCurrentUser } from '@/lib/auth/user';
 import { UnconfirmedBanner } from '@/app/components/auth/unconfirmed-banner';
 
 import { ToastProvider } from '@/app/components/ui/toast';
+import { Header } from '@/app/components/ui/header';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen bg-canvas text-ink-1 antialiased selection:bg-indigo/30 selection:text-white">
         <UserProvider initialUser={user} initialProfile={profile}>
           <ToastProvider>
+            <Header />
             <UnconfirmedBanner />
             {children}
           </ToastProvider>
