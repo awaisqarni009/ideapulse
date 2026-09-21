@@ -6,6 +6,7 @@ import { renderRestrictedMarkdown } from '@/lib/markdown';
 import { CATEGORY_LABELS, type Category } from '@/lib/constants';
 import { IdeaActions } from './idea-actions';
 import { VoteButton } from '@/app/components/votes/vote-button';
+import { QualificationBar } from '@/app/components/ideas/qualification-bar';
 import { ArrowLeft, CheckCircle2, ShieldAlert, Sparkles, User } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -104,10 +105,6 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
 
   const categoryLabel = CATEGORY_LABELS[idea.category as Category] || idea.category;
   const voteThreshold = cycle?.vote_threshold || 50;
-  const progressPercent = Math.min(
-    100,
-    Math.round((idea.verified_vote_count / voteThreshold) * 100),
-  );
 
   return (
     <main className="min-h-[calc(100vh-80px)] py-12">
@@ -215,33 +212,30 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
             &ldquo;{idea.summary}&rdquo;
           </div>
 
-          {/* Qualification Progress Card per DESIGN.md §7.5 */}
+          {/* Qualification Progress Card per DESIGN.md §7.5 and TASKS.md [T-3.23, T-3.24] */}
           <div className="my-8 rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
-            <div className="mb-2 flex items-center justify-between text-xs font-medium">
-              <span className="text-[var(--text-secondary)]">
-                <strong className="text-[var(--cyan-bright)]">{idea.verified_vote_count}</strong> /{' '}
-                {voteThreshold} verified votes to qualify
-              </span>
-              <span className="text-[var(--text-tertiary)]">
-                {idea.verified_vote_count >= voteThreshold
-                  ? 'Threshold Met'
-                  : `${voteThreshold - idea.verified_vote_count} votes to go`}
-              </span>
-            </div>
-            {/* Progress track */}
-            <div
-              role="progressbar"
-              aria-valuenow={idea.verified_vote_count}
-              aria-valuemin={0}
-              aria-valuemax={voteThreshold}
-              aria-label="Verified votes toward qualification"
-              className="h-2 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]"
-            >
-              <div
-                style={{ width: `${progressPercent}%` }}
-                className="h-full rounded-full bg-gradient-to-r from-[var(--indigo)] to-[var(--violet)] transition-all duration-500"
-              />
-            </div>
+            <QualificationBar verifiedVotes={idea.verified_vote_count} threshold={voteThreshold} />
+
+            {/* Verified vs raw vote divergence display (>10% gap per RULES.md BR-033, T-3.24) */}
+            {idea.vote_count > 0 &&
+              (idea.vote_count - idea.verified_vote_count) / idea.vote_count > 0.1 && (
+                <div
+                  role="note"
+                  className="mt-3.5 flex items-start gap-2.5 rounded-[var(--radius-xs)] border border-[rgba(234,179,8,0.25)] bg-[rgba(234,179,8,0.06)] p-3 text-xs text-[var(--accent-warning)]"
+                >
+                  <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent-warning)]" />
+                  <div>
+                    <p className="font-semibold">
+                      {idea.vote_count} votes · {idea.verified_vote_count} verified toward the{' '}
+                      {voteThreshold} needed.
+                    </p>
+                    <p className="mt-0.5 text-[var(--text-tertiary)]">
+                      Unverified votes are from accounts under 24 hours old or unconfirmed emails
+                      and do not count toward cycle qualification (RULES.md BR-033).
+                    </p>
+                  </div>
+                </div>
+              )}
           </div>
 
           {/* Body Section */}

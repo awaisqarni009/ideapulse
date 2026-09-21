@@ -155,16 +155,16 @@ _Goal: the product's reason to exist. Estimated 8 days._
 - [x] **T-3.16** `<QuotaHUD />` in the header: 5 pips, remaining count, next-slot countdown
 - [x] **T-3.17** Quota state from a server-provided `nextSlotAt`, re-derived every 30 s — never an accumulating client clock
 - [x] **T-3.18** Retraction affordance during the 10-minute window, with the remaining time in the tooltip
-- [ ] **T-3.19** Anonymous vote → sign-in modal → replay the intended vote after auth (`AC-06.2`)
+- [x] **T-3.19** Anonymous vote → sign-in modal → replay the intended vote after auth (`AC-06.2`)
 - [x] **T-3.20** `prefers-reduced-motion` variant: instant state change, feedback preserved
 
 ### Idea display
 
-- [ ] **T-3.21** `<IdeaCard />` per `DESIGN.md` §7.3, including the qualified variant
-- [ ] **T-3.22** `/idea/[slug]` — full body, author card, vote control, qualification progress bar
-- [ ] **T-3.23** `<QualificationBar />` per `DESIGN.md` §7.5 with correct ARIA
-- [ ] **T-3.24** Verified vs raw vote display when they diverge by more than 10% (`RULES.md` BR-033)
-- [ ] **T-3.25** Author view: locked vote button with the lock glyph and tooltip
+- [x] **T-3.21** `<IdeaCard />` per `DESIGN.md` §7.3, including the qualified variant
+- [x] **T-3.22** `/idea/[slug]` — full body, author card, vote control, qualification progress bar
+- [x] **T-3.23** `<QualificationBar />` per `DESIGN.md` §7.5 with correct ARIA
+- [x] **T-3.24** Verified vs raw vote display when they diverge by more than 10% (`RULES.md` BR-033)
+- [x] **T-3.25** Author view: locked vote button with the lock glyph and tooltip
 
 **Exit gate:** all of `US-03`, `US-04`, `US-05` pass. Manual abuse probe — self-vote, double-vote, 6th vote, second submission — all rejected with correct, specific messages.
 

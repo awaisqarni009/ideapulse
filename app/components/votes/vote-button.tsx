@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { castVoteAction, retractVoteAction } from '@/app/actions/votes';
 import { voteRing, countRoll, iconPop, rejectionShake } from './motion';
 import { useToast } from '@/app/components/ui/toast';
+import { AuthModal } from '@/app/components/auth/auth-modal';
 import { Zap, Lock, Loader2, X, AlertCircle } from 'lucide-react';
 
 export type VoteButtonState =
@@ -57,6 +58,7 @@ export function VoteButton({
   const [showRing, setShowRing] = useState(false);
   const [isPopping, setIsPopping] = useState(false);
   const [retractionCountdown, setRetractionCountdown] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Optimistic UI update [T-3.12]
   const [optimisticState, setOptimisticState] = useOptimistic(
@@ -127,9 +129,9 @@ export function VoteButton({
     e.stopPropagation();
     e.preventDefault();
 
-    // 1. If anonymous, redirect to login with return path [T-3.19, AC-06.2]
+    // 1. If anonymous, open sign-in modal to replay vote [T-3.19, AC-06.2]
     if (isAnonymous) {
-      router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+      setShowAuthModal(true);
       return;
     }
 
@@ -350,6 +352,19 @@ export function VoteButton({
           <AlertCircle className="h-3 w-3 shrink-0" />
           <span>{inlineError}</span>
         </div>
+      )}
+
+      {/* Anonymous Auth Modal for Vote Capture & Replay [T-3.19, AC-06.2] */}
+      {showAuthModal && (
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          pendingIdeaId={ideaId}
+          onVoteReplayed={() => {
+            setHasVoted(true);
+            setVoteCount((prev) => prev + 1);
+          }}
+        />
       )}
     </motion.div>
   );

@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 3 — Core loop: submit & vote                                                          |
-| **Phase progress**   | 19 / 25 tasks (Submission 8/8, Voting 11/12)                                                |
-| **Overall progress** | 86 / 178 tasks                                                                              |
-| **Status**           | Phase 3 Batch 4 Complete (T-3.14–T-3.18, T-3.20); All 45 Vitest & 15 Playwright passing     |
-| **Blocked on**       | None. Next batch queued: Phase 3 Batch 5 (T-3.19, T-3.21 to T-3.25)                         |
-| **Next action**      | Implement Phase 3 Batch 5: IdeaCard, QualificationBar, vote divergence display, auth replay |
-| **Target launch**    | TBD                                                                                         |
-| **Active branch**    | `main`                                                                                      |
-| **Last deploy**      | —                                                                                           |
+| Field                | Value                                                                            |
+| -------------------- | -------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 3 — Core loop: submit & vote (Complete!)                                   |
+| **Phase progress**   | 25 / 25 tasks (100% complete)                                                    |
+| **Overall progress** | 92 / 178 tasks                                                                   |
+| **Status**           | Phase 3 Complete! All 25 tasks passed; All 47 Vitest & 16 Playwright E2E passing |
+| **Blocked on**       | Phase 3 Exit Gate Approval before advancing to Phase 4 (Discovery & leaderboard) |
+| **Next action**      | Stop at Phase 3 exit gate. Await user confirmation to proceed to Phase 4         |
+| **Target launch**    | TBD                                                                              |
+| **Active branch**    | `main`                                                                           |
+| **Last deploy**      | —                                                                                |
 
 ### 1.1 Phase board
 
@@ -39,7 +39,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
-| 3     | Core loop           | 🟡 In progress | 19/25 | ❌            |
+| 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
@@ -325,6 +325,33 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 **Decisions made**
 
 - Wrapped root layout with `UserProvider` initialized with server-fetched user session and profile row to avoid hydration flicker.
+
+### 2026-09-21 — Session 08 (Phase 3 Batch 5: IdeaCard, QualificationBar, Auth Replay & Phase 3 Exit Gate)
+
+**Phase:** Phase 3 — Core loop: submit & vote
+**Duration:** ~1h
+**Tasks completed:** T-3.19, T-3.21, T-3.22, T-3.23, T-3.24, T-3.25
+**Phase 3 Exit Gate:** ✅ All acceptance criteria for US-03, US-04, US-05 pass. All abuse probes (self-vote, double-vote, 6th vote quota exceeded, submission cooldown) verified and rejected with exact, non-generic messages.
+
+**What shipped**
+
+- `app/components/auth/auth-modal.tsx`: L4 glass authentication modal triggered on anonymous vote click, capturing and immediately replaying the intended vote upon sign-in [T-3.19, AC-06.2].
+- `app/components/ideas/idea-card.tsx`: L2 glass `<IdeaCard />` per `DESIGN.md` §7.3 with qualified variant, permanent/hover gradient rings, 2-line title clamp, 3-line summary clamp, and nested interactive `<VoteButton />` [T-3.21].
+- `app/components/ideas/qualification-bar.tsx`: `<QualificationBar />` with proper ARIA semantics (`role="progressbar"`, `aria-label="Verified votes toward qualification"`, min/max/valuenow) and gradient color flips at 100% threshold [T-3.23].
+- `app/idea/[slug]/page.tsx`: Integrated `<QualificationBar />` and verified vs raw vote divergence display when gap exceeds 10% per `RULES.md` BR-033 [T-3.22, T-3.24].
+- `app/components/votes/vote-button.tsx`: Integrated `<AuthModal />` for anonymous voters and verified locked author view with tooltip `"You can't vote on your own idea."` [T-3.19, T-3.25].
+- `tests/idea-display.test.ts`: Vitest suite covering qualification thresholds and BR-033 divergence detection (47 total unit tests passing).
+- `e2e/voting.spec.ts`: Playwright suite covering QuotaHUD, self-vote lock, anonymous vote modal popup, qualification ARIA attributes, and 10-minute vote retraction with BR-014 notice (16 total E2E tests passing).
+
+**Decisions made**
+
+- Retained idempotency in E2E tests by clearing test vote rows before test executions while preserving immutable database ledger constraints in production.
+
+**Next session starts with**
+
+- Phase 4 — Discovery & leaderboard (T-4.1 to T-4.4): `/feed` RSC with responsive card grid, cursor pagination on `(created_at, id)`, infinite scroll, and sort controls.
+
+---
 
 ### 2026-09-21 — Session 07 (Phase 3 Batch 4: Vote Animations, QuotaHUD & Retraction)
 
