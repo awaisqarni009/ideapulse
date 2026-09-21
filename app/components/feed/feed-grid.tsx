@@ -13,12 +13,13 @@ interface FeedGridProps {
   sort: FeedSortOption;
   category?: string | null;
   tag?: string | null;
+  search?: string | null;
   currentUserId?: string | null;
   cycleNumber?: number;
 }
 
 /**
- * FeedGrid Component per DESIGN.md §5.3, §7.3 and TASKS.md [T-4.1, T-4.3, T-4.7]
+ * FeedGrid Component per DESIGN.md §5.3, §7.3 and TASKS.md [T-4.1, T-4.3, T-4.7, T-4.18]
  * - Responsive grid: 1 col (sm), 2 cols (md), 3 cols (xl)
  * - Infinite scroll via IntersectionObserver
  * - Accessible "Load more" fallback for keyboard users
@@ -30,6 +31,7 @@ export function FeedGrid({
   sort,
   category,
   tag,
+  search,
   currentUserId,
   cycleNumber = 1,
 }: FeedGridProps) {
@@ -38,7 +40,7 @@ export function FeedGrid({
   const [isLoading, setIsLoading] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Reset when sort, category, or tag changes
+  // Reset when sort, category, tag, or search changes
   useEffect(() => {
     setIdeas(initialIdeas);
     setNextCursor(initialCursor);
@@ -53,6 +55,7 @@ export function FeedGrid({
         sort,
         category,
         tag,
+        search,
         cursor: nextCursor,
         limit: 12,
       });

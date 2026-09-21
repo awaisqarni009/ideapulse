@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 4 — Discovery & leaderboard                                                                             |
-| **Phase progress**   | 14 / 18 tasks (T-4.1 to T-4.14 complete)                                                                      |
-| **Overall progress** | 106 / 178 tasks                                                                                               |
-| **Status**           | Phase 4 Batch 3 Complete! 63 Vitest unit tests passing (100% green). E2E tests deferred per user instruction. |
-| **Blocked on**       | None                                                                                                          |
-| **Next action**      | Phase 4 Batch 4 (T-4.15 to T-4.18): Profile page `/u/[username]`, landing page hero & top 3, `/rules` page    |
-| **Target launch**    | TBD                                                                                                           |
-| **Active branch**    | `main`                                                                                                        |
-| **Last deploy**      | —                                                                                                             |
+| Field                | Value                                                                                                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 4 — Discovery & leaderboard (Complete!)                                                         |
+| **Phase progress**   | 18 / 18 tasks (T-4.1 to T-4.18 complete)                                                              |
+| **Overall progress** | 110 / 178 tasks                                                                                       |
+| **Status**           | Phase 4 Complete! 67 Vitest unit tests passing (100% green). E2E tests deferred per user instruction. |
+| **Blocked on**       | Phase 4 Exit Gate Approval to begin Phase 5                                                           |
+| **Next action**      | Obtain Phase 4 exit gate approval, then begin Phase 5 (Cycles & Rewards: T-5.1 to T-5.6)              |
+| **Target launch**    | TBD                                                                                                   |
+| **Active branch**    | `main`                                                                                                |
+| **Last deploy**      | —                                                                                                     |
 
 ### 1.1 Phase board
 
@@ -40,7 +40,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
 | 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
-| 4     | Discovery           | 🟡 In progress | 14/18 | ❌            |
+| 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
 | 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
@@ -436,6 +436,34 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 - Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
 
 ---
+
+### 2026-09-21 — Session 08 (Phase 4 Batch 4: Profile, Landing Page, Rules & Search — Phase 4 Complete!)
+
+**Phase:** Phase 4 — Discovery & leaderboard
+**Duration:** ~45m
+**Tasks completed:** T-4.15, T-4.16, T-4.17, T-4.18 (Phase 4 100% complete!)
+
+**What shipped**
+
+- `supabase/migrations/138_feed_search.sql`: Extended `get_feed_ideas` RPC to accept `p_search text default null` matching `title` and `summary` with `ilike` [T-4.18].
+- `lib/feed.ts` & `app/actions/feed.ts`: Added `search?: string | null` to params and RPC invocation payload [T-4.18].
+- `app/components/feed/search-bar.tsx`: Search input with clear affordance (`×`) and live URL syncing [T-4.18].
+- `app/components/feed/feed-grid.tsx`: Integrated search query propagation into client feed grid and infinite scroll [T-4.18].
+- `app/feed/page.tsx`: Integrated search bar into the feed header alongside sort tabs and filter chips [T-4.18].
+- `app/components/profile/profile-header.tsx`: Profile visual header with avatar, bio, username, member since date, and stats counters (authored ideas, votes received, cycles won) [T-4.15].
+- `app/u/[username]/page.tsx`: Public profile RSC fetching user identity, published proposals, owner vs visitor contextual empty states per `DESIGN.md` §7.11, and strict privacy invariant (never exposes what proposals the user voted on per ADR-006 / BR-003) [T-4.15].
+- `app/components/landing/hero-showcase.tsx` & `app/page.tsx`: Premium dark glass landing page featuring staggered Framer Motion entrance, live active cycle top 3 showcase, 3-line rules summary, and primary CTA [T-4.16].
+- `app/components/rules/rules-search.tsx` & `app/rules/page.tsx`: Protocol rules specification page generated directly from `RULES.md` with semantic anchor IDs (`id="BR-001"` through `id="BR-040"`), enforcement badges, and error code reference table for deep-linking [T-4.17].
+- `tests/profile.test.ts` & `tests/search.test.ts`: Added test suites covering profile aggregation, vote ledger query prohibition, and search parameter normalization (67/67 Vitest tests passing).
+
+**Decisions made**
+
+- Retained database-level `ilike` search in `get_feed_ideas` migration for fast keyword searching on both title and summary without external dependencies.
+- Structured public profile page to strictly never query `votes` by user id, reinforcing ADR-006 and BR-003 invariants.
+
+**Next session starts with**
+
+- Obtain Phase 4 Exit Gate Approval from user, then begin Phase 5 (Cycles & Rewards: T-5.1 through T-5.6).
 
 ### 2026-09-21 — Session 07 (Phase 4 Batch 3: Realtime Motion & Cycle Countdown)
 

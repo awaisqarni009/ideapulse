@@ -188,10 +188,10 @@ _Goal: users can find ideas and follow the race. Estimated 6 days._
 - [x] **T-4.12** `[!]` Framer `layout` rank reorder with spring `rank` + the cyan flash for rows that moved up
 - [x] **T-4.13** Verify realtime is **not** enabled on `votes` — the ledger must never be published
 - [x] **T-4.14** Cycle countdown in the header, local time with the UTC offset
-- [ ] **T-4.15** `/u/[username]` profile page: authored ideas, votes received, cycles won
-- [ ] **T-4.16** Landing page: hero, live top 3, the rules stated in three lines, a single CTA
-- [ ] **T-4.17** `/rules` page generated from `RULES.md`, with anchor IDs matching every `BR-###` so errors can deep-link
-- [ ] **T-4.18** Full-text search on title + summary (deferrable to post-launch)
+- [x] **T-4.15** `/u/[username]` profile page: authored ideas, votes received, cycles won
+- [x] **T-4.16** Landing page: hero, live top 3, the rules stated in three lines, a single CTA
+- [x] **T-4.17** `/rules` page generated from `RULES.md`, with anchor IDs matching every `BR-###` so errors can deep-link
+- [x] **T-4.18** Full-text search on title + summary (deferrable to post-launch)
 
 **Exit gate:** `US-06` and `US-07` pass. Two browsers open on `/leaderboard`: a vote in one animates the rank change in the other within 2 seconds.
 

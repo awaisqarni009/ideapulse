@@ -22,7 +22,14 @@ export type {
  * Fetches ideas with SQL trending score, cursor pagination, and viewer vote mappings.
  */
 export async function getFeedIdeasAction(params: GetFeedParams = {}): Promise<FeedResult> {
-  const { sort = 'trending', category = null, tag = null, cursor = null, limit = 12 } = params;
+  const {
+    sort = 'trending',
+    category = null,
+    tag = null,
+    search = null,
+    cursor = null,
+    limit = 12,
+  } = params;
 
   const supabase = await createClient();
   const {
@@ -36,12 +43,13 @@ export async function getFeedIdeasAction(params: GetFeedParams = {}): Promise<Fe
     p_sort: sort,
     p_category: category || undefined,
     p_tag: tag || undefined,
+    p_search: search || undefined,
     p_limit: limit,
     p_cursor_created_at: decodedCursor?.createdAt || undefined,
     p_cursor_id: decodedCursor?.id || undefined,
     p_cursor_score: decodedCursor?.score !== undefined ? decodedCursor.score : undefined,
     p_cursor_votes: decodedCursor?.votes !== undefined ? decodedCursor.votes : undefined,
-  });
+  } as any);
 
   if (error || !data) {
     console.error('Failed to fetch feed ideas:', error);

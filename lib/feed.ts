@@ -36,6 +36,7 @@ export interface GetFeedParams {
   sort?: FeedSortOption;
   category?: string | null;
   tag?: string | null;
+  search?: string | null;
   cursor?: string | null;
   limit?: number;
 }
