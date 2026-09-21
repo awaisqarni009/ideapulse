@@ -1,6 +1,7 @@
 import React from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { ManualFinalizeButton } from './finalize-button';
+import { RecountButton } from './recount-button';
 import Link from 'next/link';
 import {
   Activity,
@@ -344,6 +345,11 @@ export default async function AdminCyclesPage() {
                     {c.finalized_at ? new Date(c.finalized_at).toLocaleDateString() : '—'}
                   </div>
                 </div>
+                {c.status === 'recount_required' && (
+                  <div className="mt-3 border-t border-[var(--border-subtle)] pt-2">
+                    <RecountButton cycleId={c.id} cycleNumber={c.cycle_number} />
+                  </div>
+                )}
               </div>
             ))}
           </div>

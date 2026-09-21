@@ -229,11 +229,11 @@ _Goal: the operator can see and fix what goes wrong. Estimated 5 days._
 - [x] **T-6.4** `/admin/cycles` — active cycle stats, qualifying ideas, a manual finalize button with a confirmation
 - [x] **T-6.5** `/admin/reports` — queue, resolve or dismiss, written reason required
 - [x] **T-6.6** `/admin/abuse` — `abuse_events` filtered by kind and actor
-- [ ] **T-6.7** `[!]` Void-vote action writing an `admin_actions` row, with a recount
-- [ ] **T-6.8** `[!]` Suspend-account action de-verifying active-cycle votes (`RULES.md` BR-004)
-- [ ] **T-6.9** `recount_required` cycle state and its public banner
-- [ ] **T-6.10** Ring-detection job: pairwise Jaccard overlap → review queue, **no automatic punishment**
-- [ ] **T-6.11** `/admin/clusters` — flagged clusters with the signals that triggered them
+- [x] **T-6.7** `[!]` Void-vote action writing an `admin_actions` row, with a recount
+- [x] **T-6.8** `[!]` Suspend-account action de-verifying active-cycle votes (`RULES.md` BR-004)
+- [x] **T-6.9** `recount_required` cycle state and its public banner
+- [x] **T-6.10** Ring-detection job: pairwise Jaccard overlap → review queue, **no automatic punishment**
+- [x] **T-6.11** `/admin/clusters` — flagged clusters with the signals that triggered them
 - [ ] **T-6.12** Edge rate limiting (Vercel KV or Upstash) on the limits in `RULES.md` BR-032
 - [ ] **T-6.13** `ip_hash` with a daily rotating salt; verify no raw IP is ever persisted
 - [ ] **T-6.14** 180-day retention job purging old `abuse_events`

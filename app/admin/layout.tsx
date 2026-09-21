@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth/user';
 import Link from 'next/link';
-import { Shield, RefreshCw, Flag, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { Shield, RefreshCw, Flag, AlertTriangle, ArrowLeft, Users } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -24,6 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const navLinks = [
     { href: '/admin/cycles', label: 'Cycles', icon: RefreshCw },
     { href: '/admin/reports', label: 'Reports Queue', icon: Flag },
+    { href: '/admin/clusters', label: 'Ring Clusters', icon: Users },
     { href: '/admin/abuse', label: 'Abuse Audit', icon: AlertTriangle },
   ];
 

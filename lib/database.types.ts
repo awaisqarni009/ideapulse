@@ -479,6 +479,83 @@ export type Database = {
           },
         ];
       };
+      suspicious_clusters: {
+        Row: {
+          account_a: string;
+          account_b: string;
+          created_at: string;
+          cycle_id: string | null;
+          id: string;
+          jaccard_overlap: number;
+          priority: string;
+          review_note: string | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          shared_votes_count: number;
+          signals: Json;
+          status: string;
+        };
+        Insert: {
+          account_a: string;
+          account_b: string;
+          created_at?: string;
+          cycle_id?: string | null;
+          id?: string;
+          jaccard_overlap: number;
+          priority?: string;
+          review_note?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          shared_votes_count?: number;
+          signals?: Json;
+          status?: string;
+        };
+        Update: {
+          account_a?: string;
+          account_b?: string;
+          created_at?: string;
+          cycle_id?: string | null;
+          id?: string;
+          jaccard_overlap?: number;
+          priority?: string;
+          review_note?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          shared_votes_count?: number;
+          signals?: Json;
+          status?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'suspicious_clusters_account_a_fkey';
+            columns: ['account_a'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'suspicious_clusters_account_b_fkey';
+            columns: ['account_b'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'suspicious_clusters_cycle_id_fkey';
+            columns: ['cycle_id'];
+            isOneToOne: false;
+            referencedRelation: 'cycles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'suspicious_clusters_reviewed_by_fkey';
+            columns: ['reviewed_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       votes: {
         Row: {
           created_at: string;
@@ -570,8 +647,21 @@ export type Database = {
     Functions: {
       account_is_writable: { Args: { uid?: string }; Returns: boolean };
       active_cycle_id: { Args: never; Returns: string };
+      admin_recount_cycle: {
+        Args: { p_cycle_id: string; p_reason?: string };
+        Returns: Json;
+      };
+      admin_suspend_account: {
+        Args: { p_duration_days: number; p_reason: string; p_user_id: string };
+        Returns: Json;
+      };
+      admin_void_vote: {
+        Args: { p_reason: string; p_vote_id: string };
+        Returns: Json;
+      };
       cast_vote: { Args: { p_idea_id: string }; Returns: Json };
       check_cycle_health: { Args: never; Returns: Json };
+      detect_voting_rings: { Args: { p_cycle_id?: string }; Returns: Json };
       finalize_cycle: { Args: { p_cycle_id?: string }; Returns: Json };
       get_feed_ideas: {
         Args: {

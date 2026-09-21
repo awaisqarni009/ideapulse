@@ -135,6 +135,25 @@ export default async function CycleArchivePage({ params }: CycleArchivePageProps
           </Link>
         </div>
 
+        {/* Recount Required Banner (BR-047, T-6.9) */}
+        {cycle.status === 'recount_required' && (
+          <div
+            role="alert"
+            className="rounded-2xl border border-[rgba(245,158,11,0.3)] bg-[rgba(245,158,11,0.08)] p-4 text-xs text-[var(--text-secondary)] shadow-lg backdrop-blur-md sm:p-5"
+            style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
+          >
+            <div className="flex items-center gap-2.5 text-sm font-semibold text-[var(--accent-warning)]">
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              <span>Recount Required — Cycle Results Under Review</span>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-[var(--text-secondary)]">
+              One or more votes in this finalized cycle were voided during post-finalization
+              moderation. The standings below reflect the original final results while an
+              administrative review is conducted (RULES.md BR-047).
+            </p>
+          </div>
+        )}
+
         {/* Cycle Header Panel */}
         <div
           className="glass-panel relative overflow-hidden rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-[var(--blur-md)] sm:p-8"
@@ -148,12 +167,14 @@ export default async function CycleArchivePage({ params }: CycleArchivePageProps
                 </span>
                 <span
                   className={`rounded-full border px-2.5 py-0.5 font-mono text-xs font-semibold uppercase ${
-                    isFinalized
-                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-                      : 'border-[var(--border-accent)] bg-[rgba(99,102,241,0.12)] text-[var(--indigo-bright)]'
+                    cycle.status === 'recount_required'
+                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-400'
+                      : isFinalized
+                        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+                        : 'border-[var(--border-accent)] bg-[rgba(99,102,241,0.12)] text-[var(--indigo-bright)]'
                   }`}
                 >
-                  {cycle.status}
+                  {cycle.status === 'recount_required' ? 'Recount Required' : cycle.status}
                 </span>
               </div>
 
