@@ -145,11 +145,11 @@ _Goal: the product's reason to exist. Estimated 8 days._
 
 ### Voting
 
-- [ ] **T-3.9** `[!]` `castVote()` server action calling the `cast_vote` RPC
-- [ ] **T-3.10** `[!]` Error mapper: SQLSTATE + message → typed `VoteError` union
-- [ ] **T-3.11** `[!]` `<VoteButton />` with all 8 states from `DESIGN.md` §7.2
-- [ ] **T-3.12** `[!]` Optimistic update via `useOptimistic`, reconciled against the server response
-- [ ] **T-3.13** `[!]` Rollback on rejection with the specific inline reason — never a generic error
+- [x] **T-3.9** `[!]` `castVote()` server action calling the `cast_vote` RPC
+- [x] **T-3.10** `[!]` Error mapper: SQLSTATE + message → typed `VoteError` union
+- [x] **T-3.11** `[!]` `<VoteButton />` with all 8 states from `DESIGN.md` §7.2
+- [x] **T-3.12** `[!]` Optimistic update via `useOptimistic`, reconciled against the server response
+- [x] **T-3.13** `[!]` Rollback on rejection with the specific inline reason — never a generic error
 - [ ] **T-3.14** The vote animation sequence (`DESIGN.md` §6.3): press, ring, count roll, icon swap, pip extinguish
 - [ ] **T-3.15** Rejection shake animation
 - [ ] **T-3.16** `<QuotaHUD />` in the header: 5 pips, remaining count, next-slot countdown

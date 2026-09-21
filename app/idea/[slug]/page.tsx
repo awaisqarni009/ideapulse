@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/auth/user';
 import { renderRestrictedMarkdown } from '@/lib/markdown';
 import { CATEGORY_LABELS, type Category } from '@/lib/constants';
 import { IdeaActions } from './idea-actions';
+import { VoteButton } from '@/app/components/votes/vote-button';
 import { ArrowLeft, CheckCircle2, ShieldAlert, Sparkles, User } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -83,6 +84,24 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
   const canWithdraw = isAuthor && idea.status === 'published';
   const justCreated = searchParams.created === '1';
 
+  let hasVoted = false;
+  let userVote: { id: string; created_at: string } | null = null;
+
+  if (user) {
+    const { data: vote } = await supabase
+      .from('votes')
+      .select('id, created_at, status')
+      .eq('idea_id', idea.id)
+      .eq('voter_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (vote) {
+      hasVoted = true;
+      userVote = vote;
+    }
+  }
+
   const categoryLabel = CATEGORY_LABELS[idea.category as Category] || idea.category;
   const voteThreshold = cycle?.vote_threshold || 50;
   const progressPercent = Math.min(
@@ -133,15 +152,25 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
               )}
             </div>
 
-            {/* Author Actions (Withdrawal trigger) */}
-            <IdeaActions
-              ideaId={idea.id}
-              voteCount={idea.vote_count}
-              isAuthor={isAuthor}
-              canWithdraw={canWithdraw}
-              justCreated={justCreated}
-              cycleNumber={cycle?.cycle_number || 1}
-            />
+            {/* Voting & Author Actions */}
+            <div className="flex items-center gap-4">
+              <VoteButton
+                ideaId={idea.id}
+                initialVoteCount={idea.vote_count}
+                initialHasVoted={hasVoted}
+                isAuthor={isAuthor}
+                isAnonymous={!user}
+                voteCreatedAt={userVote?.created_at}
+              />
+              <IdeaActions
+                ideaId={idea.id}
+                voteCount={idea.vote_count}
+                isAuthor={isAuthor}
+                canWithdraw={canWithdraw}
+                justCreated={justCreated}
+                cycleNumber={cycle?.cycle_number || 1}
+              />
+            </div>
           </div>
 
           {/* Title */}

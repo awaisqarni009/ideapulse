@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 3 — Core loop: submit & vote                                                                |
-| **Phase progress**   | 8 / 25 tasks (Submission section 100% complete)                                                   |
-| **Overall progress** | 75 / 178 tasks                                                                                    |
-| **Status**           | Phase 3 Batch 2 Complete (T-3.6–T-3.8); All 32 Vitest and 11 Playwright E2E tests passing         |
-| **Blocked on**       | None. Next batch queued: Voting flow T-3.9 to T-3.13                                              |
-| **Next action**      | Obtain batch approval and implement Voting flow: castVote(), VoteButton (8 states), optimistic UI |
-| **Target launch**    | TBD                                                                                               |
-| **Active branch**    | `main`                                                                                            |
-| **Last deploy**      | —                                                                                                 |
+| Field                | Value                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| **Current phase**    | Phase 3 — Core loop: submit & vote                                                         |
+| **Phase progress**   | 13 / 25 tasks (Submission 8/8, Voting 5/12)                                                |
+| **Overall progress** | 80 / 178 tasks                                                                             |
+| **Status**           | Phase 3 Batch 3 Complete (T-3.9–T-3.13); All 43 Vitest and 14 Playwright E2E tests passing |
+| **Blocked on**       | None. Next batch queued: Voting interactions T-3.14 to T-3.18                              |
+| **Next action**      | Implement Phase 3 Batch 4 (T-3.14–T-3.18): vote animation, QuotaHUD, retraction affordance |
+| **Target launch**    | TBD                                                                                        |
+| **Active branch**    | `main`                                                                                     |
+| **Last deploy**      | —                                                                                          |
 
 ### 1.1 Phase board
 
@@ -39,7 +39,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
-| 3     | Core loop           | 🟡 In progress | 8/25  | ❌            |
+| 3     | Core loop           | 🟡 In progress | 13/25 | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
@@ -326,7 +326,33 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - Wrapped root layout with `UserProvider` initialized with server-fetched user session and profile row to avoid hydration flicker.
 
-**Blockers hit**
+### 2026-09-21 — Session 06 (Phase 3 Batch 3: Voting Core & VoteButton)
+
+**Phase:** Phase 3 — Core loop: submit & vote
+**Duration:** ~1h
+**Tasks completed:** T-3.9, T-3.10, T-3.11, T-3.12, T-3.13
+**Tasks started:** T-3.14
+
+**What shipped**
+
+- `app/actions/votes.ts`: `castVoteAction(ideaId)` Server Action calling PostgreSQL `cast_vote` RPC with advisory lock and server-side verification [T-3.9].
+- `lib/votes/errors.ts`: Typed discriminated union error mapper converting PostgreSQL constraints/error codes (`IP_UNAUTHENTICATED`, `IP_ACCOUNT_NOT_WRITABLE`, `IP_SELF_VOTE`, `IP_DUPLICATE_VOTE`, `IP_VOTE_QUOTA`, `IP_IDEA_CLOSED`, `IP_RATE_LIMITED`) into exact user-facing copy per `RULES.md` §7 [T-3.10].
+- `app/components/votes/vote-button.tsx`: 44px pill `<VoteButton />` supporting all 8 states (`available`, `voted`, `retractable`, `quota_exhausted`, `own_idea`, `anonymous`, `pending`, `rejected`) per `DESIGN.md` §7.2 [T-3.11].
+- `app/components/votes/vote-button.tsx`: Immediate optimistic count increment and visual transition via `useOptimistic`, reconciled against server response [T-3.12].
+- `app/components/votes/vote-button.tsx`: Rejection rollback with horizontal shake animation and local inline reason per `DESIGN.md` §6.3 and `RULES.md` §7 [T-3.13].
+- `app/idea/[slug]/page.tsx`: Integrated `<VoteButton />` on idea detail page with active vote detection for signed-in user and disabled lock for idea author [T-3.11, T-3.25].
+- `tests/votes.test.ts`: Vitest unit test suite with 11 tests verifying all SQL error mappings and quota duration calculations.
+- `e2e/voting.spec.ts`: Playwright test suite with 3 tests verifying self-vote lock, anonymous redirect with return path, and eligible optimistic voting flow.
+
+**Decisions made**
+
+- Retained strict zero-generic-error policy for voting failures with local inline alert below the button.
+
+**Next session starts with**
+
+- Phase 3 Batch 4 (T-3.14 to T-3.18): Vote animation sequence (`DESIGN.md` §6.3), `<QuotaHUD />` in header (5 pips, rolling 24h timer, 30s re-derivation), and 10-minute vote retraction affordance.
+
+---
 
 ### 2026-09-21 — Session 05 (Phase 3 Batch 2: Draft Autosave, Details & Withdrawal)
 
