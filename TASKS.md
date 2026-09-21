@@ -179,11 +179,11 @@ _Goal: users can find ideas and follow the race. Estimated 6 days._
 - [x] **T-4.3** Infinite scroll via `IntersectionObserver`, with a visible "Load more" fallback for keyboard users
 - [x] **T-4.4** Sort control: Trending / Newest / Top this cycle, persisted in the URL
 - [x] **T-4.5** Trending score: `verified_votes / pow(hours_since_post + 2, 1.5)`, computed in SQL
-- [ ] **T-4.6** Category and tag filter chips, multi-select, URL-reflected
-- [ ] **T-4.7** Feed empty states: no results, no ideas at all
-- [ ] **T-4.8** Skeleton loaders matching the exact card dimensions so nothing shifts on load
-- [ ] **T-4.9** `[!]` `/leaderboard` — top 20 from `idea_public_stats`, ranked
-- [ ] **T-4.10** `<LeaderboardRow />` per `DESIGN.md` §7.6, in a semantic `<ol>`
+- [x] **T-4.6** Category and tag filter chips, multi-select, URL-reflected
+- [x] **T-4.7** Feed empty states: no results, no ideas at all
+- [x] **T-4.8** Skeleton loaders matching the exact card dimensions so nothing shifts on load
+- [x] **T-4.9** `[!]` `/leaderboard` — top 20 from `idea_public_stats`, ranked
+- [x] **T-4.10** `<LeaderboardRow />` per `DESIGN.md` §7.6, in a semantic `<ol>`
 - [ ] **T-4.11** `[!]` Realtime subscription on `ideas` filtered by `cycle_id`
 - [ ] **T-4.12** `[!]` Framer `layout` rank reorder with spring `rank` + the cyan flash for rows that moved up
 - [ ] **T-4.13** Verify realtime is **not** enabled on `votes` — the ledger must never be published

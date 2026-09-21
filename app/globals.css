@@ -326,6 +326,27 @@ body::before {
   outline-offset: 2px;
 }
 
+/* Shimmer animation for skeleton loaders (DESIGN.md §6.4) */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
 /* Reduced motion reset (DESIGN.md §6.5) */
 @media (prefers-reduced-motion: reduce) {
   *,

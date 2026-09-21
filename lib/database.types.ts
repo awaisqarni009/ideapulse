@@ -569,6 +569,29 @@ export type Database = {
           vote_threshold: number;
         }[];
       };
+      get_leaderboard: {
+        Args: {
+          p_cycle_id?: string;
+          p_limit?: number;
+        };
+        Returns: {
+          author_avatar_url: string | null;
+          author_display_name: string;
+          author_id: string;
+          author_username: string;
+          created_at: string;
+          cycle_id: string;
+          cycle_rank: number;
+          idea_id: string;
+          is_qualified: boolean;
+          slug: string;
+          title: string;
+          verified_vote_count: number;
+          vote_count: number;
+          vote_threshold: number;
+          votes_to_qualify: number;
+        }[];
+      };
       is_admin: { Args: { uid?: string }; Returns: boolean };
       log_abuse: {
         Args: {

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { IdeaCard } from '@/app/components/ideas/idea-card';
 import { getFeedIdeasAction } from '@/app/actions/feed';
 import type { FeedIdeaItem, FeedSortOption } from '@/lib/feed';
+import { FeedEmptyState } from '@/app/components/feed/feed-empty-state';
 import { Loader2, ArrowDown } from 'lucide-react';
 
 interface FeedGridProps {
@@ -11,28 +12,33 @@ interface FeedGridProps {
   initialCursor: string | null;
   sort: FeedSortOption;
   category?: string | null;
+  tag?: string | null;
   currentUserId?: string | null;
+  cycleNumber?: number;
 }
 
 /**
- * FeedGrid Component per DESIGN.md §5.3, §7.3 and TASKS.md [T-4.1, T-4.3]
+ * FeedGrid Component per DESIGN.md §5.3, §7.3 and TASKS.md [T-4.1, T-4.3, T-4.7]
  * - Responsive grid: 1 col (sm), 2 cols (md), 3 cols (xl)
  * - Infinite scroll via IntersectionObserver
  * - Accessible "Load more" fallback for keyboard users
+ * - Clean empty states for no matches or empty cycle
  */
 export function FeedGrid({
   initialIdeas,
   initialCursor,
   sort,
   category,
+  tag,
   currentUserId,
+  cycleNumber = 1,
 }: FeedGridProps) {
   const [ideas, setIdeas] = useState<FeedIdeaItem[]>(initialIdeas);
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor);
   const [isLoading, setIsLoading] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Reset when sort or category changes
+  // Reset when sort, category, or tag changes
   useEffect(() => {
     setIdeas(initialIdeas);
     setNextCursor(initialCursor);
@@ -46,6 +52,7 @@ export function FeedGrid({
       const result = await getFeedIdeasAction({
         sort,
         category,
+        tag,
         cursor: nextCursor,
         limit: 12,
       });
@@ -57,7 +64,7 @@ export function FeedGrid({
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, nextCursor, sort, category]);
+  }, [isLoading, nextCursor, sort, category, tag]);
 
   // Infinite scroll via IntersectionObserver [T-4.3]
   useEffect(() => {
@@ -76,6 +83,13 @@ export function FeedGrid({
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
   }, [nextCursor, isLoading, loadMore]);
+
+  if (ideas.length === 0 && !isLoading) {
+    const hasFilter = Boolean(category || tag);
+    return (
+      <FeedEmptyState type={hasFilter ? 'no_results' : 'no_ideas'} cycleNumber={cycleNumber} />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-10">

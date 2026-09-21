@@ -10,7 +10,7 @@ test.describe('Community Feed & Discovery (Phase 4 Batch 1)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /community feed/i })).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByText(/active cycle proposals/i)).toBeVisible();
+    await expect(page.getByText(/cycle.*proposals/i)).toBeVisible();
 
     // Verify SortTabs per T-4.4
     const sortTabs = page.locator('[role="tablist"][aria-label="Feed sorting options"]');

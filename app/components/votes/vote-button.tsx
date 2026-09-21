@@ -76,8 +76,9 @@ export function VoteButton({
 
   // 10-minute Retraction Window timer (RULES.md BR-014, TASKS.md T-3.18)
   const calculateRemainingRetraction = useCallback(() => {
-    if (!optimisticState.hasVoted || !voteCreatedAt) return null;
-    const createdAtMs = new Date(voteCreatedAt).getTime();
+    if (!optimisticState.hasVoted) return null;
+
+    const createdAtMs = voteCreatedAt ? new Date(voteCreatedAt).getTime() : Date.now();
     if (isNaN(createdAtMs)) return null;
 
     const diffMs = 10 * 60 * 1000 - (Date.now() - createdAtMs);

@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                          |
-| -------------------- | ---------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 4 — Discovery & leaderboard                                                              |
-| **Phase progress**   | 5 / 18 tasks (T-4.1 to T-4.5 complete)                                                         |
-| **Overall progress** | 97 / 178 tasks                                                                                 |
-| **Status**           | Phase 4 Batch 1 Complete! 52 Vitest & 19 Playwright E2E passing (100% green)                   |
-| **Blocked on**       | None                                                                                           |
-| **Next action**      | Phase 4 Batch 2 (T-4.6 to T-4.10): Category & tag chips, empty states, skeletons, /leaderboard |
-| **Target launch**    | TBD                                                                                            |
-| **Active branch**    | `main`                                                                                         |
-| **Last deploy**      | —                                                                                              |
+| Field                | Value                                                                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 4 — Discovery & leaderboard                                                                                                                                                                 |
+| **Phase progress**   | 10 / 18 tasks (T-4.1 to T-4.10 complete)                                                                                                                                                          |
+| **Overall progress** | 102 / 178 tasks                                                                                                                                                                                   |
+| **Status**           | Phase 4 Batch 2 Complete! 59 Vitest & 24 Playwright E2E passing (100% green)                                                                                                                      |
+| **Blocked on**       | None                                                                                                                                                                                              |
+| **Next action**      | Phase 4 Batch 3 (T-4.11 to T-4.14): Realtime subscription on `ideas`, Framer `layout` rank reorder with spring `rank` + cyan flash, verify realtime not on `votes`, and cycle countdown in header |
+| **Target launch**    | TBD                                                                                                                                                                                               |
+| **Active branch**    | `main`                                                                                                                                                                                            |
+| **Last deploy**      | —                                                                                                                                                                                                 |
 
 ### 1.1 Phase board
 
@@ -40,7 +40,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
 | 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
-| 4     | Discovery           | 🟡 In progress | 5/18  | ❌            |
+| 4     | Discovery           | 🟡 In progress | 10/18 | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
 | 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
@@ -434,6 +434,36 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 **Next session starts with**
 
 - Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
+
+---
+
+### 2026-09-21 — Session 06 (Phase 4 Batch 2: Filters, Skeletons & Leaderboard)
+
+**Phase:** Phase 4 — Discovery & leaderboard
+**Duration:** ~1h
+**Tasks completed:** T-4.6, T-4.7, T-4.8, T-4.9, T-4.10
+
+**What shipped**
+
+- `supabase/migrations/136_feed_multi_filters.sql`: Enhanced `get_feed_ideas` RPC to support multi-select category and tag filtering with string array conversion and array overlap (`&&`). Applied and verified on live Supabase cloud via MCP [T-4.6].
+- `app/components/feed/filter-chips.tsx`: Multi-select category pills and tag filter chips synchronized with URL search params (`?category=...&tag=...`) with quick clear actions [T-4.6].
+- `app/components/feed/feed-empty-state.tsx`: Dedicated L2 glass empty states for filtered zero-results and empty active cycle proposals with tailored reset and submit CTAs [T-4.7].
+- `app/components/ideas/idea-card-skeleton.tsx`: Exact-dimension `<IdeaCardSkeleton />` and `<IdeaCardSkeletonGrid />` featuring `1.6s linear infinite` shimmer sweep per `DESIGN.md` §6.4 & §7.3 to eliminate layout shift [T-4.8].
+- `supabase/migrations/137_leaderboard_function.sql`: Implemented `get_leaderboard` SQL RPC querying `idea_public_stats` joined to `ideas` and `profiles` for the active cycle [T-4.9]. Applied to live Supabase cloud.
+- `lib/leaderboard.ts` & `app/actions/leaderboard.ts`: TypeScript leaderboard interfaces, `formatRank` two-digit numeral helper, and `getLeaderboardAction()` server action [T-4.9].
+- `app/components/leaderboard/leaderboard-row.tsx`: `<LeaderboardRow />` component in semantic `<ol>` with rank 1 violet glow, rank 1-3 numerals in `--violet-bright`, rest in `--text-tertiary`, status badge, and cyan verified votes pill [T-4.10].
+- `app/leaderboard/page.tsx`: `/leaderboard` RSC rendering top 20 ranked proposals with cycle context and rules badge [T-4.9].
+- `tests/leaderboard.test.ts` & `tests/filters.test.ts`: Vitest test suites with 7 tests covering rank formatting, tie-breaking logic, and filter parameter parsing.
+- `e2e/feed-filters.spec.ts` & `e2e/leaderboard.spec.ts`: Playwright test suites with 5 tests verifying category and tag filtering, empty state reset, and leaderboard ranking.
+
+**Decisions made**
+
+- Created dedicated `get_leaderboard` SQL RPC to bypass PostgREST view-join limitations while ensuring atomic, indexed rank retrieval with zero client joins.
+- Enhanced optimistic retraction window calculation in `vote-button.tsx` to immediately render the `×` affordance for optimistic votes without awaiting network roundtrips.
+
+**Next session starts with**
+
+- Phase 4 Batch 3 (T-4.11 to T-4.14): Realtime subscription on `ideas`, Framer Motion `layout` rank reorder with spring `rank` + cyan flash, verify realtime not on `votes`, and cycle countdown in header.
 
 ---
 
