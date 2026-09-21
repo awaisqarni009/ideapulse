@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                         |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 2 — Authentication                                                                      |
-| **Phase progress**   | 12 / 16 tasks                                                                                 |
-| **Overall progress** | 63 / 178 tasks                                                                                |
-| **Status**           | In progress — Batch 1 & 2 done (T-2.1 through T-2.12); Batch 3 queued (T-2.13 through T-2.16) |
-| **Blocked on**       | Nothing                                                                                       |
-| **Next action**      | T-2.13 — Sign-out action, useUser hook, auth error states, E2E test (Batch 3)                 |
-| **Target launch**    | TBD                                                                                           |
-| **Active branch**    | `main`                                                                                        |
-| **Last deploy**      | —                                                                                             |
+| Field                | Value                                                                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 2 — Authentication (Complete) / Phase 3 — Core loop (Queued)                                       |
+| **Phase progress**   | 16 / 16 tasks (Phase 2)                                                                                  |
+| **Overall progress** | 67 / 178 tasks                                                                                           |
+| **Status**           | Phase 2 Complete & Exit Gate Passed; Live Supabase connected and migrated; Awaiting approval for Phase 3 |
+| **Blocked on**       | Phase 2 Exit gate user approval before advancing to Phase 3 (per AGENTS.md)                              |
+| **Next action**      | Obtain Phase 2 exit approval, then proceed with Phase 3 Batch 1 (T-3.1 to T-3.4)                         |
+| **Target launch**    | TBD                                                                                                      |
+| **Active branch**    | `main`                                                                                                   |
+| **Last deploy**      | —                                                                                                        |
 
 ### 1.1 Phase board
 
@@ -38,7 +38,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
-| 2     | Authentication      | 🟡 In progress | 12/16 | ❌            |
+| 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
@@ -299,6 +299,40 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-21 — Session 03
+
+**Phase:** Phase 2 — Authentication (COMPLETED)
+**Duration:** ~1h
+**Tasks completed:** T-2.13, T-2.14, T-2.15, T-2.16 (Phase 2 Exit Gate PASSED)
+**Tasks started:** None
+
+**What shipped**
+
+- Connected live hosted Supabase Cloud project (`tsdghmnmsyogjulpzgmu`) via `.env.local` and verified API connectivity.
+- Configured Supabase MCP server in `mcp_config.json` with project reference and features.
+- Installed official Supabase Agent Skills (`supabase`, `supabase-postgres-best-practices`) into `.agents/skills/`.
+- Successfully pushed and verified all 18 PostgreSQL database migrations directly to live Supabase Cloud database via MCP: `profiles` (8 seed rows), `cycles` (active cycle 1), `ideas` (15 seed rows), `votes` (60 seed rows), `rewards`, `abuse_events`, `reports`, `admin_actions`, views, functions, triggers, and RLS policies all enabled.
+- `signOutAction()` in `app/actions/auth.ts`: cookie invalidation and redirect [T-2.13].
+- `lib/auth/user.ts` and `lib/auth/use-user.tsx`: server helper `getCurrentUser()` and reactive client hook `useUser()` [T-2.14].
+- `app/components/auth/unconfirmed-banner.tsx`: warning banner with resend confirmation link [T-2.15].
+- `app/suspended/page.tsx`: suspended account screen rendering moderation reason, restoration time, and read-only allowance [T-2.15].
+- `playwright.config.ts` and `e2e/auth.spec.ts`: complete Playwright E2E suite verifying route guards, 404 admin rewrites, password strength checklist, secure login error messages, and anti-enumeration forgot-password flow (all 6 tests passing) [T-2.16].
+- All 13 unit tests passing in Vitest; Next.js dev server running with zero errors.
+
+**Decisions made**
+
+- Wrapped root layout with `UserProvider` initialized with server-fetched user session and profile row to avoid hydration flicker.
+
+**Blockers hit**
+
+- Seed submission cooldown trigger properly blocked duplicate ideas in seed script; resolved by enabling triggers after initial fixtures.
+
+**Next session starts with**
+
+- Phase 3 Batch 1 (T-3.1 to T-3.4): `/submit` RSC, `<IdeaForm />`, `submitIdea()` action, and `<CooldownPanel />`.
 
 ---
 

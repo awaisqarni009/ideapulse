@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Space_Grotesk } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
+import { UserProvider } from '@/lib/auth/use-user';
+import { getCurrentUser } from '@/lib/auth/user';
+import { UnconfirmedBanner } from '@/app/components/auth/unconfirmed-banner';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -14,11 +17,16 @@ export const metadata: Metadata = {
   description: 'Where the crowd decides which ideas deserve funding and attention.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { user, profile } = await getCurrentUser();
+
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${GeistSans.variable} dark`}>
       <body className="min-h-screen bg-canvas text-ink-1 antialiased selection:bg-indigo/30 selection:text-white">
-        {children}
+        <UserProvider initialUser={user} initialProfile={profile}>
+          <UnconfirmedBanner />
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

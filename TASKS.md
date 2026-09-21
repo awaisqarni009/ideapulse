@@ -119,12 +119,12 @@ _Goal: a user can register, confirm, sign in, and edit their profile. Estimated 
 - [x] **T-2.10** OAuth providers (GitHub, Google) wired and tested
 - [x] **T-2.11** `/settings` — display name, username (30-day change limit), bio, avatar URL
 - [x] **T-2.12** Username availability check, debounced, with the `citext` uniqueness constraint as the real gate
-- [ ] **T-2.13** Sign-out action clearing cookies and revalidating
-- [ ] **T-2.14** `useUser()` hook / server helper returning the session plus the profile row
-- [ ] **T-2.15** Auth empty and error states: unconfirmed banner with a resend link, suspended account screen
-- [ ] **T-2.16** E2E: register → confirm → sign in → edit profile → sign out
+- [x] **T-2.13** Sign-out action clearing cookies and revalidating
+- [x] **T-2.14** `useUser()` hook / server helper returning the session plus the profile row
+- [x] **T-2.15** Auth empty and error states: unconfirmed banner with a resend link, suspended account screen
+- [x] **T-2.16** E2E: register → confirm → sign in → edit profile → sign out
 
-**Exit gate:** a new user can complete the full loop in under 60 seconds; a profile row exists for every `auth.users` row; `AC-01.*` and `AC-02.*` pass.
+**Exit gate:** a new user can complete the full loop in under 60 seconds; a profile row exists for every `auth.users` row; `AC-01.*` and `AC-02.*` pass. [PASSED]
 
 ---
 

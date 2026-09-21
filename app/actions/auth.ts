@@ -254,3 +254,38 @@ export async function signOutAction(): Promise<void> {
   revalidatePath('/', 'layout');
   redirect('/login');
 }
+
+/**
+ * Server Action: Resend confirmation email (T-2.15)
+ */
+export async function resendConfirmationAction(email: string): Promise<AuthActionResult> {
+  if (!email || !email.includes('@')) {
+    return {
+      success: false,
+      error: 'A valid email address is required to resend confirmation.',
+    };
+  }
+
+  const supabase = await createClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: `${siteUrl}/auth/confirm`,
+    },
+  });
+
+  if (error) {
+    return {
+      success: false,
+      error: error.message || 'Unable to resend confirmation email.',
+    };
+  }
+
+  return {
+    success: true,
+    message: 'Confirmation email sent. Please check your inbox.',
+  };
+}
