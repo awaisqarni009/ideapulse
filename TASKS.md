@@ -212,8 +212,8 @@ _Goal: a cycle opens, runs, closes, and pays out without a human touching it. Es
 - [x] **T-5.9** Cycle-close result modal for winners, shown once (`localStorage` flag)
 - [x] **T-5.10** The one-time cycle-close sweep animation on qualified rows
 - [x] **T-5.11** Rewards section on the profile page
-- [ ] **T-5.12** Heartbeat row written by `rotate_cycle`; alert if no transition occurs within 30 minutes of the boundary
-- [ ] **T-5.13** Manually simulate three consecutive cycles on staging by shifting `cycles.ends_at`
+- [x] **T-5.12** Heartbeat row written by `rotate_cycle`; alert if no transition occurs within 30 minutes of the boundary
+- [x] **T-5.13** Manually simulate three consecutive cycles on staging by shifting `cycles.ends_at`
 
 **Exit gate:** three consecutive cycles rotate automatically on staging with correct rewards and no manual intervention.
 
