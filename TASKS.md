@@ -223,12 +223,12 @@ _Goal: a cycle opens, runs, closes, and pays out without a human touching it. Es
 
 _Goal: the operator can see and fix what goes wrong. Estimated 5 days._
 
-- [ ] **T-6.1** Report flow: modal, reason select, one report per user per idea
-- [ ] **T-6.2** Trigger moving an idea to `under_review` at 3 distinct reporters (`RULES.md` BR-037)
-- [ ] **T-6.3** `/admin` layout with an `is_admin()` server guard and a 404 rewrite for everyone else
-- [ ] **T-6.4** `/admin/cycles` — active cycle stats, qualifying ideas, a manual finalize button with a confirmation
-- [ ] **T-6.5** `/admin/reports` — queue, resolve or dismiss, written reason required
-- [ ] **T-6.6** `/admin/abuse` — `abuse_events` filtered by kind and actor
+- [x] **T-6.1** Report flow: modal, reason select, one report per user per idea
+- [x] **T-6.2** Trigger moving an idea to `under_review` at 3 distinct reporters (`RULES.md` BR-037)
+- [x] **T-6.3** `/admin` layout with an `is_admin()` server guard and a 404 rewrite for everyone else
+- [x] **T-6.4** `/admin/cycles` — active cycle stats, qualifying ideas, a manual finalize button with a confirmation
+- [x] **T-6.5** `/admin/reports` — queue, resolve or dismiss, written reason required
+- [x] **T-6.6** `/admin/abuse` — `abuse_events` filtered by kind and actor
 - [ ] **T-6.7** `[!]` Void-vote action writing an `admin_actions` row, with a recount
 - [ ] **T-6.8** `[!]` Suspend-account action de-verifying active-cycle votes (`RULES.md` BR-004)
 - [ ] **T-6.9** `recount_required` cycle state and its public banner

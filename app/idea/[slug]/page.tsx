@@ -161,6 +161,8 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
               />
               <IdeaActions
                 ideaId={idea.id}
+                ideaTitle={idea.title}
+                ideaSlug={idea.slug}
                 voteCount={idea.vote_count}
                 isAuthor={isAuthor}
                 canWithdraw={canWithdraw}

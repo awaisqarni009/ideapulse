@@ -99,6 +99,41 @@ export type Database = {
           },
         ];
       };
+      cycle_heartbeats: {
+        Row: {
+          action: string;
+          created_at: string;
+          cycle_id: string | null;
+          details: Json | null;
+          id: string;
+          status: string;
+        };
+        Insert: {
+          action: string;
+          created_at?: string;
+          cycle_id?: string | null;
+          details?: Json | null;
+          id?: string;
+          status: string;
+        };
+        Update: {
+          action?: string;
+          created_at?: string;
+          cycle_id?: string | null;
+          details?: Json | null;
+          id?: string;
+          status?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'cycle_heartbeats_cycle_id_fkey';
+            columns: ['cycle_id'];
+            isOneToOne: false;
+            referencedRelation: 'cycles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       cycles: {
         Row: {
           created_at: string;
@@ -536,6 +571,7 @@ export type Database = {
       account_is_writable: { Args: { uid?: string }; Returns: boolean };
       active_cycle_id: { Args: never; Returns: string };
       cast_vote: { Args: { p_idea_id: string }; Returns: Json };
+      check_cycle_health: { Args: never; Returns: Json };
       finalize_cycle: { Args: { p_cycle_id?: string }; Returns: Json };
       get_feed_ideas: {
         Args: {
@@ -545,6 +581,7 @@ export type Database = {
           p_cursor_score?: number;
           p_cursor_votes?: number;
           p_limit?: number;
+          p_search?: string;
           p_sort?: string;
           p_tag?: string;
         };
@@ -570,12 +607,9 @@ export type Database = {
         }[];
       };
       get_leaderboard: {
-        Args: {
-          p_cycle_id?: string;
-          p_limit?: number;
-        };
+        Args: { p_cycle_id?: string; p_limit?: number };
         Returns: {
-          author_avatar_url: string | null;
+          author_avatar_url: string;
           author_display_name: string;
           author_id: string;
           author_username: string;
@@ -603,6 +637,10 @@ export type Database = {
           p_target?: string;
         };
         Returns: undefined;
+      };
+      moderate_idea_report: {
+        Args: { p_action: string; p_idea_id: string; p_reason: string };
+        Returns: Json;
       };
       open_next_cycle: { Args: never; Returns: string };
       retract_vote: { Args: { p_idea_id: string }; Returns: Json };

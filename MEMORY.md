@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 5 — Cycles & rewards (Complete!)                                                                |
-| **Phase progress**   | 13 / 13 tasks (T-5.1 to T-5.13 complete)                                                              |
-| **Overall progress** | 123 / 178 tasks                                                                                       |
-| **Status**           | Phase 5 Complete! 80 Vitest unit tests passing (100% green). E2E tests deferred per user instruction. |
-| **Blocked on**       | Phase 5 Exit Gate Approval to begin Phase 6                                                           |
-| **Next action**      | Obtain Phase 5 exit gate approval, then begin Phase 6 (Trust, Safety & Admin: T-6.1 to T-6.6)         |
-| **Target launch**    | TBD                                                                                                   |
-| **Active branch**    | `main`                                                                                                |
-| **Last deploy**      | —                                                                                                     |
+| Field                | Value                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Current phase**    | Phase 6 — Trust, safety & admin                                                                        |
+| **Phase progress**   | 6 / 14 tasks (T-6.1 to T-6.6 complete)                                                                 |
+| **Overall progress** | 129 / 178 tasks                                                                                        |
+| **Status**           | Phase 6 Batch 1 Complete! 87 Vitest unit tests passing (100% green). E2E tests deferred per user rule. |
+| **Blocked on**       | None                                                                                                   |
+| **Next action**      | Phase 6 Batch 2: T-6.7 to T-6.11 (Void-vote, suspend-account, recount_required, ring detection)        |
+| **Target launch**    | TBD                                                                                                    |
+| **Active branch**    | `main`                                                                                                 |
+| **Last deploy**      | —                                                                                                      |
 
 ### 1.1 Phase board
 
@@ -42,7 +42,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
 | 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
-| 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
+| 6     | Trust & admin       | 🟡 In progress | 6/14  | ❌            |
 | 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
 | 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
 
