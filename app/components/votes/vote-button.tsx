@@ -279,7 +279,7 @@ export function VoteButton({
                 ? 'cursor-not-allowed border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-tertiary)] opacity-45'
                 : state === 'pending'
                   ? 'pointer-events-none border border-[var(--border-accent)] bg-[var(--surface-2)] opacity-80'
-                  : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-primary)] backdrop-blur-[var(--blur-sm)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-indigo-md)]'
+                  : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-indigo-md)]'
         } ${className}`}
         style={{
           boxShadow:
@@ -306,7 +306,7 @@ export function VoteButton({
           )}
         </motion.span>
 
-        {/* Count Roll Transition in numeric tabular font [T-3.14] */}
+        {/* Count Roll Transition in numeric tabular font [T-3.14, DESIGN.md §7.2] */}
         <div className="relative flex h-[20px] min-w-[16px] items-center justify-center overflow-hidden">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
@@ -316,7 +316,7 @@ export function VoteButton({
               initial="initial"
               animate="animate"
               exit="exit"
-              className="block font-mono tabular-nums tracking-tight"
+              className="block font-display font-semibold tabular-nums tracking-tight"
             >
               {optimisticState.voteCount}
             </motion.span>
@@ -348,7 +348,7 @@ export function VoteButton({
       {inlineError && (
         <div
           role="alert"
-          className="absolute top-[48px] z-20 flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-xs)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-4)] px-2.5 py-1 text-xs text-[var(--accent-danger)] shadow-lg backdrop-blur-[var(--blur-md)]"
+          className="absolute top-[48px] z-20 flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-xs)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-solid)] px-2.5 py-1 text-xs text-[var(--accent-danger)] shadow-lg"
         >
           <AlertCircle className="h-3 w-3 shrink-0" />
           <span>{inlineError}</span>

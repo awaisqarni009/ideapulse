@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                     |
-| -------------------- | --------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 6 — Trust, safety & admin (Complete!)                                                               |
-| **Phase progress**   | 14 / 14 tasks (All complete!)                                                                             |
-| **Overall progress** | 137 / 178 tasks                                                                                           |
-| **Status**           | Phase 6 Complete & Exit Gate Met! 103 Vitest unit tests passing (100% green). E2E tests deferred by user. |
-| **Blocked on**       | Phase 6 Exit Gate Approval to begin Phase 7                                                               |
-| **Next action**      | Obtain Phase 6 Exit Gate approval, then begin Phase 7 (Polish, accessibility & performance: T-7.1–T-7.6)  |
-| **Target launch**    | TBD                                                                                                       |
-| **Active branch**    | `main`                                                                                                    |
-| **Last deploy**      | —                                                                                                         |
+| Field                | Value                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                |
+| **Phase progress**   | 6 / 31 tasks (Batch 1: Design completion complete)                                                         |
+| **Overall progress** | 143 / 178 tasks                                                                                            |
+| **Status**           | Phase 7 Batch 1 (T-7.1–T-7.6) PASSED! 114 Vitest unit tests passing (100% green across 21 test suites).    |
+| **Blocked on**       | None. Ready for Batch 2 approval.                                                                          |
+| **Next action**      | Phase 7 Batch 2 (T-7.7–T-7.10: Empty states, error states & rule anchors, loading skeleton, 404/500 pages) |
+| **Target launch**    | TBD                                                                                                        |
+| **Active branch**    | `main`                                                                                                     |
+| **Last deploy**      | —                                                                                                          |
 
 ### 1.1 Phase board
 
@@ -43,7 +43,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
-| 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
+| 7     | Polish              | 🟡 In progress | 6/31  | ❌            |
 | 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
@@ -299,6 +299,33 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-21 — Session 13 (Phase 7 Batch 1: Design Completion)
+
+**Phase:** Phase 7 — Polish, accessibility & performance
+**Duration:** ~45m
+**Tasks completed:** T-7.1, T-7.2, T-7.3, T-7.4, T-7.5, T-7.6
+
+**What shipped**
+
+- `app/globals.css`: Defined `.glass-panel` recipe ensuring all glass surfaces automatically inherit `box-shadow: inset 0 1px 0 var(--edge-specular)` and paint containment `contain: paint` [T-7.4, T-7.3].
+- `app/components/votes/vote-button.tsx`: Eliminated nested `backdrop-blur` from `<VoteButton />` when nested inside `<IdeaCard />`, set live vote count to `font-display` with `font-variant-numeric: tabular-nums`, and verified accent grammar (indigo = act, violet = voted) [T-7.2, T-7.6].
+- `app/components/ideas/idea-card.tsx`: Enforced radius hierarchy (`--radius-xs`: 6px for category chips, tags, and qualified badges; `--radius-lg`: 20px for card container) and paint containment [T-7.5, T-7.3].
+- Modals (`app/components/reports/report-modal.tsx`, `app/components/cycles/winner-modal.tsx`, `app/components/ideas/withdraw-modal.tsx`, `app/admin/cycles/finalize-button.tsx`, `app/components/auth/auth-modal.tsx`): Eliminated secondary `backdrop-blur` from modal surfaces on top of blurred scrims, ensuring strict 0 nested `backdrop-filter` invariant [T-7.2].
+- Header (`app/components/votes/quota-hud.tsx`, `app/components/layout/cycle-countdown.tsx`): Eliminated nested `backdrop-blur` from children inside the blurred sticky header [T-7.2].
+- Feed & Viewport budget: Verified blurred elements count in the viewport is strictly $\le 12$ across desktop (max 10), tablet (max 7), and mobile (max 4) [T-7.3].
+- `tests/design-tokens.test.ts`: Added automated test suite with 11 tests verifying specular edge highlights, radius tiers, accent semantics, nested blur elimination, and viewport budget limits (114/114 Vitest tests passing).
+
+**Decisions made**
+
+- Removed redundant nested `backdrop-blur` from `<VoteButton />`, `<QuotaHUD />`, `<CycleCountdown />`, and modal dialog panels, relying on elevated solid/tint surfaces over the single parent blurred container. This completely eliminates nested compositing passes and prevents frame drops during scrolling.
+- Replaced arbitrary pill radii on tags and category chips with strict `--radius-xs` (6px) per `DESIGN.md` §5.1.
+
+**Next session starts with**
+
+- Phase 7 Batch 2 (T-7.7 to T-7.10): Empty states (`DESIGN.md` §7.11), specific error states linked to rule anchors, skeleton loaders preserving layout dimensions, and branded 404/500 error pages.
 
 ---
 

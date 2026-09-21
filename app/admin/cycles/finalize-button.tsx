@@ -71,7 +71,7 @@ export function ManualFinalizeButton({ cycleNumber, qualifyingCount }: FinalizeB
           />
 
           {/* Modal Surface */}
-          <div className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-3)] p-6 shadow-2xl backdrop-blur-xl">
+          <div className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-3)] p-6 shadow-2xl">
             {/* Specular highlight */}
             <div
               className="pointer-events-none absolute inset-0 rounded-[var(--radius-xl)] shadow-[inset_0_1px_0_var(--edge-specular)]"

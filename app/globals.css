@@ -254,9 +254,16 @@ body::before {
   -webkit-backdrop-filter: blur(var(--blur-md)) saturate(var(--saturate-md));
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
+  contain: paint;
   box-shadow:
     inset 0 1px 0 var(--edge-specular),
     var(--shadow-md);
+}
+
+.glass-panel {
+  position: relative;
+  box-shadow: inset 0 1px 0 var(--edge-specular);
+  contain: paint;
 }
 
 .glass-floating {
@@ -284,6 +291,7 @@ body::before {
 @supports not (backdrop-filter: blur(1px)) {
   .glass-ambient,
   .glass,
+  .glass-panel,
   .glass-floating,
   .glass-overlay {
     background: var(--surface-solid);

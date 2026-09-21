@@ -48,7 +48,7 @@ export default async function LeaderboardPage() {
           </div>
 
           {/* Rules Summary Badge */}
-          <div className="flex items-center gap-2 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-[var(--blur-sm)]">
+          <div className="flex items-center gap-2 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-2 text-xs text-[var(--text-secondary)]">
             <ShieldCheck className="h-4 w-4 text-[var(--cyan-bright)]" />
             <span>Verified votes only · Strict anti-cheat</span>
           </div>

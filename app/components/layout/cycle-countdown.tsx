@@ -103,7 +103,7 @@ export function CycleCountdown({
           ? `Cycle #${cycleNumber} closes on ${new Date(endsAt).toLocaleString()} (${new Date(endsAt).toUTCString()})`
           : undefined
       }
-      className={`glass-panel hidden items-center gap-2 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-secondary)] shadow-sm backdrop-blur-[var(--blur-md)] transition-colors hover:border-[var(--border-strong)] md:inline-flex ${className}`}
+      className={`glass-panel hidden items-center gap-2 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-secondary)] shadow-sm transition-colors hover:border-[var(--border-strong)] md:inline-flex ${className}`}
       style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
     >
       <Clock className="h-3.5 w-3.5 text-[var(--cyan-bright)]" />

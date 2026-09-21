@@ -55,7 +55,7 @@ export function WinnerModal() {
 
       {/* Modal Dialog Surface */}
       <div
-        className="animate-in fade-in zoom-in-95 relative z-10 w-full max-w-md overflow-hidden rounded-[28px] border border-[var(--border-qualified)] bg-[var(--surface-3)] p-6 text-center shadow-[var(--glow-violet-lg)] backdrop-blur-xl duration-300 sm:p-8"
+        className="animate-in fade-in zoom-in-95 relative z-10 w-full max-w-md overflow-hidden rounded-[28px] border border-[var(--border-qualified)] bg-[var(--surface-3)] p-6 text-center shadow-[var(--glow-violet-lg)] duration-300 sm:p-8"
         style={{
           boxShadow: 'inset 0 1px 0 var(--edge-specular), 0 0 40px -8px rgba(139,92,246,0.35)',
         }}

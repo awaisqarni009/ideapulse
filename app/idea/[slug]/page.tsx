@@ -127,7 +127,7 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
           {/* Top Badges & Meta Header */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-6">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-[var(--border-accent)] bg-[rgba(99,102,241,0.12)] px-3 py-1 text-xs font-semibold text-[var(--indigo-bright)]">
+              <span className="rounded-[var(--radius-xs)] border border-[var(--border-accent)] bg-[rgba(99,102,241,0.12)] px-3 py-1 text-xs font-semibold text-[var(--indigo-bright)]">
                 {categoryLabel}
               </span>
 
@@ -245,7 +245,9 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
             <h2 className="mb-4 text-lg font-semibold tracking-tight text-[var(--text-primary)]">
               Proposal Details
             </h2>
-            <div className="prose-pulse leading-relaxed">{renderRestrictedMarkdown(idea.body)}</div>
+            <div className="prose-pulse max-w-[68ch] leading-relaxed">
+              {renderRestrictedMarkdown(idea.body)}
+            </div>
           </div>
 
           {/* Tags */}
@@ -254,7 +256,7 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
               {idea.tags.map((tag: string) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-secondary)]"
+                  className="rounded-[var(--radius-xs)] border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-secondary)]"
                 >
                   #{tag}
                 </span>

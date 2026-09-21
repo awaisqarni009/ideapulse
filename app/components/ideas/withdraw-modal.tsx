@@ -73,7 +73,7 @@ export function WithdrawModal({ isOpen, onClose, ideaId, voteCount }: WithdrawMo
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="relative z-10 w-full max-w-[520px] rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-8 shadow-2xl backdrop-blur-[var(--blur-lg)] focus:outline-none"
+        className="relative z-10 w-full max-w-[520px] rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-8 shadow-2xl focus:outline-none"
         style={{
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 var(--edge-specular)',
         }}

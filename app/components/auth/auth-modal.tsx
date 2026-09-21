@@ -97,7 +97,7 @@ export function AuthModal({ isOpen, onClose, pendingIdeaId, onVoteReplayed }: Au
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 12 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-panel relative w-full max-w-md overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-7 shadow-2xl backdrop-blur-[var(--blur-lg)]"
+          className="glass-panel relative w-full max-w-md overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-7 shadow-2xl"
           style={{
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 var(--edge-specular)',
           }}

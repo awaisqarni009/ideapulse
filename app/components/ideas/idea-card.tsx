@@ -136,8 +136,8 @@ export function IdeaCard({
             </div>
           </div>
 
-          {/* Category Chip */}
-          <span className="shrink-0 rounded-full border border-[var(--border-accent)] bg-[rgba(99,102,241,0.1)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--indigo-bright)]">
+          {/* Category Chip per DESIGN.md §5.1 (--radius-xs for chips/tags) */}
+          <span className="shrink-0 rounded-[var(--radius-xs)] border border-[var(--border-accent)] bg-[rgba(99,102,241,0.1)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--indigo-bright)]">
             {categoryLabel}
           </span>
         </div>
@@ -148,7 +148,7 @@ export function IdeaCard({
             {idea.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] text-[var(--text-tertiary)]"
+                className="rounded-[var(--radius-xs)] bg-[var(--surface-3)] px-2 py-0.5 text-[10px] text-[var(--text-tertiary)]"
               >
                 #{tag}
               </span>
@@ -178,14 +178,16 @@ export function IdeaCard({
           {/* Qualification status / progress count */}
           <div className="flex items-center gap-2 text-xs">
             {isQualified ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(139,92,246,0.3)] bg-[rgba(139,92,246,0.12)] px-2.5 py-1 font-semibold text-[var(--violet-bright)] shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+              <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-xs)] border border-[rgba(139,92,246,0.3)] bg-[rgba(139,92,246,0.12)] px-2.5 py-1 font-semibold text-[var(--violet-bright)] shadow-[0_0_10px_rgba(139,92,246,0.2)]">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 Qualified
               </span>
             ) : (
-              <span className="flex items-center gap-1.5 font-mono tabular-nums text-[var(--text-secondary)]">
+              <span className="flex items-center gap-1.5 tabular-nums text-[var(--text-secondary)]">
                 <Zap className="h-3.5 w-3.5 text-[var(--cyan-bright)]" />
-                <strong className="text-[var(--text-primary)]">{idea.verified_vote_count}</strong>
+                <strong className="font-display text-[var(--text-primary)]">
+                  {idea.verified_vote_count}
+                </strong>
                 <span className="text-[var(--text-tertiary)]">· {remainingVotes} to qualify</span>
               </span>
             )}

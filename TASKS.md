@@ -248,12 +248,12 @@ _Goal: it feels finished. Estimated 6 days._
 
 ### Design completion
 
-- [ ] **T-7.1** Audit every screen against the `DESIGN.md` §10 QA checklist
-- [ ] **T-7.2** Verify no nested `backdrop-filter` anywhere
-- [ ] **T-7.3** Verify ≤ 12 blurred elements in the viewport on the feed at every breakpoint
-- [ ] **T-7.4** Every glass panel carries the specular top edge
-- [ ] **T-7.5** Radius tiers correct by surface size
-- [ ] **T-7.6** Accent semantics correct: indigo = act, violet = acted, cyan = live
+- [x] **T-7.1** Audit every screen against the `DESIGN.md` §10 QA checklist
+- [x] **T-7.2** Verify no nested `backdrop-filter` anywhere
+- [x] **T-7.3** Verify ≤ 12 blurred elements in the viewport on the feed at every breakpoint
+- [x] **T-7.4** Every glass panel carries the specular top edge
+- [x] **T-7.5** Radius tiers correct by surface size
+- [x] **T-7.6** Accent semantics correct: indigo = act, violet = acted, cyan = live
 - [ ] **T-7.7** Every empty state built (`DESIGN.md` §7.11)
 - [ ] **T-7.8** Every error state built, specific, and linked to its rule anchor
 - [ ] **T-7.9** Loading states preserve layout dimensions

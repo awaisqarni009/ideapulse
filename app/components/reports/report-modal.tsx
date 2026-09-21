@@ -65,7 +65,7 @@ export function ReportModal({ isOpen, onClose, ideaId, ideaTitle, ideaSlug }: Re
       />
 
       {/* Modal Surface */}
-      <div className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-3)] p-6 shadow-2xl backdrop-blur-xl transition-all">
+      <div className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-3)] p-6 shadow-2xl transition-all">
         {/* Specular top highlight */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[var(--radius-xl)] shadow-[inset_0_1px_0_var(--edge-specular)]"
