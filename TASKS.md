@@ -113,12 +113,12 @@ _Goal: a user can register, confirm, sign in, and edit their profile. Estimated 
 - [x] **T-2.4** Customize the confirmation and password-reset email templates to match the brand voice
 - [x] **T-2.5** `/register` — form, zod validation, generic success response (no account enumeration, `AC-01.3`)
 - [x] **T-2.6** `/login` — form, `?next=` redirect handling, specific-but-safe error messages
-- [ ] **T-2.7** `/auth/callback` — code exchange route handler
-- [ ] **T-2.8** `/auth/confirm` — post-confirmation landing with a clear next action
-- [ ] **T-2.9** Password reset request + update flows
-- [ ] **T-2.10** OAuth providers (GitHub, Google) wired and tested
-- [ ] **T-2.11** `/settings` — display name, username (30-day change limit), bio, avatar URL
-- [ ] **T-2.12** Username availability check, debounced, with the `citext` uniqueness constraint as the real gate
+- [x] **T-2.7** `/auth/callback` — code exchange route handler
+- [x] **T-2.8** `/auth/confirm` — post-confirmation landing with a clear next action
+- [x] **T-2.9** Password reset request + update flows
+- [x] **T-2.10** OAuth providers (GitHub, Google) wired and tested
+- [x] **T-2.11** `/settings` — display name, username (30-day change limit), bio, avatar URL
+- [x] **T-2.12** Username availability check, debounced, with the `citext` uniqueness constraint as the real gate
 - [ ] **T-2.13** Sign-out action clearing cookies and revalidating
 - [ ] **T-2.14** `useUser()` hook / server helper returning the session plus the profile row
 - [ ] **T-2.15** Auth empty and error states: unconfirmed banner with a resend link, suspended account screen

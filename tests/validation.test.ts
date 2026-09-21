@@ -4,6 +4,8 @@ import {
   profileUpdateSchema,
   registerSchema,
   loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
 } from '../lib/validation';
 import { CATEGORIES, IDEA_LIMITS } from '../lib/constants';
 import { getIpErrorMessage } from '../lib/errors';
@@ -125,6 +127,26 @@ describe('Constants & Validation Schemas [T-0.15, T-0.16, T-0.17]', () => {
         password: '',
       });
       expect(invalid.success).toBe(false);
+    });
+
+    it('validates password reset schemas [T-2.9]', () => {
+      expect(forgotPasswordSchema.safeParse({ email: 'user@test.com' }).success).toBe(true);
+      expect(forgotPasswordSchema.safeParse({ email: 'bad' }).success).toBe(false);
+
+      const validReset = resetPasswordSchema.safeParse({
+        password: 'NewPassword123',
+        confirmPassword: 'NewPassword123',
+      });
+      expect(validReset.success).toBe(true);
+
+      const mismatch = resetPasswordSchema.safeParse({
+        password: 'NewPassword123',
+        confirmPassword: 'DifferentPassword123',
+      });
+      expect(mismatch.success).toBe(false);
+      if (!mismatch.success) {
+        expect(mismatch.error.issues[0]?.message).toContain('Passwords do not match');
+      }
     });
   });
 });

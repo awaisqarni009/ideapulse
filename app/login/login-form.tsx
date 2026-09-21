@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { loginAction, type AuthActionResult } from '@/app/actions/auth';
+import { OAuthButtons } from '@/app/components/auth/oauth-buttons';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -35,6 +36,8 @@ export function LoginForm() {
       noValidate
     >
       <input type="hidden" name="next" value={nextParam} />
+
+      <OAuthButtons nextUrl={nextParam} />
 
       {state?.error && (
         <div

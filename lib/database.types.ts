@@ -1,13 +1,39 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
+export type UserRole = 'user' | 'moderator' | 'admin';
+export type AccountStatus = 'active' | 'suspended' | 'banned' | 'deleted';
+export type CycleStatus = 'upcoming' | 'active' | 'evaluating' | 'completed';
+export type IdeaCategory =
+  'artificial_intelligence' | 'developer_tools' | 'sustainability' | 'health_wellness' | 'fintech';
+export type IdeaStatus = 'draft' | 'published' | 'withdrawn' | 'archived';
+export type VoteStatus = 'active' | 'retracted' | 'voided';
+export type AbuseKind =
+  | 'self_vote_attempt'
+  | 'duplicate_vote_attempt'
+  | 'vote_quota_exceeded'
+  | 'closed_idea_vote_attempt'
+  | 'rate_limit_submission'
+  | 'unconfirmed_write_attempt';
+export type ReportReason =
+  'spam' | 'harassment' | 'hate_speech' | 'plagiarism' | 'impersonation' | 'off_topic' | 'other';
+export type AdminActionType =
+  | 'suspend_user'
+  | 'ban_user'
+  | 'reinstate_user'
+  | 'remove_idea'
+  | 'restore_idea'
+  | 'void_vote'
+  | 'adjust_cycle'
+  | 'manual_reward';
+
 export type Database = {
   public: {
     Tables: {
       profiles: {
         Row: {
           id: string;
-          role: Database['public']['Enums']['user_role'];
-          status: Database['public']['Enums']['account_status'];
+          role: UserRole;
+          status: AccountStatus;
           username: string;
           display_name: string;
           bio: string | null;
@@ -25,8 +51,8 @@ export type Database = {
         };
         Insert: {
           id: string;
-          role?: Database['public']['Enums']['user_role'];
-          status?: Database['public']['Enums']['account_status'];
+          role?: UserRole;
+          status?: AccountStatus;
           username: string;
           display_name: string;
           bio?: string | null;
@@ -44,8 +70,8 @@ export type Database = {
         };
         Update: {
           id?: string;
-          role?: Database['public']['Enums']['user_role'];
-          status?: Database['public']['Enums']['account_status'];
+          role?: UserRole;
+          status?: AccountStatus;
           username?: string;
           display_name?: string;
           bio?: string | null;
@@ -61,21 +87,13 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'profiles_id_fkey';
-            columns: ['id'];
-            isOneToOne: true;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-        ];
+        Relationships: [];
       };
       cycles: {
         Row: {
           id: string;
           sequence_number: number;
-          status: Database['public']['Enums']['cycle_status'];
+          status: CycleStatus;
           starts_at: string;
           ends_at: string;
           vote_threshold: number;
@@ -91,7 +109,7 @@ export type Database = {
         Insert: {
           id?: string;
           sequence_number: number;
-          status?: Database['public']['Enums']['cycle_status'];
+          status?: CycleStatus;
           starts_at: string;
           ends_at: string;
           vote_threshold?: number;
@@ -107,7 +125,7 @@ export type Database = {
         Update: {
           id?: string;
           sequence_number?: number;
-          status?: Database['public']['Enums']['cycle_status'];
+          status?: CycleStatus;
           starts_at?: string;
           ends_at?: string;
           vote_threshold?: number;
@@ -131,8 +149,8 @@ export type Database = {
           title: string;
           summary: string;
           body: string;
-          category: Database['public']['Enums']['idea_category'];
-          status: Database['public']['Enums']['idea_status'];
+          category: IdeaCategory;
+          status: IdeaStatus;
           vote_count: number;
           verified_vote_count: number;
           qualified_at: string | null;
@@ -149,8 +167,8 @@ export type Database = {
           title: string;
           summary: string;
           body: string;
-          category: Database['public']['Enums']['idea_category'];
-          status?: Database['public']['Enums']['idea_status'];
+          category: IdeaCategory;
+          status?: IdeaStatus;
           vote_count?: number;
           verified_vote_count?: number;
           qualified_at?: string | null;
@@ -167,8 +185,8 @@ export type Database = {
           title?: string;
           summary?: string;
           body?: string;
-          category?: Database['public']['Enums']['idea_category'];
-          status?: Database['public']['Enums']['idea_status'];
+          category?: IdeaCategory;
+          status?: IdeaStatus;
           vote_count?: number;
           verified_vote_count?: number;
           qualified_at?: string | null;
@@ -201,7 +219,7 @@ export type Database = {
           idea_author_id: string;
           voter_id: string;
           cycle_id: string;
-          status: Database['public']['Enums']['vote_status'];
+          status: VoteStatus;
           is_verified: boolean;
           retracted_at: string | null;
           voided_at: string | null;
@@ -214,7 +232,7 @@ export type Database = {
           idea_author_id: string;
           voter_id: string;
           cycle_id: string;
-          status?: Database['public']['Enums']['vote_status'];
+          status?: VoteStatus;
           is_verified?: boolean;
           retracted_at?: string | null;
           voided_at?: string | null;
@@ -227,7 +245,7 @@ export type Database = {
           idea_author_id?: string;
           voter_id?: string;
           cycle_id?: string;
-          status?: Database['public']['Enums']['vote_status'];
+          status?: VoteStatus;
           is_verified?: boolean;
           retracted_at?: string | null;
           voided_at?: string | null;
@@ -320,7 +338,7 @@ export type Database = {
         Row: {
           id: string;
           actor_id: string | null;
-          kind: Database['public']['Enums']['abuse_kind'];
+          kind: AbuseKind;
           error_code: string;
           target_table: string | null;
           target_id: string | null;
@@ -330,7 +348,7 @@ export type Database = {
         Insert: {
           id?: string;
           actor_id?: string | null;
-          kind: Database['public']['Enums']['abuse_kind'];
+          kind: AbuseKind;
           error_code: string;
           target_table?: string | null;
           target_id?: string | null;
@@ -340,7 +358,7 @@ export type Database = {
         Update: {
           id?: string;
           actor_id?: string | null;
-          kind?: Database['public']['Enums']['abuse_kind'];
+          kind?: AbuseKind;
           error_code?: string;
           target_table?: string | null;
           target_id?: string | null;
@@ -363,7 +381,7 @@ export type Database = {
           reporter_id: string;
           target_table: string;
           target_id: string;
-          reason: Database['public']['Enums']['report_reason'];
+          reason: ReportReason;
           detail: string | null;
           resolved_at: string | null;
           resolver_id: string | null;
@@ -374,7 +392,7 @@ export type Database = {
           reporter_id: string;
           target_table: string;
           target_id: string;
-          reason: Database['public']['Enums']['report_reason'];
+          reason: ReportReason;
           detail?: string | null;
           resolved_at?: string | null;
           resolver_id?: string | null;
@@ -385,7 +403,7 @@ export type Database = {
           reporter_id?: string;
           target_table?: string;
           target_id?: string;
-          reason?: Database['public']['Enums']['report_reason'];
+          reason?: ReportReason;
           detail?: string | null;
           resolved_at?: string | null;
           resolver_id?: string | null;
@@ -412,7 +430,7 @@ export type Database = {
         Row: {
           id: string;
           admin_id: string;
-          action: Database['public']['Enums']['admin_action_type'];
+          action: AdminActionType;
           target_table: string;
           target_id: string;
           reason: string | null;
@@ -422,7 +440,7 @@ export type Database = {
         Insert: {
           id?: string;
           admin_id: string;
-          action: Database['public']['Enums']['admin_action_type'];
+          action: AdminActionType;
           target_table: string;
           target_id: string;
           reason?: string | null;
@@ -432,7 +450,7 @@ export type Database = {
         Update: {
           id?: string;
           admin_id?: string;
-          action?: Database['public']['Enums']['admin_action_type'];
+          action?: AdminActionType;
           target_table?: string;
           target_id?: string;
           reason?: string | null;
@@ -460,8 +478,8 @@ export type Database = {
           title: string;
           summary: string;
           body: string;
-          category: Database['public']['Enums']['idea_category'];
-          status: Database['public']['Enums']['idea_status'];
+          category: IdeaCategory;
+          status: IdeaStatus;
           vote_count: number;
           verified_vote_count: number;
           is_qualified: boolean;
@@ -479,7 +497,7 @@ export type Database = {
     };
     Functions: {
       active_cycle_id: {
-        Args: Record<PropertyKey, never>;
+        Args: Record<string, never>;
         Returns: string;
       };
       is_admin: {
@@ -503,7 +521,7 @@ export type Database = {
       log_abuse: {
         Args: {
           p_actor: string;
-          p_kind: Database['public']['Enums']['abuse_kind'];
+          p_kind: AbuseKind;
           p_code: string;
           p_table?: string;
           p_target?: string;
@@ -536,46 +554,20 @@ export type Database = {
         Returns: Json;
       };
       rotate_cycle: {
-        Args: Record<PropertyKey, never>;
+        Args: Record<string, never>;
         Returns: Json;
       };
     };
     Enums: {
-      account_status: 'active' | 'suspended' | 'banned' | 'deleted';
-      user_role: 'user' | 'moderator' | 'admin';
-      cycle_status: 'upcoming' | 'active' | 'evaluating' | 'completed';
-      idea_category:
-        | 'artificial_intelligence'
-        | 'developer_tools'
-        | 'sustainability'
-        | 'health_wellness'
-        | 'fintech';
-      idea_status: 'draft' | 'published' | 'withdrawn' | 'archived';
-      vote_status: 'active' | 'retracted' | 'voided';
-      abuse_kind:
-        | 'self_vote_attempt'
-        | 'duplicate_vote_attempt'
-        | 'vote_quota_exceeded'
-        | 'closed_idea_vote_attempt'
-        | 'rate_limit_submission'
-        | 'unconfirmed_write_attempt';
-      report_reason:
-        | 'spam'
-        | 'harassment'
-        | 'hate_speech'
-        | 'plagiarism'
-        | 'impersonation'
-        | 'off_topic'
-        | 'other';
-      admin_action_type:
-        | 'suspend_user'
-        | 'ban_user'
-        | 'reinstate_user'
-        | 'remove_idea'
-        | 'restore_idea'
-        | 'void_vote'
-        | 'adjust_cycle'
-        | 'manual_reward';
+      account_status: AccountStatus;
+      user_role: UserRole;
+      cycle_status: CycleStatus;
+      idea_category: IdeaCategory;
+      idea_status: IdeaStatus;
+      vote_status: VoteStatus;
+      abuse_kind: AbuseKind;
+      report_reason: ReportReason;
+      admin_action_type: AdminActionType;
     };
     CompositeTypes: {
       [_ in never]: never;

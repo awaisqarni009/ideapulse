@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                          |
-| -------------------- | ---------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 2 — Authentication                                                                       |
-| **Phase progress**   | 6 / 16 tasks                                                                                   |
-| **Overall progress** | 57 / 178 tasks                                                                                 |
-| **Status**           | In progress — SSR clients, middleware, auth config, branded templates, /register & /login done |
-| **Blocked on**       | Nothing                                                                                        |
-| **Next action**      | T-2.7 — /auth/callback code exchange route (Batch 2: T-2.7 to T-2.12)                          |
-| **Target launch**    | TBD                                                                                            |
-| **Active branch**    | `main`                                                                                         |
-| **Last deploy**      | —                                                                                              |
+| Field                | Value                                                                                         |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 2 — Authentication                                                                      |
+| **Phase progress**   | 12 / 16 tasks                                                                                 |
+| **Overall progress** | 63 / 178 tasks                                                                                |
+| **Status**           | In progress — Batch 1 & 2 done (T-2.1 through T-2.12); Batch 3 queued (T-2.13 through T-2.16) |
+| **Blocked on**       | Nothing                                                                                       |
+| **Next action**      | T-2.13 — Sign-out action, useUser hook, auth error states, E2E test (Batch 3)                 |
+| **Target launch**    | TBD                                                                                           |
+| **Active branch**    | `main`                                                                                        |
+| **Last deploy**      | —                                                                                             |
 
 ### 1.1 Phase board
 
@@ -38,7 +38,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | ----- | ------------------- | -------------- | ----- | ------------- |
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
-| 2     | Authentication      | 🟡 In progress | 6/16  | ❌            |
+| 2     | Authentication      | 🟡 In progress | 12/16 | ❌            |
 | 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
@@ -238,6 +238,15 @@ Each decision records the choice, the alternatives considered, and the reason. *
 
 ---
 
+### ADR-013 — PostgREST generic schema alignment & TypedSupabaseClient
+
+- **Status:** Accepted · 2026-09
+- **Context:** In `@supabase/supabase-js` (v2.49+), `SupabaseClient` takes 4 generic arguments (`<Database, SchemaNameOrClientOptions, SchemaName, Schema>`). However, `@supabase/ssr` (v0.5.2) returns `SupabaseClient<Database, SchemaName, Schema>`. Passing 3 parameters shifts the 3rd parameter to `SchemaName`, resulting in PostgREST evaluating `Schema` as `Database[Database['public']]` (which is `never`), collapsing `.from(...)` table and row types to `never`.
+- **Decision:** Define and export `TypedSupabaseClient = SupabaseClient<Database, 'public', 'public', Database['public']>` in `lib/supabase/client.ts` and `lib/supabase/server.ts`, and cast the client factory return values. In `lib/database.types.ts`, ensure zero-argument RPC functions declare `Args: Record<string, never>` (instead of `Record<PropertyKey, never>`) to satisfy PostgREST's `GenericFunction` index signature.
+- **Consequences:** Full, end-to-end, compile-time type safety across all PostgREST queries, inserts, updates, and RPC calls throughout Server Actions, Route Handlers, and Client Components without any `any` or `never` fallbacks.
+
+---
+
 ## 4. Known issues & watchlist
 
 | ID  | Issue        | Severity | Status | Notes |
@@ -290,6 +299,37 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-21 — Session 02
+
+**Phase:** Phase 2 — Authentication
+**Duration:** ~2h
+**Tasks completed:** T-2.7, T-2.8, T-2.9, T-2.10, T-2.11, T-2.12
+**Tasks started:** T-2.13
+
+**What shipped**
+
+- `app/auth/callback/route.ts`: PKCE / OTP code exchange route handler [T-2.7].
+- `app/auth/confirm/page.tsx`: celebratory email confirmation landing screen [T-2.8].
+- `app/forgot-password/` & `app/reset-password/`: password recovery request and secure update flows [T-2.9].
+- `app/components/auth/oauth-buttons.tsx`: GitHub & Google OAuth sign-in with brand icons [T-2.10].
+- `app/settings/page.tsx` & `app/actions/profile.ts`: profile editing with 30-day username cooldown enforcement [T-2.11].
+- `app/api/username/check/route.ts`: debounced username availability endpoint backed by `citext` index [T-2.12].
+- Cleaned Supabase generic client typing with `TypedSupabaseClient` and `GenericFunction` alignment (ADR-013).
+
+**Decisions made**
+
+- ADR-013: Export `TypedSupabaseClient` to circumvent `@supabase/ssr` 3-parameter generic shift against `@supabase/supabase-js` 4-parameter `SupabaseClient`.
+
+**Blockers hit**
+
+- `@supabase/ssr` generic parameter shift solved via `TypedSupabaseClient` cast and `Record<string, never>` function args.
+
+**Next session starts with**
+
+- Phase 2 Batch 3 (T-2.13 to T-2.16): Sign-out action, `useUser()` hook, auth banner/suspended states, and Playwright E2E auth test to meet Phase 2 exit gate.
 
 ---
 

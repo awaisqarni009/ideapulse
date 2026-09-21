@@ -140,6 +140,111 @@ export async function loginAction(
 }
 
 /**
+ * Server Action: Request Password Reset (T-2.9)
+ * Anti-enumeration: returns identical success message even if email not registered.
+ */
+export async function requestPasswordResetAction(
+  _prevState: AuthActionResult | null,
+  formData: FormData,
+): Promise<AuthActionResult> {
+  const email = formData.get('email')?.toString().trim().toLowerCase() || '';
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return {
+      success: false,
+      error: 'Please enter a valid email address.',
+    };
+  }
+
+  const supabase = await createClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
+  });
+
+  if (error) {
+    console.warn(`[auth/reset-request] Handled reset request: ${error.message}`);
+  }
+
+  return {
+    success: true,
+    message: "If an account exists with this email, you'll receive a password reset link shortly.",
+  };
+}
+
+/**
+ * Server Action: Update Password (T-2.9)
+ * Enforces minimum 10 characters and digit requirement.
+ */
+export async function updatePasswordAction(
+  _prevState: AuthActionResult | null,
+  formData: FormData,
+): Promise<AuthActionResult> {
+  const password = formData.get('password')?.toString() || '';
+  const confirmPassword = formData.get('confirmPassword')?.toString() || '';
+
+  if (password.length < 10) {
+    return {
+      success: false,
+      error: 'Password must be at least 10 characters long.',
+    };
+  }
+
+  if (!/\d/.test(password)) {
+    return {
+      success: false,
+      error: 'Password must contain at least one digit (0-9).',
+    };
+  }
+
+  if (password !== confirmPassword) {
+    return {
+      success: false,
+      error: 'Passwords do not match.',
+    };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    return {
+      success: false,
+      error: error.message || 'Unable to update password. Please try again.',
+    };
+  }
+
+  revalidatePath('/', 'layout');
+  redirect('/login?reset=success');
+}
+
+/**
+ * Server Action: OAuth Sign In (T-2.10)
+ * Redirects user to GitHub or Google auth consent screen.
+ */
+export async function signInWithOAuthAction(
+  provider: 'github' | 'google',
+  nextUrl = '/feed',
+): Promise<void> {
+  const supabase = await createClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(nextUrl)}`,
+    },
+  });
+
+  if (error || !data.url) {
+    redirect(`/login?error=oauth_init_failed`);
+  }
+
+  redirect(data.url);
+}
+
+/**
  * Server Action: Sign Out (T-2.13)
  * Invalidates cookies and redirects to /login.
  */

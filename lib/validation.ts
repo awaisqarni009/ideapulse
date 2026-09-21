@@ -125,3 +125,35 @@ export const loginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+
+/**
+ * Password reset request schema (T-2.9)
+ */
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Please enter your email address.')
+    .email('Please enter a valid email address.')
+    .trim()
+    .toLowerCase(),
+});
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+/**
+ * Password update schema (T-2.9)
+ */
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(10, 'Password must be at least 10 characters long.')
+      .regex(/\d/, 'Password must contain at least one digit (0-9).'),
+    confirmPassword: z.string().min(1, 'Please confirm your new password.'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  });
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
