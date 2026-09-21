@@ -174,11 +174,11 @@ _Goal: the product's reason to exist. Estimated 8 days._
 
 _Goal: users can find ideas and follow the race. Estimated 6 days._
 
-- [ ] **T-4.1** `/feed` RSC with the responsive card grid (1 / 2 / 3 columns)
-- [ ] **T-4.2** `[!]` Cursor pagination on `(created_at, id)` — not offset, which skips and duplicates rows under concurrent inserts
-- [ ] **T-4.3** Infinite scroll via `IntersectionObserver`, with a visible "Load more" fallback for keyboard users
-- [ ] **T-4.4** Sort control: Trending / Newest / Top this cycle, persisted in the URL
-- [ ] **T-4.5** Trending score: `verified_votes / pow(hours_since_post + 2, 1.5)`, computed in SQL
+- [x] **T-4.1** `/feed` RSC with the responsive card grid (1 / 2 / 3 columns)
+- [x] **T-4.2** `[!]` Cursor pagination on `(created_at, id)` — not offset, which skips and duplicates rows under concurrent inserts
+- [x] **T-4.3** Infinite scroll via `IntersectionObserver`, with a visible "Load more" fallback for keyboard users
+- [x] **T-4.4** Sort control: Trending / Newest / Top this cycle, persisted in the URL
+- [x] **T-4.5** Trending score: `verified_votes / pow(hours_since_post + 2, 1.5)`, computed in SQL
 - [ ] **T-4.6** Category and tag filter chips, multi-select, URL-reflected
 - [ ] **T-4.7** Feed empty states: no results, no ideas at all
 - [ ] **T-4.8** Skeleton loaders matching the exact card dimensions so nothing shifts on load

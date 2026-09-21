@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                            |
-| -------------------- | -------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 3 — Core loop: submit & vote (Complete!)                                   |
-| **Phase progress**   | 25 / 25 tasks (100% complete)                                                    |
-| **Overall progress** | 92 / 178 tasks                                                                   |
-| **Status**           | Phase 3 Complete! All 25 tasks passed; All 47 Vitest & 16 Playwright E2E passing |
-| **Blocked on**       | Phase 3 Exit Gate Approval before advancing to Phase 4 (Discovery & leaderboard) |
-| **Next action**      | Stop at Phase 3 exit gate. Await user confirmation to proceed to Phase 4         |
-| **Target launch**    | TBD                                                                              |
-| **Active branch**    | `main`                                                                           |
-| **Last deploy**      | —                                                                                |
+| Field                | Value                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 4 — Discovery & leaderboard                                                              |
+| **Phase progress**   | 5 / 18 tasks (T-4.1 to T-4.5 complete)                                                         |
+| **Overall progress** | 97 / 178 tasks                                                                                 |
+| **Status**           | Phase 4 Batch 1 Complete! 52 Vitest & 19 Playwright E2E passing (100% green)                   |
+| **Blocked on**       | None                                                                                           |
+| **Next action**      | Phase 4 Batch 2 (T-4.6 to T-4.10): Category & tag chips, empty states, skeletons, /leaderboard |
+| **Target launch**    | TBD                                                                                            |
+| **Active branch**    | `main`                                                                                         |
+| **Last deploy**      | —                                                                                              |
 
 ### 1.1 Phase board
 
@@ -40,7 +40,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
 | 3     | Core loop           | 🟢 Complete    | 25/25 | ✅            |
-| 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
+| 4     | Discovery           | 🟡 In progress | 5/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
 | 7     | Polish              | ⬜ Not started | 0/31  | ❌            |
@@ -434,6 +434,34 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 **Next session starts with**
 
 - Phase 3 Batch 3 (T-3.9 to T-3.13): Voting server action `castVote()`, `VoteError` mapper, `<VoteButton />` (all 8 states), and optimistic UI with rollback.
+
+---
+
+### 2026-09-21 — Session 05 (Phase 4 Batch 1: Feed Discovery Core)
+
+**Phase:** Phase 4 — Discovery & leaderboard
+**Duration:** ~1h
+**Tasks completed:** T-4.1, T-4.2, T-4.3, T-4.4, T-4.5
+
+**What shipped**
+
+- `supabase/migrations/135_feed_functions.sql`: Implemented `get_feed_ideas(...)` SQL RPC with SQL-computed trending score `verified_votes / power((extract(epoch from (now() - created_at)) / 3600.0) + 2.0, 1.5)` [T-4.5] and cursor pagination on `(created_at, id)` / `(score, id)` / `(verified_votes, id)` [T-4.2]. Applied and verified on live Supabase cloud via MCP.
+- `lib/feed.ts`: Isolated feed types, composite cursor encoding/decoding (`encodeFeedCursor`, `decodeFeedCursor`) [T-4.2].
+- `app/actions/feed.ts`: `getFeedIdeasAction()` Server Action fetching ideas via RPC and resolving viewer votes in a single batch [T-4.1].
+- `app/components/feed/sort-tabs.tsx`: Glass pill sort tabs (Trending, Newest, Top this Cycle) with active state persisted in URL (`?sort=...`) [T-4.4].
+- `app/components/feed/feed-grid.tsx`: Responsive grid (1 / 2 / 3 cols per `DESIGN.md` §5.3) with `IntersectionObserver` infinite scroll and keyboard accessible fallback button [T-4.1, T-4.3].
+- `app/feed/page.tsx`: `/feed` RSC prefetching first page and mounting discovery components [T-4.1].
+- `tests/feed.test.ts`: Vitest suite with 5 tests verifying cursor encoding/decoding and trending score decay mathematical behavior [T-4.2, T-4.5].
+- `e2e/feed.spec.ts`: Playwright suite with 3 tests verifying header, active cycle badge, sort tabs URL persistence, and responsive card rendering.
+
+**Decisions made**
+
+- Extracted non-async cursor encoding utilities into `lib/feed.ts` so `app/actions/feed.ts` only exports async functions per Next.js 14 Server Action constraints.
+- Cast `p.username::text` in Postgres table-valued function to prevent `citext` return type mismatches.
+
+**Next session starts with**
+
+- Phase 4 Batch 2 (T-4.6 to T-4.10): Category & tag filter chips, empty states, card skeleton loaders, and `/leaderboard` RSC top 20 ranked list with `<LeaderboardRow />`.
 
 ---
 

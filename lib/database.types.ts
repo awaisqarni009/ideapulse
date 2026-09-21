@@ -537,6 +537,38 @@ export type Database = {
       active_cycle_id: { Args: never; Returns: string };
       cast_vote: { Args: { p_idea_id: string }; Returns: Json };
       finalize_cycle: { Args: { p_cycle_id?: string }; Returns: Json };
+      get_feed_ideas: {
+        Args: {
+          p_category?: string;
+          p_cursor_created_at?: string;
+          p_cursor_id?: string;
+          p_cursor_score?: number;
+          p_cursor_votes?: number;
+          p_limit?: number;
+          p_sort?: string;
+          p_tag?: string;
+        };
+        Returns: {
+          author_avatar_url: string;
+          author_display_name: string;
+          author_id: string;
+          author_username: string;
+          category: string;
+          created_at: string;
+          cycle_id: string;
+          cycle_number: number;
+          id: string;
+          slug: string;
+          status: Database['public']['Enums']['idea_status'];
+          summary: string;
+          tags: string[];
+          title: string;
+          trending_score: number;
+          verified_vote_count: number;
+          vote_count: number;
+          vote_threshold: number;
+        }[];
+      };
       is_admin: { Args: { uid?: string }; Returns: boolean };
       log_abuse: {
         Args: {
@@ -710,11 +742,3 @@ export const Constants = {
     },
   },
 } as const;
-
-export type UserRole = Database['public']['Enums']['user_role'];
-export type AccountStatus = Database['public']['Enums']['account_status'];
-export type CycleStatus = Database['public']['Enums']['cycle_status'];
-export type IdeaStatus = Database['public']['Enums']['idea_status'];
-export type VoteStatus = Database['public']['Enums']['vote_status'];
-export type RewardStatus = Database['public']['Enums']['reward_status'];
-export type AbuseKind = Database['public']['Enums']['abuse_kind'];

@@ -91,7 +91,7 @@ export function IdeaCard({
 
   return (
     <article
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border bg-[var(--surface-2)] p-6 transition-all duration-200 hover:-translate-y-[2px] ${
+      className={`glass-panel group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border bg-[var(--surface-2)] p-6 backdrop-blur-[var(--blur-md)] transition-all duration-200 hover:-translate-y-[2px] ${
         isQualified
           ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
           : 'border-[var(--border-default)] hover:border-[var(--border-strong)] hover:shadow-[var(--glow-indigo-sm)]'
