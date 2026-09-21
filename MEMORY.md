@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                    |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 2 — Authentication (Complete) / Phase 3 — Core loop (Queued)                                       |
-| **Phase progress**   | 16 / 16 tasks (Phase 2)                                                                                  |
-| **Overall progress** | 67 / 178 tasks                                                                                           |
-| **Status**           | Phase 2 Complete & Exit Gate Passed; Live Supabase connected and migrated; Awaiting approval for Phase 3 |
-| **Blocked on**       | Phase 2 Exit gate user approval before advancing to Phase 3 (per AGENTS.md)                              |
-| **Next action**      | Obtain Phase 2 exit approval, then proceed with Phase 3 Batch 1 (T-3.1 to T-3.4)                         |
-| **Target launch**    | TBD                                                                                                      |
-| **Active branch**    | `main`                                                                                                   |
-| **Last deploy**      | —                                                                                                        |
+| Field                | Value                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 3 — Core loop: submit & vote                                                       |
+| **Phase progress**   | 5 / 25 tasks (Phase 3)                                                                   |
+| **Overall progress** | 72 / 178 tasks                                                                           |
+| **Status**           | Phase 3 Batch 1 Complete (T-3.1–T-3.5); Typecheck, Vitest, and Playwright E2E passing    |
+| **Blocked on**       | None. Next batch queued: T-3.6 to T-3.8                                                  |
+| **Next action**      | Implement Batch 2: Draft autosave, submission redirect & toast, and idea withdrawal flow |
+| **Target launch**    | TBD                                                                                      |
+| **Active branch**    | `main`                                                                                   |
+| **Last deploy**      | —                                                                                        |
 
 ### 1.1 Phase board
 
@@ -39,7 +39,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 0     | Foundation          | 🟢 Complete    | 17/17 | ✅            |
 | 1     | Database & security | 🟢 Complete    | 34/34 | ✅            |
 | 2     | Authentication      | 🟢 Complete    | 16/16 | ✅            |
-| 3     | Core loop           | ⬜ Not started | 0/25  | ❌            |
+| 3     | Core loop           | 🟡 In progress | 5/25  | ❌            |
 | 4     | Discovery           | ⬜ Not started | 0/18  | ❌            |
 | 5     | Cycles & rewards    | ⬜ Not started | 0/13  | ❌            |
 | 6     | Trust & admin       | ⬜ Not started | 0/14  | ❌            |
@@ -328,20 +328,43 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 **Blockers hit**
 
-- Seed submission cooldown trigger properly blocked duplicate ideas in seed script; resolved by enabling triggers after initial fixtures.
+### 2026-09-21 — Session 04 (Phase 3 Batch 1: Idea Submission)
+
+**Phase:** Phase 3 — Core loop: submit & vote
+**Duration:** ~1.5h
+**Tasks completed:** T-3.1, T-3.2, T-3.3, T-3.4, T-3.5
+**Tasks started:** T-3.6
+
+**What shipped**
+
+- `app/submit/page.tsx`: RSC with server-side cooldown check and branching between `<IdeaForm />` and `<CooldownPanel />` [T-3.1].
+- `app/components/ideas/char-counter.tsx` & `idea-form.tsx`: Full submission form with title (10-120), summary (40-280), body (100-5000), categories, tags, and dynamic character counters turning warning at 95% and danger at 100% per `DESIGN.md` §7.7 [T-3.2].
+- `app/actions/ideas.ts`: `submitIdeaAction()` Server Action mapping `IP_SUBMIT_COOLDOWN` and `IP_ACCOUNT_NOT_WRITABLE` exceptions cleanly [T-3.3].
+- `app/components/ideas/cooldown-panel.tsx`: Live second-by-second countdown with exact UTC and local timezone offsets per `RULES.md` BR-020 [T-3.4].
+- `lib/markdown.tsx` & `app/components/ideas/markdown-preview.tsx`: Sanitized markdown parser for restricted subset (bold, italic, links, lists, code) with zero `dangerouslySetInnerHTML` for complete XSS immunity [T-3.5].
+- `tests/ideas.test.ts`: Vitest suite with 15 tests covering character boundaries, markdown sanitization, and BR-020 message formatting.
+- `e2e/submit.spec.ts`: Playwright test suite covering unauthenticated redirect, cooldown panel with live timers, and eligible idea form interactions.
+
+**Decisions made**
+
+- `formatNextSlotMessage()` moved to `lib/ideas.ts` to keep `app/actions/ideas.ts` purely async for Next.js 14 Server Action compilation.
+- Synced `auth.users` GoTrue token non-null string expectations for live Supabase Cloud authentication.
+
+**Blockers hit**
+
+- Next.js Server Action compiler requires all exports in `'use server'` files to be async functions. Resolved by extracting formatting utilities into `lib/ideas.ts`.
 
 **Next session starts with**
 
-- Phase 3 Batch 1 (T-3.1 to T-3.4): `/submit` RSC, `<IdeaForm />`, `submitIdea()` action, and `<CooldownPanel />`.
+- Phase 3 Batch 2 (T-3.6 to T-3.8): LocalStorage draft autosave, submission redirect & toast, and idea withdrawal flow.
 
 ---
 
-### 2026-09-21 — Session 02
+### 2026-09-21 — Session 03 (Phase 2 Auth Completion)
 
 **Phase:** Phase 2 — Authentication
 **Duration:** ~2h
-**Tasks completed:** T-2.7, T-2.8, T-2.9, T-2.10, T-2.11, T-2.12
-**Tasks started:** T-2.13
+**Tasks completed:** T-2.7 through T-2.16
 
 **What shipped**
 
@@ -351,19 +374,15 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 - `app/components/auth/oauth-buttons.tsx`: GitHub & Google OAuth sign-in with brand icons [T-2.10].
 - `app/settings/page.tsx` & `app/actions/profile.ts`: profile editing with 30-day username cooldown enforcement [T-2.11].
 - `app/api/username/check/route.ts`: debounced username availability endpoint backed by `citext` index [T-2.12].
-- Cleaned Supabase generic client typing with `TypedSupabaseClient` and `GenericFunction` alignment (ADR-013).
+- `app/actions/auth.ts`: `signOutAction()` [T-2.13] and `resendConfirmationAction()` [T-2.15].
+- `lib/auth/user.ts` & `lib/auth/use-user.tsx`: `getCurrentUser()` server helper and `UserProvider` / `useUser()` hook [T-2.14].
+- `app/components/auth/unconfirmed-banner.tsx`: warning banner with resend trigger [T-2.15].
+- `app/suspended/page.tsx`: suspended account screen [T-2.15].
+- `e2e/auth.spec.ts`: Playwright suite for Phase 2 auth loop [T-2.16].
 
 **Decisions made**
 
 - ADR-013: Export `TypedSupabaseClient` to circumvent `@supabase/ssr` 3-parameter generic shift against `@supabase/supabase-js` 4-parameter `SupabaseClient`.
-
-**Blockers hit**
-
-- `@supabase/ssr` generic parameter shift solved via `TypedSupabaseClient` cast and `Record<string, never>` function args.
-
-**Next session starts with**
-
-- Phase 2 Batch 3 (T-2.13 to T-2.16): Sign-out action, `useUser()` hook, auth banner/suspended states, and Playwright E2E auth test to meet Phase 2 exit gate.
 
 ---
 

@@ -1,199 +1,224 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type UserRole = 'user' | 'moderator' | 'admin';
-export type AccountStatus = 'active' | 'suspended' | 'banned' | 'deleted';
-export type CycleStatus = 'upcoming' | 'active' | 'evaluating' | 'completed';
-export type IdeaCategory =
-  'artificial_intelligence' | 'developer_tools' | 'sustainability' | 'health_wellness' | 'fintech';
-export type IdeaStatus = 'draft' | 'published' | 'withdrawn' | 'archived';
-export type VoteStatus = 'active' | 'retracted' | 'voided';
-export type AbuseKind =
-  | 'self_vote_attempt'
-  | 'duplicate_vote_attempt'
-  | 'vote_quota_exceeded'
-  | 'closed_idea_vote_attempt'
-  | 'rate_limit_submission'
-  | 'unconfirmed_write_attempt';
-export type ReportReason =
-  'spam' | 'harassment' | 'hate_speech' | 'plagiarism' | 'impersonation' | 'off_topic' | 'other';
-export type AdminActionType =
-  | 'suspend_user'
-  | 'ban_user'
-  | 'reinstate_user'
-  | 'remove_idea'
-  | 'restore_idea'
-  | 'void_vote'
-  | 'adjust_cycle'
-  | 'manual_reward';
-
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: '14.5';
+  };
   public: {
     Tables: {
-      profiles: {
+      abuse_events: {
         Row: {
-          id: string;
-          role: UserRole;
-          status: AccountStatus;
-          username: string;
-          display_name: string;
-          bio: string | null;
-          avatar_url: string | null;
-          ideas_count: number;
-          votes_cast_count: number;
-          votes_received_count: number;
-          rewards_won_count: number;
-          suspended_until: string | null;
-          suspension_reason: string | null;
-          last_idea_at: string | null;
-          last_vote_at: string | null;
+          actor_id: string | null;
           created_at: string;
-          updated_at: string;
+          detail: Json;
+          error_code: string;
+          id: number;
+          ip_hash: string | null;
+          kind: Database['public']['Enums']['abuse_kind'];
+          target_id: string | null;
+          target_table: string | null;
+          user_agent: string | null;
         };
         Insert: {
-          id: string;
-          role?: UserRole;
-          status?: AccountStatus;
-          username: string;
-          display_name: string;
-          bio?: string | null;
-          avatar_url?: string | null;
-          ideas_count?: number;
-          votes_cast_count?: number;
-          votes_received_count?: number;
-          rewards_won_count?: number;
-          suspended_until?: string | null;
-          suspension_reason?: string | null;
-          last_idea_at?: string | null;
-          last_vote_at?: string | null;
+          actor_id?: string | null;
           created_at?: string;
-          updated_at?: string;
+          detail?: Json;
+          error_code: string;
+          id?: number;
+          ip_hash?: string | null;
+          kind: Database['public']['Enums']['abuse_kind'];
+          target_id?: string | null;
+          target_table?: string | null;
+          user_agent?: string | null;
         };
         Update: {
-          id?: string;
-          role?: UserRole;
-          status?: AccountStatus;
-          username?: string;
-          display_name?: string;
-          bio?: string | null;
-          avatar_url?: string | null;
-          ideas_count?: number;
-          votes_cast_count?: number;
-          votes_received_count?: number;
-          rewards_won_count?: number;
-          suspended_until?: string | null;
-          suspension_reason?: string | null;
-          last_idea_at?: string | null;
-          last_vote_at?: string | null;
+          actor_id?: string | null;
           created_at?: string;
-          updated_at?: string;
+          detail?: Json;
+          error_code?: string;
+          id?: number;
+          ip_hash?: string | null;
+          kind?: Database['public']['Enums']['abuse_kind'];
+          target_id?: string | null;
+          target_table?: string | null;
+          user_agent?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'abuse_events_actor_id_fkey';
+            columns: ['actor_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      admin_actions: {
+        Row: {
+          action: string;
+          admin_id: string;
+          after_state: Json | null;
+          before_state: Json | null;
+          created_at: string;
+          id: number;
+          reason: string;
+          target_id: string;
+          target_table: string;
+        };
+        Insert: {
+          action: string;
+          admin_id: string;
+          after_state?: Json | null;
+          before_state?: Json | null;
+          created_at?: string;
+          id?: number;
+          reason: string;
+          target_id: string;
+          target_table: string;
+        };
+        Update: {
+          action?: string;
+          admin_id?: string;
+          after_state?: Json | null;
+          before_state?: Json | null;
+          created_at?: string;
+          id?: number;
+          reason?: string;
+          target_id?: string;
+          target_table?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'admin_actions_admin_id_fkey';
+            columns: ['admin_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       cycles: {
         Row: {
-          id: string;
-          sequence_number: number;
-          status: CycleStatus;
-          starts_at: string;
-          ends_at: string;
-          vote_threshold: number;
-          daily_vote_limit: number;
-          reward_slots: number;
-          reward_pool_cents: number;
-          finalized_at: string | null;
-          total_ideas: number;
-          qualifying_ideas: number;
-          total_votes: number;
           created_at: string;
+          cycle_number: number;
+          daily_vote_limit: number;
+          ends_at: string;
+          finalization_note: string | null;
+          finalized_at: string | null;
+          id: string;
+          qualified_count: number | null;
+          reward_slots: number;
+          starts_at: string;
+          status: Database['public']['Enums']['cycle_status'];
+          submission_cooldown: string;
+          total_ideas: number | null;
+          total_votes: number | null;
+          vote_threshold: number;
         };
         Insert: {
-          id?: string;
-          sequence_number: number;
-          status?: CycleStatus;
-          starts_at: string;
-          ends_at: string;
-          vote_threshold?: number;
-          daily_vote_limit?: number;
-          reward_slots?: number;
-          reward_pool_cents?: number;
-          finalized_at?: string | null;
-          total_ideas?: number;
-          qualifying_ideas?: number;
-          total_votes?: number;
           created_at?: string;
+          cycle_number: number;
+          daily_vote_limit?: number;
+          ends_at: string;
+          finalization_note?: string | null;
+          finalized_at?: string | null;
+          id?: string;
+          qualified_count?: number | null;
+          reward_slots?: number;
+          starts_at: string;
+          status?: Database['public']['Enums']['cycle_status'];
+          submission_cooldown?: string;
+          total_ideas?: number | null;
+          total_votes?: number | null;
+          vote_threshold?: number;
         };
         Update: {
-          id?: string;
-          sequence_number?: number;
-          status?: CycleStatus;
-          starts_at?: string;
-          ends_at?: string;
-          vote_threshold?: number;
-          daily_vote_limit?: number;
-          reward_slots?: number;
-          reward_pool_cents?: number;
-          finalized_at?: string | null;
-          total_ideas?: number;
-          qualifying_ideas?: number;
-          total_votes?: number;
           created_at?: string;
+          cycle_number?: number;
+          daily_vote_limit?: number;
+          ends_at?: string;
+          finalization_note?: string | null;
+          finalized_at?: string | null;
+          id?: string;
+          qualified_count?: number | null;
+          reward_slots?: number;
+          starts_at?: string;
+          status?: Database['public']['Enums']['cycle_status'];
+          submission_cooldown?: string;
+          total_ideas?: number | null;
+          total_votes?: number | null;
+          vote_threshold?: number;
         };
         Relationships: [];
       };
       ideas: {
         Row: {
-          id: string;
           author_id: string;
-          cycle_id: string;
-          slug: string;
-          title: string;
-          summary: string;
           body: string;
-          category: IdeaCategory;
-          status: IdeaStatus;
-          vote_count: number;
-          verified_vote_count: number;
-          qualified_at: string | null;
-          locked_at: string | null;
-          withdrawn_at: string | null;
+          category: string;
           created_at: string;
+          cycle_id: string;
+          id: string;
+          locked_at: string | null;
+          qualified_at: string | null;
+          removal_reason: string | null;
+          removed_at: string | null;
+          report_count: number;
+          slug: string;
+          status: Database['public']['Enums']['idea_status'];
+          summary: string;
+          tags: string[];
+          title: string;
           updated_at: string;
+          verified_vote_count: number;
+          vote_count: number;
+          withdrawn_at: string | null;
         };
         Insert: {
-          id?: string;
           author_id: string;
-          cycle_id: string;
-          slug?: string;
-          title: string;
-          summary: string;
           body: string;
-          category: IdeaCategory;
-          status?: IdeaStatus;
-          vote_count?: number;
-          verified_vote_count?: number;
-          qualified_at?: string | null;
-          locked_at?: string | null;
-          withdrawn_at?: string | null;
+          category: string;
           created_at?: string;
+          cycle_id: string;
+          id?: string;
+          locked_at?: string | null;
+          qualified_at?: string | null;
+          removal_reason?: string | null;
+          removed_at?: string | null;
+          report_count?: number;
+          slug?: string;
+          status?: Database['public']['Enums']['idea_status'];
+          summary: string;
+          tags?: string[];
+          title: string;
           updated_at?: string;
+          verified_vote_count?: number;
+          vote_count?: number;
+          withdrawn_at?: string | null;
         };
         Update: {
-          id?: string;
           author_id?: string;
-          cycle_id?: string;
-          slug?: string;
-          title?: string;
-          summary?: string;
           body?: string;
-          category?: IdeaCategory;
-          status?: IdeaStatus;
-          vote_count?: number;
-          verified_vote_count?: number;
-          qualified_at?: string | null;
-          locked_at?: string | null;
-          withdrawn_at?: string | null;
+          category?: string;
           created_at?: string;
+          cycle_id?: string;
+          id?: string;
+          locked_at?: string | null;
+          qualified_at?: string | null;
+          removal_reason?: string | null;
+          removed_at?: string | null;
+          report_count?: number;
+          slug?: string;
+          status?: Database['public']['Enums']['idea_status'];
+          summary?: string;
+          tags?: string[];
+          title?: string;
           updated_at?: string;
+          verified_vote_count?: number;
+          vote_count?: number;
+          withdrawn_at?: string | null;
         };
         Relationships: [
           {
@@ -212,45 +237,252 @@ export type Database = {
           },
         ];
       };
-      votes: {
+      profiles: {
         Row: {
-          id: string;
-          idea_id: string;
-          idea_author_id: string;
-          voter_id: string;
-          cycle_id: string;
-          status: VoteStatus;
-          is_verified: boolean;
-          retracted_at: string | null;
-          voided_at: string | null;
-          void_reason: string | null;
+          avatar_url: string | null;
+          bio: string | null;
           created_at: string;
+          cycles_won: number;
+          display_name: string;
+          id: string;
+          ideas_count: number;
+          last_idea_at: string | null;
+          last_vote_at: string | null;
+          role: Database['public']['Enums']['user_role'];
+          status: Database['public']['Enums']['account_status'];
+          suspended_until: string | null;
+          suspension_reason: string | null;
+          updated_at: string;
+          username: string;
+          username_changed_at: string | null;
+          votes_cast_count: number;
+          votes_received_count: number;
         };
         Insert: {
-          id?: string;
-          idea_id: string;
-          idea_author_id: string;
-          voter_id: string;
-          cycle_id: string;
-          status?: VoteStatus;
-          is_verified?: boolean;
-          retracted_at?: string | null;
-          voided_at?: string | null;
-          void_reason?: string | null;
+          avatar_url?: string | null;
+          bio?: string | null;
           created_at?: string;
+          cycles_won?: number;
+          display_name: string;
+          id: string;
+          ideas_count?: number;
+          last_idea_at?: string | null;
+          last_vote_at?: string | null;
+          role?: Database['public']['Enums']['user_role'];
+          status?: Database['public']['Enums']['account_status'];
+          suspended_until?: string | null;
+          suspension_reason?: string | null;
+          updated_at?: string;
+          username: string;
+          username_changed_at?: string | null;
+          votes_cast_count?: number;
+          votes_received_count?: number;
         };
         Update: {
+          avatar_url?: string | null;
+          bio?: string | null;
+          created_at?: string;
+          cycles_won?: number;
+          display_name?: string;
+          id?: string;
+          ideas_count?: number;
+          last_idea_at?: string | null;
+          last_vote_at?: string | null;
+          role?: Database['public']['Enums']['user_role'];
+          status?: Database['public']['Enums']['account_status'];
+          suspended_until?: string | null;
+          suspension_reason?: string | null;
+          updated_at?: string;
+          username?: string;
+          username_changed_at?: string | null;
+          votes_cast_count?: number;
+          votes_received_count?: number;
+        };
+        Relationships: [];
+      };
+      reports: {
+        Row: {
+          created_at: string;
+          detail: string | null;
+          id: string;
+          idea_id: string;
+          reason: string;
+          reporter_id: string;
+          resolution: string | null;
+          resolved_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          detail?: string | null;
+          id?: string;
+          idea_id: string;
+          reason: string;
+          reporter_id: string;
+          resolution?: string | null;
+          resolved_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          detail?: string | null;
           id?: string;
           idea_id?: string;
-          idea_author_id?: string;
-          voter_id?: string;
+          reason?: string;
+          reporter_id?: string;
+          resolution?: string | null;
+          resolved_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'reports_idea_id_fkey';
+            columns: ['idea_id'];
+            isOneToOne: false;
+            referencedRelation: 'idea_public_stats';
+            referencedColumns: ['idea_id'];
+          },
+          {
+            foreignKeyName: 'reports_idea_id_fkey';
+            columns: ['idea_id'];
+            isOneToOne: false;
+            referencedRelation: 'ideas';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'reports_reporter_id_fkey';
+            columns: ['reporter_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      rewards: {
+        Row: {
+          announced_at: string | null;
+          claimed_at: string | null;
+          created_at: string;
+          cycle_id: string;
+          description: string | null;
+          fulfilled_at: string | null;
+          id: string;
+          idea_id: string;
+          payout_amount: number | null;
+          payout_currency: string | null;
+          payout_kind: string;
+          qualified_at: string;
+          rank: number;
+          recipient_id: string;
+          status: Database['public']['Enums']['reward_status'];
+          title: string;
+          verified_votes: number;
+        };
+        Insert: {
+          announced_at?: string | null;
+          claimed_at?: string | null;
+          created_at?: string;
+          cycle_id: string;
+          description?: string | null;
+          fulfilled_at?: string | null;
+          id?: string;
+          idea_id: string;
+          payout_amount?: number | null;
+          payout_currency?: string | null;
+          payout_kind?: string;
+          qualified_at: string;
+          rank: number;
+          recipient_id: string;
+          status?: Database['public']['Enums']['reward_status'];
+          title: string;
+          verified_votes: number;
+        };
+        Update: {
+          announced_at?: string | null;
+          claimed_at?: string | null;
+          created_at?: string;
           cycle_id?: string;
-          status?: VoteStatus;
+          description?: string | null;
+          fulfilled_at?: string | null;
+          id?: string;
+          idea_id?: string;
+          payout_amount?: number | null;
+          payout_currency?: string | null;
+          payout_kind?: string;
+          qualified_at?: string;
+          rank?: number;
+          recipient_id?: string;
+          status?: Database['public']['Enums']['reward_status'];
+          title?: string;
+          verified_votes?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'rewards_cycle_id_fkey';
+            columns: ['cycle_id'];
+            isOneToOne: false;
+            referencedRelation: 'cycles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'rewards_idea_id_fkey';
+            columns: ['idea_id'];
+            isOneToOne: false;
+            referencedRelation: 'idea_public_stats';
+            referencedColumns: ['idea_id'];
+          },
+          {
+            foreignKeyName: 'rewards_idea_id_fkey';
+            columns: ['idea_id'];
+            isOneToOne: false;
+            referencedRelation: 'ideas';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'rewards_recipient_id_fkey';
+            columns: ['recipient_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      votes: {
+        Row: {
+          created_at: string;
+          cycle_id: string;
+          id: string;
+          idea_author_id: string;
+          idea_id: string;
+          is_verified: boolean;
+          retracted_at: string | null;
+          status: Database['public']['Enums']['vote_status'];
+          void_reason: string | null;
+          voided_at: string | null;
+          voter_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          cycle_id: string;
+          id?: string;
+          idea_author_id: string;
+          idea_id: string;
           is_verified?: boolean;
           retracted_at?: string | null;
-          voided_at?: string | null;
+          status?: Database['public']['Enums']['vote_status'];
           void_reason?: string | null;
+          voided_at?: string | null;
+          voter_id: string;
+        };
+        Update: {
           created_at?: string;
+          cycle_id?: string;
+          id?: string;
+          idea_author_id?: string;
+          idea_id?: string;
+          is_verified?: boolean;
+          retracted_at?: string | null;
+          status?: Database['public']['Enums']['vote_status'];
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voter_id?: string;
         };
         Relationships: [
           {
@@ -276,301 +508,213 @@ export type Database = {
           },
         ];
       };
-      rewards: {
+    };
+    Views: {
+      idea_public_stats: {
         Row: {
-          id: string;
-          cycle_id: string;
-          idea_id: string;
-          recipient_id: string;
-          rank: number;
-          amount_cents: number;
-          status: 'announced' | 'claimed' | 'fulfilled';
-          claimed_at: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          cycle_id: string;
-          idea_id: string;
-          recipient_id: string;
-          rank: number;
-          amount_cents: number;
-          status?: 'announced' | 'claimed' | 'fulfilled';
-          claimed_at?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          cycle_id?: string;
-          idea_id?: string;
-          recipient_id?: string;
-          rank?: number;
-          amount_cents?: number;
-          status?: 'announced' | 'claimed' | 'fulfilled';
-          claimed_at?: string | null;
-          created_at?: string;
+          cycle_id: string | null;
+          cycle_rank: number | null;
+          idea_id: string | null;
+          is_qualified: boolean | null;
+          verified_vote_count: number | null;
+          vote_count: number | null;
+          vote_threshold: number | null;
+          votes_to_qualify: number | null;
         };
         Relationships: [
           {
-            foreignKeyName: 'rewards_cycle_id_fkey';
+            foreignKeyName: 'ideas_cycle_id_fkey';
             columns: ['cycle_id'];
             isOneToOne: false;
             referencedRelation: 'cycles';
             referencedColumns: ['id'];
           },
-          {
-            foreignKeyName: 'rewards_idea_id_fkey';
-            columns: ['idea_id'];
-            isOneToOne: false;
-            referencedRelation: 'ideas';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'rewards_recipient_id_fkey';
-            columns: ['recipient_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
         ];
-      };
-      abuse_events: {
-        Row: {
-          id: string;
-          actor_id: string | null;
-          kind: AbuseKind;
-          error_code: string;
-          target_table: string | null;
-          target_id: string | null;
-          detail: Json;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          actor_id?: string | null;
-          kind: AbuseKind;
-          error_code: string;
-          target_table?: string | null;
-          target_id?: string | null;
-          detail?: Json;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          actor_id?: string | null;
-          kind?: AbuseKind;
-          error_code?: string;
-          target_table?: string | null;
-          target_id?: string | null;
-          detail?: Json;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'abuse_events_actor_id_fkey';
-            columns: ['actor_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      reports: {
-        Row: {
-          id: string;
-          reporter_id: string;
-          target_table: string;
-          target_id: string;
-          reason: ReportReason;
-          detail: string | null;
-          resolved_at: string | null;
-          resolver_id: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          reporter_id: string;
-          target_table: string;
-          target_id: string;
-          reason: ReportReason;
-          detail?: string | null;
-          resolved_at?: string | null;
-          resolver_id?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          reporter_id?: string;
-          target_table?: string;
-          target_id?: string;
-          reason?: ReportReason;
-          detail?: string | null;
-          resolved_at?: string | null;
-          resolver_id?: string | null;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'reports_reporter_id_fkey';
-            columns: ['reporter_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'reports_resolver_id_fkey';
-            columns: ['resolver_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      admin_actions: {
-        Row: {
-          id: string;
-          admin_id: string;
-          action: AdminActionType;
-          target_table: string;
-          target_id: string;
-          reason: string | null;
-          detail: Json;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          admin_id: string;
-          action: AdminActionType;
-          target_table: string;
-          target_id: string;
-          reason?: string | null;
-          detail?: Json;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          admin_id?: string;
-          action?: AdminActionType;
-          target_table?: string;
-          target_id?: string;
-          reason?: string | null;
-          detail?: Json;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'admin_actions_admin_id_fkey';
-            columns: ['admin_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-    };
-    Views: {
-      idea_public_stats: {
-        Row: {
-          id: string;
-          author_id: string;
-          cycle_id: string;
-          slug: string;
-          title: string;
-          summary: string;
-          body: string;
-          category: IdeaCategory;
-          status: IdeaStatus;
-          vote_count: number;
-          verified_vote_count: number;
-          is_qualified: boolean;
-          votes_to_qualify: number;
-          qualified_at: string | null;
-          locked_at: string | null;
-          created_at: string;
-          author_username: string;
-          author_display_name: string;
-          author_avatar_url: string | null;
-          cycle_rank: number | null;
-        };
-        Relationships: [];
       };
     };
     Functions: {
-      active_cycle_id: {
-        Args: Record<string, never>;
-        Returns: string;
-      };
-      is_admin: {
-        Args: {
-          uid?: string;
-        };
-        Returns: boolean;
-      };
-      account_is_writable: {
-        Args: {
-          uid?: string;
-        };
-        Returns: boolean;
-      };
-      voter_is_verified: {
-        Args: {
-          uid: string;
-        };
-        Returns: boolean;
-      };
+      account_is_writable: { Args: { uid?: string }; Returns: boolean };
+      active_cycle_id: { Args: never; Returns: string };
+      cast_vote: { Args: { p_idea_id: string }; Returns: Json };
+      finalize_cycle: { Args: { p_cycle_id?: string }; Returns: Json };
+      is_admin: { Args: { uid?: string }; Returns: boolean };
       log_abuse: {
         Args: {
           p_actor: string;
-          p_kind: AbuseKind;
           p_code: string;
+          p_detail?: Json;
+          p_kind: Database['public']['Enums']['abuse_kind'];
           p_table?: string;
           p_target?: string;
-          p_detail?: Json;
         };
-        Returns: void;
+        Returns: undefined;
       };
-      cast_vote: {
-        Args: {
-          p_idea_id: string;
-        };
-        Returns: Json;
-      };
-      retract_vote: {
-        Args: {
-          p_vote_id: string;
-        };
-        Returns: Json;
-      };
-      open_next_cycle: {
-        Args: {
-          p_duration_days?: number;
-        };
-        Returns: string;
-      };
-      finalize_cycle: {
-        Args: {
-          p_cycle_id: string;
-        };
-        Returns: Json;
-      };
-      rotate_cycle: {
-        Args: Record<string, never>;
-        Returns: Json;
-      };
+      open_next_cycle: { Args: never; Returns: string };
+      retract_vote: { Args: { p_idea_id: string }; Returns: Json };
+      rotate_cycle: { Args: never; Returns: Json };
+      voter_is_verified: { Args: { uid: string }; Returns: boolean };
     };
     Enums: {
-      account_status: AccountStatus;
-      user_role: UserRole;
-      cycle_status: CycleStatus;
-      idea_category: IdeaCategory;
-      idea_status: IdeaStatus;
-      vote_status: VoteStatus;
-      abuse_kind: AbuseKind;
-      report_reason: ReportReason;
-      admin_action_type: AdminActionType;
+      abuse_kind:
+        | 'self_vote_attempt'
+        | 'duplicate_vote_attempt'
+        | 'vote_quota_exceeded'
+        | 'submit_quota_exceeded'
+        | 'unconfirmed_write_attempt'
+        | 'suspended_write_attempt'
+        | 'closed_idea_vote_attempt'
+        | 'rate_limit_tripped';
+      account_status: 'active' | 'suspended' | 'deleted';
+      cycle_status: 'scheduled' | 'active' | 'closing' | 'finalized' | 'recount_required';
+      idea_status: 'published' | 'withdrawn' | 'under_review' | 'removed';
+      reward_status: 'pending' | 'announced' | 'claimed' | 'fulfilled' | 'forfeited';
+      user_role: 'member' | 'moderator' | 'admin';
+      vote_status: 'active' | 'retracted' | 'voided';
     };
     CompositeTypes: {
       [_ in never]: never;
     };
   };
 };
+
+type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>;
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>];
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    keyof DefaultSchema['Tables'] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    keyof DefaultSchema['Tables'] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    keyof DefaultSchema['Enums'] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    keyof DefaultSchema['CompositeTypes'] | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
+    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  public: {
+    Enums: {
+      abuse_kind: [
+        'self_vote_attempt',
+        'duplicate_vote_attempt',
+        'vote_quota_exceeded',
+        'submit_quota_exceeded',
+        'unconfirmed_write_attempt',
+        'suspended_write_attempt',
+        'closed_idea_vote_attempt',
+        'rate_limit_tripped',
+      ],
+      account_status: ['active', 'suspended', 'deleted'],
+      cycle_status: ['scheduled', 'active', 'closing', 'finalized', 'recount_required'],
+      idea_status: ['published', 'withdrawn', 'under_review', 'removed'],
+      reward_status: ['pending', 'announced', 'claimed', 'fulfilled', 'forfeited'],
+      user_role: ['member', 'moderator', 'admin'],
+      vote_status: ['active', 'retracted', 'voided'],
+    },
+  },
+} as const;
+
+export type UserRole = Database['public']['Enums']['user_role'];
+export type AccountStatus = Database['public']['Enums']['account_status'];
+export type CycleStatus = Database['public']['Enums']['cycle_status'];
+export type IdeaStatus = Database['public']['Enums']['idea_status'];
+export type VoteStatus = Database['public']['Enums']['vote_status'];
+export type RewardStatus = Database['public']['Enums']['reward_status'];
+export type AbuseKind = Database['public']['Enums']['abuse_kind'];
