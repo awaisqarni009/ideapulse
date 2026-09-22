@@ -3,50 +3,62 @@
 @tailwind utilities;
 
 :root {
-  /* Canvas & surfaces */
-  --canvas: #0b0f19;
-  --canvas-deep: #070a11;
-  --surface-solid: #131826;
-  --surface-1: rgba(255, 255, 255, 0.03);
-  --surface-2: rgba(255, 255, 255, 0.05);
-  --surface-3: rgba(255, 255, 255, 0.08);
-  --surface-4: rgba(255, 255, 255, 0.11);
+  /* Canvas & surfaces (Bright / Light Mode) */
+  --canvas: #f8fafc;
+  --canvas-deep: #edf2f7;
+  --surface-solid: #ffffff;
+  --surface-1: rgba(255, 255, 255, 0.8);
+  --surface-2: rgba(241, 245, 249, 0.85);
+  --surface-3: rgba(226, 232, 240, 0.75);
+  --surface-4: rgba(255, 255, 255, 0.95);
 
   /* Accents */
-  --indigo: #6366f1;
-  --indigo-bright: #818cf8;
-  --indigo-deep: #4338ca;
-  --violet: #8b5cf6;
-  --violet-bright: #a78bfa;
-  --cyan: #22d3ee;
-  --cyan-bright: #67e8f9;
+  --indigo: #4f46e5;
+  --indigo-bright: #6366f1;
+  --indigo-deep: #3730a3;
+  --violet: #7c3aed;
+  --violet-bright: #8b5cf6;
+  --cyan: #0891b2;
+  --cyan-bright: #06b6d4;
 
   /* Semantic */
-  --success: #34d399;
-  --warning: #fbbf24;
-  --danger: #f87171;
-  --info: #38bdf8;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #0284c7;
 
   /* Tints */
-  --tint-indigo: rgba(99, 102, 241, 0.12);
-  --tint-violet: rgba(139, 92, 246, 0.12);
-  --tint-cyan: rgba(34, 211, 238, 0.12);
-  --tint-success: rgba(52, 211, 153, 0.12);
-  --tint-warning: rgba(251, 191, 36, 0.12);
-  --tint-danger: rgba(248, 113, 113, 0.12);
+  --tint-indigo: rgba(79, 70, 229, 0.1);
+  --tint-violet: rgba(124, 58, 237, 0.1);
+  --tint-cyan: rgba(8, 145, 178, 0.1);
+  --tint-success: rgba(5, 150, 105, 0.1);
+  --tint-warning: rgba(217, 119, 6, 0.1);
+  --tint-danger: rgba(220, 38, 38, 0.1);
 
   /* Text */
-  --text-primary: #f1f4fb;
-  --text-secondary: #a9b2c8;
-  --text-tertiary: #6e778f;
-  --text-inverse: #0b0f19;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-inverse: #ffffff;
 
   /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --border-accent: rgba(99, 102, 241, 0.45);
-  --edge-specular: rgba(255, 255, 255, 0.14);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-default: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.2);
+  --border-accent: rgba(79, 70, 229, 0.45);
+  --edge-specular: rgba(255, 255, 255, 0.9);
+
+  /* Shadows & glows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 6px 20px -4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 14px 34px -8px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.15);
+  --glow-indigo-sm: 0 0 0 1px rgba(79, 70, 229, 0.2), 0 4px 18px -4px rgba(79, 70, 229, 0.2);
+  --glow-indigo-md: 0 0 0 1px rgba(79, 70, 229, 0.25), 0 8px 30px -6px rgba(79, 70, 229, 0.25);
+  --glow-indigo-lg: 0 0 0 1px rgba(79, 70, 229, 0.3), 0 12px 42px -8px rgba(79, 70, 229, 0.3);
+  --glow-violet-md: 0 0 0 1px rgba(124, 58, 237, 0.25), 0 8px 30px -6px rgba(124, 58, 237, 0.25);
+  --glow-cyan-md: 0 0 0 1px rgba(8, 145, 178, 0.25), 0 8px 30px -6px rgba(8, 145, 178, 0.2);
+  --glow-danger-md: 0 0 0 1px rgba(220, 38, 38, 0.25), 0 8px 24px -8px rgba(220, 38, 38, 0.2);
 
   /* Glass */
   --blur-sm: 8px;
@@ -57,18 +69,6 @@
   --saturate-md: 140%;
   --saturate-lg: 150%;
   --saturate-xl: 160%;
-
-  /* Shadows & glows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.48);
-  --shadow-lg: 0 20px 48px -12px rgba(0, 0, 0, 0.58);
-  --shadow-xl: 0 32px 72px -16px rgba(0, 0, 0, 0.68);
-  --glow-indigo-sm: 0 0 0 1px rgba(99, 102, 241, 0.3), 0 4px 20px -4px rgba(99, 102, 241, 0.35);
-  --glow-indigo-md: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 8px 32px -6px rgba(99, 102, 241, 0.5);
-  --glow-indigo-lg: 0 0 0 1px rgba(99, 102, 241, 0.5), 0 12px 48px -8px rgba(99, 102, 241, 0.62);
-  --glow-violet-md: 0 0 0 1px rgba(139, 92, 246, 0.4), 0 8px 32px -6px rgba(139, 92, 246, 0.5);
-  --glow-cyan-md: 0 0 0 1px rgba(34, 211, 238, 0.4), 0 8px 32px -6px rgba(34, 211, 238, 0.45);
-  --glow-danger-md: 0 0 0 1px rgba(248, 113, 113, 0.4), 0 8px 28px -8px rgba(248, 113, 113, 0.42);
 
   /* Radius */
   --radius-xs: 6px;
@@ -125,6 +125,150 @@
   --z-modal: 401;
   --z-toast: 500;
   --z-tooltip: 600;
+}
+
+/* Dark Mode Overrides (when .dark class is applied to <html>) */
+.dark {
+  /* Canvas & surfaces */
+  --canvas: #0b0f19;
+  --canvas-deep: #070a11;
+  --surface-solid: #131826;
+  --surface-1: rgba(255, 255, 255, 0.03);
+  --surface-2: rgba(255, 255, 255, 0.05);
+  --surface-3: rgba(255, 255, 255, 0.08);
+  --surface-4: rgba(255, 255, 255, 0.11);
+
+  /* Accents */
+  --indigo: #6366f1;
+  --indigo-bright: #818cf8;
+  --indigo-deep: #4338ca;
+  --violet: #8b5cf6;
+  --violet-bright: #a78bfa;
+  --cyan: #22d3ee;
+  --cyan-bright: #67e8f9;
+
+  /* Semantic */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --info: #38bdf8;
+
+  /* Tints */
+  --tint-indigo: rgba(99, 102, 241, 0.12);
+  --tint-violet: rgba(139, 92, 246, 0.12);
+  --tint-cyan: rgba(34, 211, 238, 0.12);
+  --tint-success: rgba(52, 211, 153, 0.12);
+  --tint-warning: rgba(251, 191, 36, 0.12);
+  --tint-danger: rgba(248, 113, 113, 0.12);
+
+  /* Text */
+  --text-primary: #f1f4fb;
+  --text-secondary: #a9b2c8;
+  --text-tertiary: #6e778f;
+  --text-inverse: #0b0f19;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-accent: rgba(99, 102, 241, 0.45);
+  --edge-specular: rgba(255, 255, 255, 0.14);
+
+  /* Shadows & glows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.48);
+  --shadow-lg: 0 20px 48px -12px rgba(0, 0, 0, 0.58);
+  --shadow-xl: 0 32px 72px -16px rgba(0, 0, 0, 0.68);
+  --glow-indigo-sm: 0 0 0 1px rgba(99, 102, 241, 0.3), 0 4px 20px -4px rgba(99, 102, 241, 0.35);
+  --glow-indigo-md: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 8px 32px -6px rgba(99, 102, 241, 0.5);
+  --glow-indigo-lg: 0 0 0 1px rgba(99, 102, 241, 0.5), 0 12px 48px -8px rgba(99, 102, 241, 0.62);
+  --glow-violet-md: 0 0 0 1px rgba(139, 92, 246, 0.4), 0 8px 32px -6px rgba(139, 92, 246, 0.5);
+  --glow-cyan-md: 0 0 0 1px rgba(34, 211, 238, 0.4), 0 8px 32px -6px rgba(34, 211, 238, 0.45);
+  --glow-danger-md: 0 0 0 1px rgba(248, 113, 113, 0.4), 0 8px 28px -8px rgba(248, 113, 113, 0.42);
+}
+
+/* NextGen Volumetric Lighting, Dual-Tone Gradients & 3D Glass Utilities */
+.text-gradient-dual {
+  background: linear-gradient(
+    135deg,
+    var(--cyan-bright) 0%,
+    var(--indigo-bright) 50%,
+    var(--violet-bright) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, var(--indigo-bright) 0%, var(--violet-bright) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-glow-radial-indigo {
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.22) 0%, transparent 70%);
+}
+
+.bg-glow-radial-cyan {
+  background: radial-gradient(circle at center, rgba(34, 211, 238, 0.22) 0%, transparent 70%);
+}
+
+.bg-glow-radial-violet {
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.22) 0%, transparent 70%);
+}
+
+.icon-3d-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 8px 20px -4px rgba(0, 0, 0, 0.2);
+  transition:
+    transform var(--dur-sm) var(--ease-out),
+    box-shadow var(--dur-sm) var(--ease-out);
+}
+
+.icon-3d-box:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-accent);
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--indigo-bright);
+}
+
+.glass-card-nextgen {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-2);
+  backdrop-filter: blur(var(--blur-md));
+  box-shadow:
+    inset 0 1px 0 var(--edge-specular),
+    var(--shadow-lg);
+  transition:
+    transform var(--dur-sm) var(--ease-out),
+    border-color var(--dur-sm) var(--ease-out),
+    box-shadow var(--dur-sm) var(--ease-out);
+}
+
+.glass-card-nextgen:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-accent);
+  box-shadow:
+    inset 0 1px 0 var(--edge-specular),
+    var(--glow-indigo-md);
 }
 
 /* Ambient lighting on body (DESIGN.md §2.7) */

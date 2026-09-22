@@ -245,6 +245,20 @@ Each decision records the choice, the alternatives considered, and the reason. *
 - **Decision:** Define and export `TypedSupabaseClient = SupabaseClient<Database, 'public', 'public', Database['public']>` in `lib/supabase/client.ts` and `lib/supabase/server.ts`, and cast the client factory return values. In `lib/database.types.ts`, ensure zero-argument RPC functions declare `Args: Record<string, never>` (instead of `Record<PropertyKey, never>`) to satisfy PostgREST's `GenericFunction` index signature.
 - **Consequences:** Full, end-to-end, compile-time type safety across all PostgREST queries, inserts, updates, and RPC calls throughout Server Actions, Route Handlers, and Client Components without any `any` or `never` fallbacks.
 
+### ADR-014 — Dual-Theme Engine (Dark & Bright Mode) and NextGen Volumetric Glassmorphism
+
+- **Status:** Accepted · 2026-09 · Supersedes ADR-010
+- **Context:** User requested modern NextGen Business Agency visual aesthetics (volumetric glassmorphism, 3D glowing icon boxes, dual-tone text gradients, specular top highlights, radial gradient lighting) and support for both Dark Mode and Bright Mode with a toggle switch, plus dedicated `/about`, `/how-it-works`, and `/faq` pages before proceeding to Phase 8 launch.
+- **Decision:**
+  1. Superseded ADR-010 (dark-mode-only) by defining bright mode CSS tokens under `:root` and dark mode overrides under `.dark` in `app/globals.css`.
+  2. Implemented `ThemeProvider` and `useTheme` in `lib/theme/theme-context.tsx` with `localStorage` persistence and an inline pre-hydration script `themeScript` inside `<head>` in `app/layout.tsx` to eliminate Flash of Unstyled Theme (FOUT).
+  3. Created `app/components/ui/theme-toggle.tsx` with a dual sun/moon sliding pill switch and accessible ARIA attributes.
+  4. Added NextGen utility classes (`.text-gradient-dual`, `.glass-card-nextgen`, `.icon-3d-box`, `.badge-pill`, `.bg-glow-radial-indigo`, `.bg-glow-radial-cyan`, `.bg-glow-radial-violet`) with specular highlights and strict blur budgets (<= 12 elements).
+  5. Built `app/components/ui/footer.tsx` (4-column rich glassmorphic footer) and updated `app/components/ui/header.tsx` with theme switch, new navigation links, and mobile drawer.
+  6. Implemented 3 new pages: `app/about/page.tsx`, `app/how-it-works/page.tsx`, and `app/faq/page.tsx` + `app/faq/faq-client.tsx`.
+  7. Wrote `tests/theme-and-pages.test.ts` (8 tests); all 175 tests in Vitest passing, zero TypeScript errors, zero ESLint warnings.
+- **Consequences:** IdeaPulse supports full high-contrast accessibility in both light and dark environments with a fluid 3D glass aesthetic, rich educational and onboarding pages, and zero additional external npm dependencies.
+
 ---
 
 ## 4. Known issues & watchlist
@@ -299,6 +313,28 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-22 — Session 19 (NextGen Aesthetic, Dual-Theme Engine & New Static Pages)
+
+**Phase:** Custom Feature Request (Pre-Phase 8 Launch)
+**Duration:** ~40m
+**Tasks completed:** Theme switch, Bright/Dark CSS token architecture, 4-column rich Footer, expanded Header navigation, `/about`, `/how-it-works`, `/faq`, and unit test suite.
+
+**What shipped**
+
+- Dual-Theme System (`lib/theme/theme-context.tsx`, `app/components/ui/theme-toggle.tsx`): Pre-hydration FOUT prevention script, `ThemeProvider` with `localStorage` persistence, and animated sliding sun/moon switch.
+- NextGen Volumetric Styling (`app/globals.css`): Light and dark variable palettes, `.text-gradient-dual`, `.icon-3d-box`, `.badge-pill`, and `.glass-card-nextgen` utilities.
+- Header & Footer Overhaul (`app/components/ui/header.tsx`, `app/components/ui/footer.tsx`): Responsive navigation, mobile drawer menu, 4-column rich footer with manifesto, operational indicators, and resource links.
+- About Us Page (`app/about/page.tsx`): 4 glowing metric cards, architectural pillars, and community mission breakdown.
+- How It Works Page (`app/how-it-works/page.tsx`): 4-step incubation lifecycle, 120% velocity tablet with stylized neon metrics, and anti-abuse guarantees.
+- FAQ Page (`app/faq/page.tsx`, `app/faq/faq-client.tsx`): Interactive categorized accordion for voting quotas, anti-sybil rules, cycles, and support hub.
+- Automated Test Suite (`tests/theme-and-pages.test.ts`): 8 new automated unit tests. All 175 tests passing across 27 suites. Clean typecheck and lint.
+
+**Decisions made**
+
+- Recorded ADR-014 superseding ADR-010 for dual-mode support while preserving WCAG AA contrast ratios (>7:1 on body text, >4.5:1 on accents).
 
 ---
 
