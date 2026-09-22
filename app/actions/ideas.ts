@@ -13,6 +13,7 @@ export type SubmitIdeaResult =
       success: false;
       error: string;
       code?: string;
+      ruleAnchor?: string;
       fieldErrors?: Record<string, string[]>;
       nextSlotAt?: string;
     };
@@ -28,6 +29,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     return {
       success: false,
       code: 'IP_UNAUTHENTICATED',
+      ruleAnchor: 'BR-001',
       error: 'Sign in to submit an idea.',
     };
   }
@@ -36,6 +38,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     return {
       success: false,
       code: 'IP_ACCOUNT_NOT_WRITABLE',
+      ruleAnchor: 'BR-002',
       error: 'Confirm your email to start submitting ideas.',
     };
   }
@@ -50,6 +53,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
       return {
         success: false,
         code: 'IP_ACCOUNT_NOT_WRITABLE',
+        ruleAnchor: 'BR-002',
         error: `This account is suspended until ${untilDate}. Contact support if you think this is a mistake.`,
       };
     }
@@ -57,6 +61,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     return {
       success: false,
       code: 'IP_ACCOUNT_NOT_WRITABLE',
+      ruleAnchor: 'BR-002',
       error: 'Your account is currently unable to publish new ideas.',
     };
   }
@@ -70,6 +75,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     return {
       success: false,
       code: 'IP_VALIDATION',
+      ruleAnchor: 'BR-021',
       error: firstErrorMessage,
       fieldErrors,
     };
@@ -100,6 +106,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     return {
       success: false,
       code: 'IP_NO_ACTIVE_CYCLE',
+      ruleAnchor: 'BR-043',
       error: 'The weekly cycle is closing right now. Try again in a moment.',
     };
   }
@@ -154,6 +161,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
       return {
         success: false,
         code: 'IP_SUBMIT_COOLDOWN',
+        ruleAnchor: 'BR-020',
         nextSlotAt: nextSlotTimestamp,
         error: formatNextSlotMessage(nextSlotTimestamp),
       };
@@ -163,6 +171,7 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
       return {
         success: false,
         code: 'IP_ACCOUNT_NOT_WRITABLE',
+        ruleAnchor: 'BR-002',
         error: 'Your account is not eligible to submit ideas at this time.',
       };
     }

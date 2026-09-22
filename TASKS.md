@@ -254,10 +254,10 @@ _Goal: it feels finished. Estimated 6 days._
 - [x] **T-7.4** Every glass panel carries the specular top edge
 - [x] **T-7.5** Radius tiers correct by surface size
 - [x] **T-7.6** Accent semantics correct: indigo = act, violet = acted, cyan = live
-- [ ] **T-7.7** Every empty state built (`DESIGN.md` §7.11)
-- [ ] **T-7.8** Every error state built, specific, and linked to its rule anchor
-- [ ] **T-7.9** Loading states preserve layout dimensions
-- [ ] **T-7.10** 404 and 500 pages in the design language
+- [x] **T-7.7** Every empty state built (`DESIGN.md` §7.11)
+- [x] **T-7.8** Every error state built, specific, and linked to its rule anchor
+- [x] **T-7.9** Loading states preserve layout dimensions
+- [x] **T-7.10** 404 and 500 pages in the design language
 
 ### Accessibility
 

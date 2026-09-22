@@ -4,7 +4,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { LeaderboardItem } from '@/lib/leaderboard';
 import { LeaderboardRow } from '@/app/components/leaderboard/leaderboard-row';
-import { Clock } from 'lucide-react';
+import { EmptyState } from '@/app/components/ui/empty-state';
+import { Trophy } from 'lucide-react';
 
 interface RealtimeLeaderboardProps {
   initialItems: LeaderboardItem[];
@@ -163,15 +164,15 @@ export function RealtimeLeaderboard({
 
   if (items.length === 0) {
     return (
-      <div className="glass-panel rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
-        <Clock className="mx-auto h-8 w-8 text-[var(--text-tertiary)]" />
-        <h3 className="mt-3 font-display text-base font-bold text-[var(--text-primary)]">
-          No ranked ideas yet
-        </h3>
-        <p className="mt-1 text-xs text-[var(--text-secondary)]">
-          Cast your daily votes to help community proposals rise on the leaderboard.
-        </p>
-      </div>
+      <EmptyState
+        icon={Trophy}
+        heading="Nothing has been voted on yet this cycle"
+        description="Cast your daily votes on community proposals to help them qualify for cycle rewards."
+        action={{
+          label: 'Browse ideas',
+          href: '/feed',
+        }}
+      />
     );
   }
 

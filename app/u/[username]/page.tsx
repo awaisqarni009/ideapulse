@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 import { ProfileHeader } from '@/app/components/profile/profile-header';
 import { ProfileRewards } from '@/app/components/profile/profile-rewards';
 import { IdeaCard } from '@/app/components/ideas/idea-card';
+import { EmptyState } from '@/app/components/ui/empty-state';
 import { PlusCircle, Lightbulb } from 'lucide-react';
 
 interface ProfilePageProps {
@@ -207,42 +208,23 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
           {authoredIdeas.length === 0 ? (
             /* Contextual Empty States per DESIGN.md §7.11 */
-            <div
-              role="status"
-              className="glass-panel flex flex-col items-center justify-center rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-12 text-center backdrop-blur-[var(--blur-md)]"
-              style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-tertiary)] shadow-inner">
-                <Lightbulb className="h-7 w-7 text-[var(--text-tertiary)]" />
-              </div>
-
-              {isOwner ? (
-                <>
-                  <h3 className="mt-4 font-display text-lg font-bold text-[var(--text-primary)]">
-                    You haven&apos;t posted an idea yet
-                  </h3>
-                  <p className="mt-2 max-w-sm text-sm text-[var(--text-secondary)]">
-                    Share your concept with the community to compete in the active weekly cycle.
-                  </p>
-                  <Link
-                    href="/submit"
-                    className="btn mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--indigo-bright)] px-5 py-2.5 text-xs font-semibold text-white shadow-[var(--glow-indigo-md)] transition-all hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)]"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                    <span>Post your first idea</span>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <h3 className="mt-4 font-display text-lg font-bold text-[var(--text-primary)]">
-                    {profile.display_name} hasn&apos;t posted an idea yet
-                  </h3>
-                  <p className="mt-2 max-w-sm text-sm text-[var(--text-secondary)]">
-                    When proposals are published by this creator, they will appear here.
-                  </p>
-                </>
-              )}
-            </div>
+            isOwner ? (
+              <EmptyState
+                icon={Lightbulb}
+                heading="You haven't posted an idea yet"
+                description="Share your concept with the community to compete in the active weekly cycle."
+                action={{
+                  label: 'Post your first idea',
+                  href: '/submit',
+                }}
+              />
+            ) : (
+              <EmptyState
+                icon={Lightbulb}
+                heading={`${profile.display_name} hasn't posted an idea yet`}
+                description="When proposals are published by this creator, they will appear here."
+              />
+            )
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {authoredIdeas.map((idea) => {

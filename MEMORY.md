@@ -1,7 +1,7 @@
 # MEMORY.md — IdeaPulse
 
 **Project Memory & Session Continuity**
-Last updated: _(set on every session close)_ · Maintained by: whoever last touched the code
+Last updated: 2026-09-22 (Session 14) · Maintained by: Antigravity Agent
 
 ---
 
@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                      |
-| -------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                |
-| **Phase progress**   | 6 / 31 tasks (Batch 1: Design completion complete)                                                         |
-| **Overall progress** | 143 / 178 tasks                                                                                            |
-| **Status**           | Phase 7 Batch 1 (T-7.1–T-7.6) PASSED! 114 Vitest unit tests passing (100% green across 21 test suites).    |
-| **Blocked on**       | None. Ready for Batch 2 approval.                                                                          |
-| **Next action**      | Phase 7 Batch 2 (T-7.7–T-7.10: Empty states, error states & rule anchors, loading skeleton, 404/500 pages) |
-| **Target launch**    | TBD                                                                                                        |
-| **Active branch**    | `main`                                                                                                     |
-| **Last deploy**      | —                                                                                                          |
+| Field                | Value                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                           |
+| **Phase progress**   | 10 / 31 tasks (Batch 1 & Batch 2 complete)                                                                            |
+| **Overall progress** | 147 / 178 tasks                                                                                                       |
+| **Status**           | Phase 7 Batch 2 (T-7.7–T-7.10) + Edge Runtime crypto fix PASSED! 127 Vitest unit tests passing across 22 test suites. |
+| **Blocked on**       | None. Ready for Batch 3 (Accessibility: T-7.11 to T-7.16).                                                            |
+| **Next action**      | Phase 7 Batch 3 (T-7.11–T-7.16: Accessibility: keyboard nav, focus rings, skip link, contrast, screen reader)         |
+| **Target launch**    | TBD                                                                                                                   |
+| **Active branch**    | `main`                                                                                                                |
+| **Last deploy**      | —                                                                                                                     |
 
 ### 1.1 Phase board
 
@@ -43,7 +43,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
-| 7     | Polish              | 🟡 In progress | 6/31  | ❌            |
+| 7     | Polish              | 🟡 In progress | 10/31 | ❌            |
 | 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
@@ -299,6 +299,32 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-22 — Session 14 (Phase 7 Batch 2: States, Error Boundaries & Edge Runtime Crypto Fix)
+
+**Phase:** Phase 7 — Polish, accessibility & performance
+**Duration:** ~45m
+**Tasks completed:** T-7.7, T-7.8, T-7.9, T-7.10 (Batch 2 complete + Edge Runtime fix)
+
+**What shipped**
+
+- `lib/security/sha256.ts`: Implemented zero-dependency, pure-TypeScript synchronous SHA-256 (FIPS 180-4) fully compatible with Next.js Edge Runtime, Node.js, and browser environments.
+- `lib/security/ip-hash.ts`: Replaced Node.js built-in `crypto` import with `lib/security/sha256.ts`. Completely resolved Next.js Edge Runtime crash (`The edge runtime does not support Node.js 'crypto' module`) in `middleware.ts`.
+- `app/components/ui/empty-state.tsx`: Reusable L2 glass empty state with 56px glyph, `--type-h4` title, `--type-body-sm` description, and primary CTA [T-7.7]. Wired into feed empty state, leaderboard empty state, profile empty states (owner & visitor), and profile rewards empty state with verbatim copy from `DESIGN.md` §7.11.
+- `lib/votes/errors.ts`, `vote-button.tsx`, `idea-form.tsx`, `app/actions/ideas.ts`: Implemented rule anchors (`ruleAnchor: 'BR-012'`, etc.) across error payloads and provided inline deep links to `/rules#BR-xxx` [T-7.8].
+- `app/components/leaderboard/leaderboard-skeleton.tsx` & `app/components/ideas/idea-detail-skeleton.tsx`: Built exact dimension-preserving skeleton loaders (72px row height matching leaderboard rows, exact detail layout) with shimmer sweep to eliminate cumulative layout shift [T-7.9].
+- `app/not-found.tsx`, `app/error.tsx`, `app/global-error.tsx`: Branded 404 page, 500 error boundary with `reset()`, and root global error boundary adhering to IdeaPulse dark glass aesthetics [T-7.10].
+- `tests/empty-and-error-states.test.ts`: Added 13 unit tests verifying empty states, rule-anchor mappings, and skeleton loader attributes (127/127 Vitest tests passing across 22 test suites).
+
+**Decisions made**
+
+- Replaced Node's built-in `crypto.createHash` in `lib/security/ip-hash.ts` with an embedded pure-TS SHA-256 algorithm. This eliminates the Edge Runtime failure in `middleware.ts` while adhering to the hard constraint of zero additional npm dependencies and maintaining identical hash outputs.
+
+**Next session starts with**
+
+- Phase 7 Batch 3 (T-7.11 to T-7.16): Accessibility (Keyboard navigation, visible focus rings, skip-to-content link, WCAG AA contrast audit, screen reader pass, and aria-live/role="alert" announcements).
 
 ---
 

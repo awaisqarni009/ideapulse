@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition, useOptimistic, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { castVoteAction, retractVoteAction } from '@/app/actions/votes';
 import { voteRing, countRoll, iconPop, rejectionShake } from './motion';
@@ -53,7 +54,9 @@ export function VoteButton({
   const [hasVoted, setHasVoted] = useState(initialHasVoted);
   const [voteCount, setVoteCount] = useState(initialVoteCount);
   const [voteCreatedAt, setVoteCreatedAt] = useState<string | undefined>(initialVoteCreatedAt);
-  const [inlineError, setInlineError] = useState<string | null>(null);
+  const [inlineError, setInlineError] = useState<{ message: string; ruleAnchor?: string } | null>(
+    null,
+  );
   const [isShaking, setIsShaking] = useState(false);
   const [showRing, setShowRing] = useState(false);
   const [isPopping, setIsPopping] = useState(false);
@@ -160,7 +163,7 @@ export function VoteButton({
       if (!result.success) {
         // Rollback optimistic state with rejection shake and inline error [T-3.13, T-3.15]
         setOptimisticState('rollback');
-        setInlineError(result.error.message);
+        setInlineError({ message: result.error.message, ruleAnchor: result.error.ruleAnchor });
         setIsShaking(true);
         setTimeout(() => setIsShaking(false), 300);
         return;
@@ -198,7 +201,7 @@ export function VoteButton({
 
       if (!result.success) {
         setOptimisticState('rollback');
-        setInlineError(result.error.message);
+        setInlineError({ message: result.error.message, ruleAnchor: result.error.ruleAnchor });
         setIsShaking(true);
         setTimeout(() => setIsShaking(false), 300);
         return;
@@ -344,14 +347,22 @@ export function VoteButton({
         )}
       </motion.button>
 
-      {/* Rollback inline rejection message per RULES.md §7 and DESIGN.md §6.3 [T-3.13, T-3.15] */}
+      {/* Rollback inline rejection message per RULES.md §7 and DESIGN.md §6.3 [T-3.13, T-3.15, T-7.8] */}
       {inlineError && (
         <div
           role="alert"
           className="absolute top-[48px] z-20 flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-xs)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-solid)] px-2.5 py-1 text-xs text-[var(--accent-danger)] shadow-lg"
         >
           <AlertCircle className="h-3 w-3 shrink-0" />
-          <span>{inlineError}</span>
+          <span>{inlineError.message}</span>
+          {inlineError.ruleAnchor && (
+            <Link
+              href={`/rules#${inlineError.ruleAnchor}`}
+              className="ml-1 font-semibold text-[var(--indigo-bright)] underline hover:text-white"
+            >
+              ({inlineError.ruleAnchor})
+            </Link>
+          )}
         </div>
       )}
 

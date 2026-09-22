@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { sha256 } from './sha256';
 
 /**
  * Returns the 24-hour rotating daily salt computed from the server seed
@@ -12,7 +12,7 @@ export function getDailySalt(date: Date = new Date()): string {
   // Format UTC date as YYYY-MM-DD
   const utcDateStr = date.toISOString().slice(0, 10);
 
-  return createHash('sha256').update(`${seed}:${utcDateStr}`).digest('hex');
+  return sha256(`${seed}:${utcDateStr}`);
 }
 
 /**
@@ -25,7 +25,7 @@ export function hashIp(rawIp: string, date: Date = new Date()): string {
   }
 
   const salt = getDailySalt(date);
-  return createHash('sha256').update(`${rawIp.trim()}:${salt}`).digest('hex');
+  return sha256(`${rawIp.trim()}:${salt}`);
 }
 
 /**

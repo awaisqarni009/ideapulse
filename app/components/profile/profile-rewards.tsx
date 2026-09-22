@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Trophy, Award, ExternalLink } from 'lucide-react';
+import { EmptyState } from '@/app/components/ui/empty-state';
 
 export interface ProfileRewardItem {
   id: string;
@@ -26,19 +27,15 @@ interface ProfileRewardsProps {
 export function ProfileRewards({ rewards, displayName }: ProfileRewardsProps) {
   if (rewards.length === 0) {
     return (
-      <div
-        className="glass-panel flex flex-col items-center justify-center rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-8 text-center backdrop-blur-[var(--blur-md)]"
-        style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
-      >
-        <Trophy className="mb-2 h-8 w-8 text-[var(--text-tertiary)]" />
-        <h3 className="font-display text-base font-bold text-[var(--text-primary)]">
-          No cycle rewards earned yet
-        </h3>
-        <p className="mt-1 max-w-sm text-xs text-[var(--text-secondary)]">
-          When proposals authored by {displayName} place in the top 3 and qualify, permanent honors
-          appear here.
-        </p>
-      </div>
+      <EmptyState
+        icon={Trophy}
+        heading="No idea reached 50 votes this cycle"
+        description={`When proposals authored by ${displayName} place in the top 3 and qualify, permanent honors appear here.`}
+        action={{
+          label: 'See cycle results',
+          href: '/cycles/1',
+        }}
+      />
     );
   }
 

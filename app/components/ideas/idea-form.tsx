@@ -28,7 +28,9 @@ export function IdeaForm({ cycleId: _cycleId }: IdeaFormProps) {
   // UI state
   const [editorTab, setEditorTab] = useState<'write' | 'preview' | 'split'>('write');
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<{ message: string; ruleAnchor?: string } | null>(
+    null,
+  );
   const [restoredDraftTime, setRestoredDraftTime] = useState<string | null>(null);
 
   // Draft Autosave & Restore [T-3.6]
@@ -161,7 +163,7 @@ export function IdeaForm({ cycleId: _cycleId }: IdeaFormProps) {
         if (result.fieldErrors) {
           setErrors(result.fieldErrors);
         }
-        setServerError(result.error);
+        setServerError({ message: result.error, ruleAnchor: result.ruleAnchor });
         return;
       }
 
@@ -179,25 +181,38 @@ export function IdeaForm({ cycleId: _cycleId }: IdeaFormProps) {
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
       {/* Restored draft notice [T-3.6] */}
       {restoredDraftTime && (
-        <div className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-2.5 text-xs text-[var(--text-secondary)]">
-          <span>Restored from unsaved draft (saved at {restoredDraftTime}).</span>
+        <div className="flex items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--border-accent)] bg-[rgba(99,102,241,0.08)] p-3 text-xs text-[var(--indigo-bright)]">
+          <span>Draft restored from your last edit ({restoredDraftTime}).</span>
           <button
             type="button"
             onClick={handleDiscardDraft}
-            className="font-medium text-[var(--accent-warning)] hover:underline focus:outline-none"
+            className="rounded px-2 py-1 font-semibold text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
           >
             Discard draft
           </button>
         </div>
       )}
 
+      {/* Server Error Alert with Rule Anchor [RULES.md §7, T-7.8] */}
       {serverError && (
         <div
           role="alert"
           className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[rgba(239,68,68,0.3)] bg-[rgba(239,68,68,0.1)] p-4 text-sm text-[var(--accent-danger)]"
         >
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
-          <div className="leading-relaxed">{serverError}</div>
+          <div className="leading-relaxed">
+            <span>{serverError.message}</span>
+            {serverError.ruleAnchor && (
+              <a
+                href={`/rules#${serverError.ruleAnchor}`}
+                target="_blank"
+                rel="noreferrer"
+                className="ml-2 inline-flex items-center font-semibold text-[var(--indigo-bright)] underline hover:text-white"
+              >
+                ({serverError.ruleAnchor})
+              </a>
+            )}
+          </div>
         </div>
       )}
 
