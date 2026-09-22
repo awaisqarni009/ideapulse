@@ -2,8 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/app/components/ui/toast';
-import { WithdrawModal } from '@/app/components/ideas/withdraw-modal';
-import { ReportModal } from '@/app/components/reports/report-modal';
+import dynamic from 'next/dynamic';
+
+const WithdrawModal = dynamic(
+  () => import('@/app/components/ideas/withdraw-modal').then((mod) => mod.WithdrawModal),
+  { ssr: false },
+);
+
+const ReportModal = dynamic(
+  () => import('@/app/components/reports/report-modal').then((mod) => mod.ReportModal),
+  { ssr: false },
+);
+
 import { Flag, Trash2 } from 'lucide-react';
 
 interface IdeaActionsProps {

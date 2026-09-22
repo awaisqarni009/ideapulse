@@ -16,6 +16,8 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
+export const revalidate = false;
+
 interface CycleArchivePageProps {
   params: Promise<{ n: string }> | { n: string };
 }

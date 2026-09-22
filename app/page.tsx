@@ -9,6 +9,8 @@ export const metadata: Metadata = {
     'A fraud-resistant product idea validation engine. One idea per author per cycle, five votes per 24 hours, and automated weekly rewards for top community proposals.',
 };
 
+export const revalidate = 60;
+
 /**
  * Landing Page (RSC) per ARCHITECTURE.md §5.1 and TASKS.md [T-4.16]
  * - Staggered hero entrance

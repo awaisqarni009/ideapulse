@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/auth/use-user';
 import { QuotaHUD } from '@/app/components/votes/quota-hud';
@@ -79,12 +80,14 @@ export function Header() {
                 href="/settings"
                 className="flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] py-1 pl-1.5 pr-3 text-xs font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--border-default)]"
               >
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--surface-3)] text-[10px] text-[var(--indigo-bright)]">
+                <div className="relative flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[var(--surface-3)] text-[10px] text-[var(--indigo-bright)]">
                   {profile?.avatar_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={profile.avatar_url}
-                      alt={profile.display_name || profile.username}
+                      alt={profile.display_name || profile.username || 'User'}
+                      width={24}
+                      height={24}
+                      sizes="24px"
                       className="h-full w-full rounded-full object-cover"
                     />
                   ) : (

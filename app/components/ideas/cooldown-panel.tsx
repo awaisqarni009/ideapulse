@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Clock, Lock, ArrowLeft, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
@@ -10,7 +10,7 @@ interface CooldownPanelProps {
 }
 
 export function CooldownPanel({ nextSlotAt }: CooldownPanelProps) {
-  const targetDate = new Date(nextSlotAt);
+  const targetDate = useMemo(() => new Date(nextSlotAt), [nextSlotAt]);
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -40,7 +40,7 @@ export function CooldownPanel({ nextSlotAt }: CooldownPanelProps) {
     calculateTime();
     const interval = setInterval(calculateTime, 1000);
     return () => clearInterval(interval);
-  }, [nextSlotAt]);
+  }, [targetDate]);
 
   // Format UTC string: "Thursday 14 March at 09:12 UTC"
   const utcFormatted = `${format(targetDate, 'EEEE d MMMM')} at ${targetDate.getUTCHours().toString().padStart(2, '0')}:${targetDate.getUTCMinutes().toString().padStart(2, '0')} UTC`;

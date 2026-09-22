@@ -8,7 +8,12 @@ import { UnconfirmedBanner } from '@/app/components/auth/unconfirmed-banner';
 
 import { ToastProvider } from '@/app/components/ui/toast';
 import { Header } from '@/app/components/ui/header';
-import { WinnerModal } from '@/app/components/cycles/winner-modal';
+import dynamic from 'next/dynamic';
+
+const WinnerModal = dynamic(
+  () => import('@/app/components/cycles/winner-modal').then((mod) => mod.WinnerModal),
+  { ssr: false },
+);
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],

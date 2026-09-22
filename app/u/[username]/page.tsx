@@ -9,6 +9,8 @@ import { IdeaCard } from '@/app/components/ideas/idea-card';
 import { EmptyState } from '@/app/components/ui/empty-state';
 import { PlusCircle, Lightbulb } from 'lucide-react';
 
+export const revalidate = 120;
+
 interface ProfilePageProps {
   params:
     | Promise<{

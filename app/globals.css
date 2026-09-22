@@ -455,3 +455,18 @@ svg {
     justify-content: center;
   }
 }
+
+/* Feed Scroll Performance & Paint Containment per DESIGN.md §2.2 and TASKS.md [T-7.23] */
+.feed-card-contain {
+  contain: layout paint style;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 320px;
+}
+
+/* Ensure smooth 50+ FPS scrolling by preventing layout recalculations during scroll */
+@media screen and (max-width: 768px) {
+  .feed-card-contain {
+    /* Mobile-optimized contain intrinsic height */
+    contain-intrinsic-size: 0 280px;
+  }
+}

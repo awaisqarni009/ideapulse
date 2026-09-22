@@ -9,7 +9,10 @@ import { VoteButton } from '@/app/components/votes/vote-button';
 import { QualificationBar } from '@/app/components/ideas/qualification-bar';
 import { ArrowLeft, CheckCircle2, ShieldAlert, Sparkles, User } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
+
+export const revalidate = 30;
 
 interface IdeaPageProps {
   params: { slug: string };
@@ -183,12 +186,14 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
 
           {/* Author info & Post date */}
           <div className="mt-4 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] text-xs font-semibold text-[var(--text-primary)]">
+            <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] text-xs font-semibold text-[var(--text-primary)]">
               {author?.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={author.avatar_url}
-                  alt={author.display_name || author.username}
+                  alt={author.display_name || author.username || 'Author'}
+                  width={36}
+                  height={36}
+                  sizes="36px"
                   className="h-full w-full rounded-full object-cover"
                 />
               ) : (

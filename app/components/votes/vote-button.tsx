@@ -7,7 +7,12 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { castVoteAction, retractVoteAction } from '@/app/actions/votes';
 import { voteRing, countRoll, iconPop, rejectionShake } from './motion';
 import { useToast } from '@/app/components/ui/toast';
-import { AuthModal } from '@/app/components/auth/auth-modal';
+import dynamic from 'next/dynamic';
+
+const AuthModal = dynamic(
+  () => import('@/app/components/auth/auth-modal').then((mod) => mod.AuthModal),
+  { ssr: false },
+);
 import { Zap, Lock, Loader2, X, AlertCircle } from 'lucide-react';
 
 export type VoteButtonState =

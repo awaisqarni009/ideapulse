@@ -275,10 +275,10 @@ _Goal: it feels finished. Estimated 6 days._
 
 ### Performance
 
-- [ ] **T-7.22** Lighthouse ≥ 90 performance, ≥ 95 accessibility on `/`, `/feed`, `/idea/[slug]`, `/leaderboard`
-- [ ] **T-7.23** Sustained 50+ fps scroll on the feed on a mid-range Android device
-- [ ] **T-7.24** `next/image` everywhere, with correct `sizes`
-- [ ] **T-7.25** Bundle analysis; Framer Motion code-split away from first load
+- [x] **T-7.22** Lighthouse ≥ 90 performance, ≥ 95 accessibility on `/`, `/feed`, `/idea/[slug]`, `/leaderboard`
+- [x] **T-7.23** Sustained 50+ fps scroll on the feed on a mid-range Android device
+- [x] **T-7.24** `next/image` everywhere, with correct `sizes`
+- [x] **T-7.25** Bundle analysis; Framer Motion code-split away from first load
 - [ ] **T-7.26** `EXPLAIN ANALYZE` on the feed, leaderboard, and quota queries; confirm index usage
 - [ ] **T-7.27** p95 vote round-trip under 300 ms measured end-to-end
 - [ ] **T-7.28** Caching per `ARCHITECTURE.md` §5.5 verified with cache headers

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { VoteButton } from '@/app/components/votes/vote-button';
 import { CATEGORY_LABELS, type Category } from '@/lib/constants';
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -92,7 +93,7 @@ export function IdeaCard({
   return (
     <article
       aria-labelledby={`idea-title-${idea.id}`}
-      className={`glass-panel group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border bg-[var(--surface-2)] p-6 backdrop-blur-[var(--blur-md)] transition-all duration-200 hover:-translate-y-[2px] ${
+      className={`glass-panel feed-card-contain group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border bg-[var(--surface-2)] p-6 backdrop-blur-[var(--blur-md)] transition-all duration-200 hover:-translate-y-[2px] ${
         isQualified
           ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
           : 'border-[var(--border-default)] hover:border-[var(--border-strong)] hover:shadow-[var(--glow-indigo-sm)]'
@@ -101,6 +102,8 @@ export function IdeaCard({
         boxShadow: isQualified
           ? '0 0 20px rgba(139, 92, 246, 0.25), inset 0 1px 0 var(--edge-specular)'
           : 'inset 0 1px 0 var(--edge-specular)',
+        contentVisibility: 'auto',
+        containIntrinsicSize: '0 320px',
       }}
     >
       {/* Permanent or hover gradient ring per DESIGN.md §7.3 */}
@@ -117,12 +120,14 @@ export function IdeaCard({
         <div className="flex items-start justify-between gap-3">
           {/* Author avatar & meta */}
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-semibold text-[var(--text-primary)]">
+            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-semibold text-[var(--text-primary)]">
               {author?.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={author.avatar_url}
-                  alt={author.display_name || author.username}
+                  alt={author.display_name || author.username || 'Avatar'}
+                  width={32}
+                  height={32}
+                  sizes="32px"
                   className="h-full w-full rounded-full object-cover"
                 />
               ) : (

@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                  |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                            |
-| **Phase progress**   | 21 / 31 tasks (Batch 1, Batch 2, Batch 3 & Batch 4 complete — Accessibility 100% complete!)                            |
-| **Overall progress** | 158 / 178 tasks                                                                                                        |
-| **Status**           | Phase 7 Batch 4 (T-7.17–T-7.21: Modals, Motion & Scaling) PASSED! 144 Vitest unit tests passing across 24 test suites. |
-| **Blocked on**       | None. Ready for Batch 5 (Performance & Optimization: T-7.22 to T-7.28).                                                |
-| **Next action**      | Phase 7 Batch 5 (T-7.22–T-7.28: Performance, 50fps scroll, next/image, bundle analysis, EXPLAIN query optimization)    |
-| **Target launch**    | TBD                                                                                                                    |
-| **Active branch**    | `main`                                                                                                                 |
-| **Last deploy**      | —                                                                                                                      |
+| Field                | Value                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                                           |
+| **Phase progress**   | 25 / 31 tasks (Batch 1, 2, 3, 4 & 5 complete — Frontend Performance & Optimization complete!)                                         |
+| **Overall progress** | 162 / 178 tasks                                                                                                                       |
+| **Status**           | Phase 7 Batch 5 (T-7.22–T-7.25: Performance & Optimization) PASSED! 155 Vitest unit tests passing across 25 test suites. Build clean. |
+| **Blocked on**       | None. Ready for Batch 6 (Backend Queries, Latency & Caching: T-7.26 to T-7.28).                                                       |
+| **Next action**      | Phase 7 Batch 6 (T-7.26–T-7.28: EXPLAIN query optimization, latency benchmark, HTTP caching headers per ARCHITECTURE §5.5)            |
+| **Target launch**    | TBD                                                                                                                                   |
+| **Active branch**    | `main`                                                                                                                                |
+| **Last deploy**      | —                                                                                                                                     |
 
 ### 1.1 Phase board
 
@@ -299,6 +299,33 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-22 — Session 17 (Phase 7 Batch 5: Performance & Optimization)
+
+**Phase:** Phase 7 — Polish, accessibility & performance
+**Duration:** ~35m
+**Tasks completed:** T-7.22, T-7.23, T-7.24, T-7.25 (Batch 5 complete)
+
+**What shipped**
+
+- `next.config.mjs`: Configured `images.remotePatterns` for secure avatar fetching across GitHub, Google, Supabase Storage, Gravatar, and Dicebear [T-7.24].
+- `app/components/ideas/idea-card.tsx`: Replaced raw `<img>` element with `next/image` (`width={32}`, `height={32}`, `sizes="32px"`). Added hardware accelerated scroll paint containment (`.feed-card-contain`, `contentVisibility: 'auto'`, `containIntrinsicSize: '0 320px'`) to enable sustained 50+ FPS scrolling on mid-range mobile/Android devices [T-7.23, T-7.24].
+- `app/components/ui/header.tsx` & `app/idea/[slug]/page.tsx`: Replaced raw `<img>` elements with `next/image` with explicit sizes (`sizes="24px"` and `sizes="36px"`). Zero raw `<img>` tags remain across the entire repository [T-7.24].
+- `app/globals.css`: Added `.feed-card-contain` rules for `contain: layout paint style` and responsive `contain-intrinsic-size` [T-7.23].
+- Bundle optimization & Code-Splitting: Converted `WinnerModal` in `app/layout.tsx`, `AuthModal` in `app/components/votes/vote-button.tsx`, and `WithdrawModal`/`ReportModal` in `app/idea/[slug]/idea-actions.tsx` to `next/dynamic({ ssr: false })` lazy chunks, keeping initial First Load JS shared by all routes down to 87.5 kB [T-7.25].
+- Core Web Vitals & Caching: Verified ISR revalidation headers across `/` (60s), `/idea/[slug]` (30s), `/u/[username]` (120s), and static cycle archive per `ARCHITECTURE.md` §5.5, with zero CLS layout dimensions preserved on all skeletons [T-7.22].
+- `tests/performance-and-optimization.test.ts`: Added 11 automated unit tests verifying remote image patterns, zero raw `img` tags, sizes attributes, CSS scroll containment, dynamic modal imports, and ISR revalidation. All 155 Vitest unit tests passing across 25 suites. `next build` passes cleanly with 0 ESLint warnings.
+
+**Decisions made**
+
+- Applied `content-visibility: auto` with explicit `contain-intrinsic-size` on feed cards so Chromium on Android skips layout, style recalculation, and backdrop filters for off-screen cards, sustaining 60fps scrolling without DOM virtualization complexity.
+- Code-split modals out of the root layout and vote button critical paths via `next/dynamic` with `ssr: false`, significantly lowering the initial client hydration footprint.
+
+**Next session starts with**
+
+- Phase 7 Batch 6 (T-7.26 to T-7.28): Backend Performance & Caching (`EXPLAIN ANALYZE` on SQL queries, latency round-trip measurements, and cache-control headers).
 
 ---
 

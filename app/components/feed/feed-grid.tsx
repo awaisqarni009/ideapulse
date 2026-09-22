@@ -67,7 +67,7 @@ export function FeedGrid({
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, nextCursor, sort, category, tag]);
+  }, [isLoading, nextCursor, sort, category, tag, search]);
 
   // Infinite scroll via IntersectionObserver [T-4.3]
   useEffect(() => {
