@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { reportIdea, REPORT_REASONS, type ReportReason } from '@/app/actions/reports';
 import { useToast } from '@/app/components/ui/toast';
+import { useFocusTrap } from '@/lib/hooks/use-focus-trap';
 import { AlertTriangle, Flag, Loader2, X } from 'lucide-react';
 
 interface ReportModalProps {
@@ -18,6 +19,11 @@ export function ReportModal({ isOpen, onClose, ideaId, ideaTitle, ideaSlug }: Re
   const [reason, setReason] = useState<ReportReason>('spam');
   const [detail, setDetail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 
@@ -65,7 +71,11 @@ export function ReportModal({ isOpen, onClose, ideaId, ideaTitle, ideaSlug }: Re
       />
 
       {/* Modal Surface */}
-      <div className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-3)] p-6 shadow-2xl transition-all">
+      <div
+        ref={modalRef}
+        tabIndex={-1}
+        className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-3)] p-6 shadow-2xl transition-all focus:outline-none"
+      >
         {/* Specular top highlight */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[var(--radius-xl)] shadow-[inset_0_1px_0_var(--edge-specular)]"

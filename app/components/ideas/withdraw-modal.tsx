@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import { withdrawIdeaAction } from '@/app/actions/ideas';
 import { useToast } from '@/app/components/ui/toast';
+import { useFocusTrap } from '@/lib/hooks/use-focus-trap';
 import { AlertTriangle, X } from 'lucide-react';
 
 interface WithdrawModalProps {
@@ -15,29 +16,12 @@ interface WithdrawModalProps {
 export function WithdrawModal({ isOpen, onClose, ideaId, voteCount }: WithdrawModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
-  // Handle Escape key
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  // Trap focus inside modal
-  useEffect(() => {
-    if (isOpen) {
-      modalRef.current?.focus();
-    }
-  }, [isOpen]);
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 

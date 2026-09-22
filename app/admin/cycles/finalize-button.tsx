@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { adminFinalizeActiveCycle } from '@/app/actions/reports';
 import { useToast } from '@/app/components/ui/toast';
+import { useFocusTrap } from '@/lib/hooks/use-focus-trap';
 import { AlertOctagon, CheckCircle2, Loader2, PlayCircle, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +18,11 @@ export function ManualFinalizeButton({ cycleNumber, qualifyingCount }: FinalizeB
   const [isOpen, setIsOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose: () => !isSubmitting && setIsOpen(false),
+  });
 
   async function handleFinalize(e: React.FormEvent) {
     e.preventDefault();
@@ -71,7 +77,11 @@ export function ManualFinalizeButton({ cycleNumber, qualifyingCount }: FinalizeB
           />
 
           {/* Modal Surface */}
-          <div className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-3)] p-6 shadow-2xl">
+          <div
+            ref={modalRef}
+            tabIndex={-1}
+            className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-3)] p-6 shadow-2xl focus:outline-none"
+          >
             {/* Specular highlight */}
             <div
               className="pointer-events-none absolute inset-0 rounded-[var(--radius-xl)] shadow-[inset_0_1px_0_var(--edge-specular)]"

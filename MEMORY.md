@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                            |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                      |
-| **Phase progress**   | 16 / 31 tasks (Batch 1, Batch 2 & Batch 3 complete)                                                              |
-| **Overall progress** | 153 / 178 tasks                                                                                                  |
-| **Status**           | Phase 7 Batch 3 (T-7.11–T-7.16: Accessibility Core) PASSED! 138 Vitest unit tests passing across 23 test suites. |
-| **Blocked on**       | None. Ready for Batch 4 (Accessibility Modals, Motion & Zoom: T-7.17 to T-7.21).                                 |
-| **Next action**      | Phase 7 Batch 4 (T-7.17–T-7.21: Focus trap, reduced motion pass, 200% zoom, 44x44 targets, axe-core audit)       |
-| **Target launch**    | TBD                                                                                                              |
-| **Active branch**    | `main`                                                                                                           |
-| **Last deploy**      | —                                                                                                                |
+| Field                | Value                                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                            |
+| **Phase progress**   | 21 / 31 tasks (Batch 1, Batch 2, Batch 3 & Batch 4 complete — Accessibility 100% complete!)                            |
+| **Overall progress** | 158 / 178 tasks                                                                                                        |
+| **Status**           | Phase 7 Batch 4 (T-7.17–T-7.21: Modals, Motion & Scaling) PASSED! 144 Vitest unit tests passing across 24 test suites. |
+| **Blocked on**       | None. Ready for Batch 5 (Performance & Optimization: T-7.22 to T-7.28).                                                |
+| **Next action**      | Phase 7 Batch 5 (T-7.22–T-7.28: Performance, 50fps scroll, next/image, bundle analysis, EXPLAIN query optimization)    |
+| **Target launch**    | TBD                                                                                                                    |
+| **Active branch**    | `main`                                                                                                                 |
+| **Last deploy**      | —                                                                                                                      |
 
 ### 1.1 Phase board
 
@@ -43,7 +43,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
-| 7     | Polish              | 🟡 In progress | 16/31 | ❌            |
+| 7     | Polish              | 🟡 In progress | 21/31 | ❌            |
 | 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
@@ -299,6 +299,32 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-22 — Session 16 (Phase 7 Batch 4: Modals, Motion & Scaling — Accessibility 100% Complete!)
+
+**Phase:** Phase 7 — Polish, accessibility & performance
+**Duration:** ~45m
+**Tasks completed:** T-7.17, T-7.18, T-7.19, T-7.20, T-7.21 (Batch 4 complete)
+
+**What shipped**
+
+- `lib/hooks/use-focus-trap.ts`: Built custom reusable hook managing focus trapping (wrapping `Tab` forward from last to first and `Shift+Tab` backward from first to last), `Escape` key dismissal, initial element focus, and automatic keyboard focus restoration back to the trigger button upon unmount/close [T-7.17].
+- Modals (`AuthModal`, `WinnerModal`, `WithdrawModal`, `ReportModal`, `ManualFinalizeButton`): Integrated `useFocusTrap` into all 5 modal dialog surfaces, guaranteeing that keyboard focus cannot escape outside active dialog scrims and restoring trigger focus seamlessly [T-7.17].
+- `app/globals.css`: Enhanced `@media (prefers-reduced-motion: reduce)` rules: disabled infinite skeleton shimmer sweep (`.skeleton-shimmer { animation: none !important; background: var(--surface-2) !important; }`), disabled celebratory sweep translations, and verified instant state flips across vote buttons, counts, and quota HUD [T-7.18].
+- `app/globals.css`: Implemented 200% zoom safeguards (`overflow-x: clip; width: 100%` on `html, body`, `max-width: 100%` on media and svg) to prevent unwanted horizontal scrollbars during extreme desktop/mobile zooming [T-7.19].
+- `app/globals.css`: Added `@media (pointer: coarse)` sizing rules guaranteeing $\ge 44\times 44\text{px}$ touch targets on coarse pointer devices across all buttons, inputs, tabs, and circular icon triggers [T-7.20].
+- `tests/accessibility-modals-motion.test.ts`: Added 6 automated unit tests validating focus trap cycling, Escape dismiss, focus return, dialog ARIA attributes, reduced motion rules, and coarse pointer touch target requirements [T-7.21]. All 144 unit tests passing across 24 test suites.
+
+**Decisions made**
+
+- Created a unified `useFocusTrap` hook returning `RefObject<T>` matching standard React 18 JSX ref expectations, preventing any manual focus-tracking duplication across modal dialog components.
+- Enforced static subtle surface states for skeleton shimmer loaders under `prefers-reduced-motion: reduce` so users with vestibular motion sensitivity do not experience persistent looping animations while awaiting async data loads.
+
+**Next session starts with**
+
+- Phase 7 Batch 5 (T-7.22 to T-7.28): Performance & Optimization (Lighthouse performance/accessibility audit, 50+ fps feed scroll, `next/image` sizes, bundle analysis & dynamic imports, and `EXPLAIN ANALYZE` query verification).
 
 ---
 

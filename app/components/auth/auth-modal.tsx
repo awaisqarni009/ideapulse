@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { castVoteAction } from '@/app/actions/votes';
 import { useToast } from '@/app/components/ui/toast';
 import { X, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import { useFocusTrap } from '@/lib/hooks/use-focus-trap';
 import Link from 'next/link';
 
 interface AuthModalProps {
@@ -16,7 +17,7 @@ interface AuthModalProps {
 }
 
 /**
- * AuthModal per DESIGN.md §7.9 and TASKS.md [T-3.19, AC-06.2]
+ * AuthModal per DESIGN.md §7.9 and TASKS.md [T-3.19, AC-06.2, T-7.17]
  * Triggered on anonymous vote click. Prompts sign-in and replays the intended vote.
  */
 export function AuthModal({ isOpen, onClose, pendingIdeaId, onVoteReplayed }: AuthModalProps) {
@@ -25,6 +26,11 @@ export function AuthModal({ isOpen, onClose, pendingIdeaId, onVoteReplayed }: Au
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 
@@ -93,6 +99,8 @@ export function AuthModal({ isOpen, onClose, pendingIdeaId, onVoteReplayed }: Au
 
         {/* Modal Panel (L4 glass, radius-xl) */}
         <motion.div
+          ref={modalRef}
+          tabIndex={-1}
           initial={{ opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 12 }}

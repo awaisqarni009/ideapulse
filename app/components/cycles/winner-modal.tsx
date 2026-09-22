@@ -3,11 +3,24 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getWinnerRewardsAction, type WinnerRewardItem } from '@/app/actions/rewards';
+import { useFocusTrap } from '@/lib/hooks/use-focus-trap';
 import { Trophy, Award, X, ArrowRight, Sparkles } from 'lucide-react';
 
 export function WinnerModal() {
   const [activeReward, setActiveReward] = useState<WinnerRewardItem | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleDismiss = () => {
+    if (activeReward) {
+      localStorage.setItem(`ideapulse:winner_seen:${activeReward.id}`, 'true');
+    }
+    setIsOpen(false);
+  };
+
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose: handleDismiss,
+  });
 
   useEffect(() => {
     async function checkForUnacknowledgedReward() {
@@ -29,13 +42,6 @@ export function WinnerModal() {
     checkForUnacknowledgedReward();
   }, []);
 
-  const handleDismiss = () => {
-    if (activeReward) {
-      localStorage.setItem(`ideapulse:winner_seen:${activeReward.id}`, 'true');
-    }
-    setIsOpen(false);
-  };
-
   if (!isOpen || !activeReward) return null;
 
   const isFirst = activeReward.rank === 1;
@@ -55,6 +61,8 @@ export function WinnerModal() {
 
       {/* Modal Dialog Surface */}
       <div
+        ref={modalRef}
+        tabIndex={-1}
         className="animate-in fade-in zoom-in-95 relative z-10 w-full max-w-md overflow-hidden rounded-[28px] border border-[var(--border-qualified)] bg-[var(--surface-3)] p-6 text-center shadow-[var(--glow-violet-lg)] duration-300 sm:p-8"
         style={{
           boxShadow: 'inset 0 1px 0 var(--edge-specular), 0 0 40px -8px rgba(139,92,246,0.35)',

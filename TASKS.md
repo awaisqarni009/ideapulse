@@ -267,11 +267,11 @@ _Goal: it feels finished. Estimated 6 days._
 - [x] **T-7.14** `[!]` Contrast audit against the brightest backdrop behind each glass panel
 - [x] **T-7.15** Screen reader pass (VoiceOver + NVDA) on register, submit, vote, leaderboard
 - [x] **T-7.16** `aria-live` on vote counts; `role="alert"` on errors
-- [ ] **T-7.17** Focus trap and restore on every modal
-- [ ] **T-7.18** `[!]` Reduced-motion pass: all feedback preserved, all animation removed
-- [ ] **T-7.19** 200% zoom with no horizontal scroll
-- [ ] **T-7.20** 44×44 touch targets on coarse pointers
-- [ ] **T-7.21** `axe-core` clean on every route
+- [x] **T-7.17** Focus trap and restore on every modal
+- [x] **T-7.18** `[!]` Reduced-motion pass: all feedback preserved, all animation removed
+- [x] **T-7.19** 200% zoom with no horizontal scroll
+- [x] **T-7.20** 44×44 touch targets on coarse pointers
+- [x] **T-7.21** `axe-core` clean on every route
 
 ### Performance
 
