@@ -107,7 +107,11 @@ export default async function IdeaDetailPage({ params, searchParams }: IdeaPageP
   const voteThreshold = cycle?.vote_threshold || 50;
 
   return (
-    <main className="min-h-[calc(100vh-80px)] py-12">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-[calc(100vh-80px)] py-12 focus:outline-none"
+    >
       <div className="container mx-auto max-w-4xl px-4">
         {/* Back Link */}
         <div className="mb-6">

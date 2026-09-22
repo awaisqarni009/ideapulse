@@ -119,7 +119,11 @@ export default async function CycleArchivePage({ params }: CycleArchivePageProps
   const isFinalized = cycle.status === 'finalized';
 
   return (
-    <main className="min-h-[calc(100vh-64px)] py-10 sm:py-14">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-[calc(100vh-64px)] py-10 focus:outline-none sm:py-14"
+    >
       {/* One-time celebration sweep animation per T-5.10 */}
       <CycleSweep cycleId={cycle.id} isFinalized={isFinalized} hasQualifiers={rewards.length > 0} />
 

@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-screen flex-col items-center justify-center px-4 py-12 focus:outline-none sm:px-6 lg:px-8"
+    >
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <Link href="/" className="inline-block">

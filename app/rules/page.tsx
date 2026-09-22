@@ -37,7 +37,11 @@ function EnforcementBadge({ type }: { type: 'STRUCTURAL' | 'PROCEDURAL' | 'POLIC
 
 export default function RulesPage() {
   return (
-    <main className="min-h-[calc(100vh-64px)] py-12 sm:py-16">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-[calc(100vh-64px)] py-12 focus:outline-none sm:py-16"
+    >
       <div className="container mx-auto max-w-5xl px-4 sm:px-6">
         {/* Header Title */}
         <div className="mb-10 text-left">

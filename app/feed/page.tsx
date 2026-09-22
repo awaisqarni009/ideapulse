@@ -66,7 +66,11 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   });
 
   return (
-    <main className="min-h-[calc(100vh-64px)] py-10 sm:py-14">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-[calc(100vh-64px)] py-10 focus:outline-none sm:py-14"
+    >
       <div className="container mx-auto max-w-7xl px-4 sm:px-6">
         {/* Header Title & Subtitle */}
         <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">

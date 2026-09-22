@@ -261,12 +261,12 @@ _Goal: it feels finished. Estimated 6 days._
 
 ### Accessibility
 
-- [ ] **T-7.11** `[!]` Keyboard pass on every flow, pointer unplugged
-- [ ] **T-7.12** `[!]` Focus ring visible on every interactive element
-- [ ] **T-7.13** Skip-to-content link as the first tab stop
-- [ ] **T-7.14** `[!]` Contrast audit against the brightest backdrop behind each glass panel
-- [ ] **T-7.15** Screen reader pass (VoiceOver + NVDA) on register, submit, vote, leaderboard
-- [ ] **T-7.16** `aria-live` on vote counts; `role="alert"` on errors
+- [x] **T-7.11** `[!]` Keyboard pass on every flow, pointer unplugged
+- [x] **T-7.12** `[!]` Focus ring visible on every interactive element
+- [x] **T-7.13** Skip-to-content link as the first tab stop
+- [x] **T-7.14** `[!]` Contrast audit against the brightest backdrop behind each glass panel
+- [x] **T-7.15** Screen reader pass (VoiceOver + NVDA) on register, submit, vote, leaderboard
+- [x] **T-7.16** `aria-live` on vote counts; `role="alert"` on errors
 - [ ] **T-7.17** Focus trap and restore on every modal
 - [ ] **T-7.18** `[!]` Reduced-motion pass: all feedback preserved, all animation removed
 - [ ] **T-7.19** 200% zoom with no horizontal scroll

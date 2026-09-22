@@ -33,7 +33,11 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-8 focus:outline-none sm:px-6 lg:px-8"
+    >
       {/* Header bar */}
       <div className="border-border-default mb-8 flex items-center justify-between border-b pb-4">
         <div>
@@ -95,6 +99,6 @@ export default async function SettingsPage() {
           </div>
         </section>
       </div>
-    </div>
+    </main>
   );
 }

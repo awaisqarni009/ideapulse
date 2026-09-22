@@ -21,7 +21,11 @@ export default async function HomePage() {
   const topThree = items.slice(0, 3);
 
   return (
-    <main className="flex min-h-[calc(100vh-64px)] flex-col justify-center">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-[calc(100vh-64px)] flex-col justify-center focus:outline-none"
+    >
       <HeroShowcase topThree={topThree} cycleNumber={cycleNumber} />
     </main>
   );

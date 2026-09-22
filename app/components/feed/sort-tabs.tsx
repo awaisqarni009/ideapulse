@@ -31,6 +31,27 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
     router.push(`/feed?${params.toString()}`);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
+    let nextIndex: number | null = null;
+    if (e.key === 'ArrowRight') {
+      nextIndex = (currentIndex + 1) % SORT_OPTIONS.length;
+    } else if (e.key === 'ArrowLeft') {
+      nextIndex = (currentIndex - 1 + SORT_OPTIONS.length) % SORT_OPTIONS.length;
+    } else if (e.key === 'Home') {
+      nextIndex = 0;
+    } else if (e.key === 'End') {
+      nextIndex = SORT_OPTIONS.length - 1;
+    }
+
+    if (nextIndex !== null) {
+      e.preventDefault();
+      const nextOption = SORT_OPTIONS[nextIndex];
+      if (nextOption) {
+        handleSortChange(nextOption.id);
+      }
+    }
+  };
+
   return (
     <div
       role="tablist"
@@ -40,7 +61,7 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
         boxShadow: 'inset 0 1px 0 var(--edge-specular)',
       }}
     >
-      {SORT_OPTIONS.map((option) => {
+      {SORT_OPTIONS.map((option, index) => {
         const Icon = option.icon;
         const isActive = currentSort === option.id;
 
@@ -49,8 +70,10 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
             key={option.id}
             role="tab"
             type="button"
+            tabIndex={isActive ? 0 : -1}
             aria-selected={isActive}
             onClick={() => handleSortChange(option.id)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
             className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
               isActive
                 ? 'border border-[var(--border-accent)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'

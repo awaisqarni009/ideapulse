@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                 |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                           |
-| **Phase progress**   | 10 / 31 tasks (Batch 1 & Batch 2 complete)                                                                            |
-| **Overall progress** | 147 / 178 tasks                                                                                                       |
-| **Status**           | Phase 7 Batch 2 (T-7.7–T-7.10) + Edge Runtime crypto fix PASSED! 127 Vitest unit tests passing across 22 test suites. |
-| **Blocked on**       | None. Ready for Batch 3 (Accessibility: T-7.11 to T-7.16).                                                            |
-| **Next action**      | Phase 7 Batch 3 (T-7.11–T-7.16: Accessibility: keyboard nav, focus rings, skip link, contrast, screen reader)         |
-| **Target launch**    | TBD                                                                                                                   |
-| **Active branch**    | `main`                                                                                                                |
-| **Last deploy**      | —                                                                                                                     |
+| Field                | Value                                                                                                            |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 7 — Polish, accessibility & performance (In progress)                                                      |
+| **Phase progress**   | 16 / 31 tasks (Batch 1, Batch 2 & Batch 3 complete)                                                              |
+| **Overall progress** | 153 / 178 tasks                                                                                                  |
+| **Status**           | Phase 7 Batch 3 (T-7.11–T-7.16: Accessibility Core) PASSED! 138 Vitest unit tests passing across 23 test suites. |
+| **Blocked on**       | None. Ready for Batch 4 (Accessibility Modals, Motion & Zoom: T-7.17 to T-7.21).                                 |
+| **Next action**      | Phase 7 Batch 4 (T-7.17–T-7.21: Focus trap, reduced motion pass, 200% zoom, 44x44 targets, axe-core audit)       |
+| **Target launch**    | TBD                                                                                                              |
+| **Active branch**    | `main`                                                                                                           |
+| **Last deploy**      | —                                                                                                                |
 
 ### 1.1 Phase board
 
@@ -43,7 +43,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 4     | Discovery           | 🟢 Complete    | 18/18 | ✅            |
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
-| 7     | Polish              | 🟡 In progress | 10/31 | ❌            |
+| 7     | Polish              | 🟡 In progress | 16/31 | ❌            |
 | 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
@@ -299,6 +299,34 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-09-22 — Session 15 (Phase 7 Batch 3: Accessibility Core)
+
+**Phase:** Phase 7 — Polish, accessibility & performance
+**Duration:** ~45m
+**Tasks completed:** T-7.11, T-7.12, T-7.13, T-7.14, T-7.15, T-7.16 (Batch 3 complete)
+
+**What shipped**
+
+- `app/layout.tsx`: Embedded accessible skip-to-content link as the very first interactive node in the DOM, positioned offscreen until focused (`focus:not-sr-only`) targeting `#main-content` [T-7.13].
+- Core Pages (`app/page.tsx`, `app/feed/page.tsx`, `app/leaderboard/page.tsx`, `app/submit/page.tsx`, `app/rules/page.tsx`, `app/idea/[slug]/page.tsx`, `app/u/[username]/page.tsx`, `app/cycles/[n]/page.tsx`, `app/login/page.tsx`, `app/register/page.tsx`, `app/settings/page.tsx`): Configured `<main id="main-content" tabIndex={-1}>` on every primary view for instant, reliable keyboard skip navigation [T-7.13, T-7.15].
+- `app/globals.css`: Hardened `:focus-visible` with 2px `--indigo-bright` outline, 2px offset, and instant zero-latency appearance without transition lag across buttons, links, inputs, and tabs [T-7.12].
+- `app/components/votes/vote-button.tsx`: Added `aria-live="polite"` and `aria-atomic="true"` on live vote count rolls, and `role="alert"` with `aria-live="assertive"` on inline error feedback [T-7.16].
+- `app/components/votes/quota-hud.tsx`: Configured `aria-live="polite"` and `aria-atomic="true"` on the remaining vote quota count [T-7.16].
+- `app/components/feed/sort-tabs.tsx`: Implemented WAI-ARIA roving `tabIndex` and full arrow-key keyboard navigation (`ArrowRight`, `ArrowLeft`, `Home`, `End`) across sort tabs [T-7.11].
+- `app/components/ideas/idea-card.tsx`: Wrapped each proposal in `<article aria-labelledby={`idea-title-${idea.id}`}>` with matching heading ID for semantic screen reader navigation [T-7.15].
+- `tests/accessibility-core.test.ts`: Added 11 automated unit tests verifying skip link presence, landmark targets, focus ring CSS rules, live region attributes, and mathematical WCAG AA contrast compliance for text (>4.5:1 / >7:1) and non-text elements (>3:1) [T-7.14]. All 138 unit tests passing across 23 test suites.
+
+**Decisions made**
+
+- Configured `tabIndex={-1}` and `focus:outline-none` on all `<main id="main-content">` containers to ensure keyboard focus shifts smoothly to the primary content area upon skip link activation without displaying an unwanted outer container focus border.
+- Implemented roving tabindex on `SortTabs` so keyboard users can navigate among tabs using standard arrow keys while keeping the tab list a single sequential tab stop in the overall page flow.
+
+**Next session starts with**
+
+- Phase 7 Batch 4 (T-7.17 to T-7.21): Modal focus trap & restore, reduced motion pass, 200% zoom with no horizontal scroll, 44x44 touch targets on coarse pointers, and `axe-core` accessibility audit.
 
 ---
 

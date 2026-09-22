@@ -91,6 +91,7 @@ export function IdeaCard({
 
   return (
     <article
+      aria-labelledby={`idea-title-${idea.id}`}
       className={`glass-panel group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border bg-[var(--surface-2)] p-6 backdrop-blur-[var(--blur-md)] transition-all duration-200 hover:-translate-y-[2px] ${
         isQualified
           ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
@@ -162,7 +163,10 @@ export function IdeaCard({
             href={`/idea/${idea.slug}`}
             className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--indigo-bright)]"
           >
-            <h3 className="line-clamp-2 text-base font-bold tracking-tight text-[var(--text-primary)] transition-colors group-hover:text-white sm:text-lg">
+            <h3
+              id={`idea-title-${idea.id}`}
+              className="line-clamp-2 text-base font-bold tracking-tight text-[var(--text-primary)] transition-colors group-hover:text-white sm:text-lg"
+            >
               {idea.title}
             </h3>
             <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[var(--text-secondary)]">

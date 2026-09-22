@@ -328,10 +328,23 @@ body::before {
   box-shadow: var(--glow-danger-md);
 }
 
-/* Global Accessibility Focus Ring */
+/* Global Accessibility Focus Ring (DESIGN.md §6.4 & §8, T-7.12) */
 :focus-visible {
-  outline: 2px solid var(--indigo-bright);
-  outline-offset: 2px;
+  outline: 2px solid var(--indigo-bright) !important;
+  outline-offset: 2px !important;
+  transition: none !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role='button']:focus-visible,
+[role='tab']:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--indigo-bright) !important;
+  outline-offset: 2px !important;
 }
 
 /* Shimmer animation for skeleton loaders (DESIGN.md §6.4) */

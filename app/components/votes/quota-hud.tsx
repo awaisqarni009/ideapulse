@@ -101,6 +101,8 @@ export function QuotaHUD({ initialQuota, className = '' }: QuotaHUDProps) {
   return (
     <div
       role="status"
+      aria-live="polite"
+      aria-atomic="true"
       aria-label={`Vote quota: ${remaining} of ${totalLimit} remaining`}
       className={`glass-panel flex h-[36px] items-center gap-3 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 shadow-sm transition-colors ${className}`}
       style={{

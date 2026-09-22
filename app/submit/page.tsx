@@ -37,7 +37,11 @@ export default async function SubmitPage() {
 
   if (!activeCycle) {
     return (
-      <main className="container mx-auto max-w-2xl px-4 py-16">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="container mx-auto max-w-2xl px-4 py-16 focus:outline-none"
+      >
         <div className="glass-panel rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-1)] p-8 text-center">
           <Info className="mx-auto mb-3 h-10 w-10 text-[var(--text-tertiary)]" />
           <h1 className="text-xl font-bold text-[var(--text-primary)]">No Active Cycle</h1>
@@ -94,7 +98,11 @@ export default async function SubmitPage() {
   );
 
   return (
-    <main className="min-h-[calc(100vh-80px)] py-12">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-[calc(100vh-80px)] py-12 focus:outline-none"
+    >
       <div className="container mx-auto max-w-3xl px-4">
         {/* Header */}
         <header className="mb-8">

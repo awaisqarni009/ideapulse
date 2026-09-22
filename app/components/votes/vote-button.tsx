@@ -309,8 +309,12 @@ export function VoteButton({
           )}
         </motion.span>
 
-        {/* Count Roll Transition in numeric tabular font [T-3.14, DESIGN.md §7.2] */}
-        <div className="relative flex h-[20px] min-w-[16px] items-center justify-center overflow-hidden">
+        {/* Count Roll Transition in numeric tabular font [T-3.14, DESIGN.md §7.2, T-7.16] */}
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          className="relative flex h-[20px] min-w-[16px] items-center justify-center overflow-hidden"
+        >
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={optimisticState.voteCount}
@@ -347,10 +351,11 @@ export function VoteButton({
         )}
       </motion.button>
 
-      {/* Rollback inline rejection message per RULES.md §7 and DESIGN.md §6.3 [T-3.13, T-3.15, T-7.8] */}
+      {/* Rollback inline rejection message per RULES.md §7 and DESIGN.md §6.3 [T-3.13, T-3.15, T-7.8, T-7.16] */}
       {inlineError && (
         <div
           role="alert"
+          aria-live="assertive"
           className="absolute top-[48px] z-20 flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-xs)] border border-[rgba(239,68,68,0.3)] bg-[var(--surface-solid)] px-2.5 py-1 text-xs text-[var(--accent-danger)] shadow-lg"
         >
           <AlertCircle className="h-3 w-3 shrink-0" />
