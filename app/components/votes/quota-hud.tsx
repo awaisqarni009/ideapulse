@@ -104,14 +104,14 @@ export function QuotaHUD({ initialQuota, className = '' }: QuotaHUDProps) {
       aria-live="polite"
       aria-atomic="true"
       aria-label={`Vote quota: ${remaining} of ${totalLimit} remaining`}
-      className={`glass-panel flex h-[36px] items-center gap-3 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 shadow-sm transition-colors ${className}`}
+      className={`glass-panel flex h-[32px] items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2.5 shadow-sm transition-colors sm:h-[36px] sm:gap-3 sm:px-3.5 ${className}`}
       style={{
         boxShadow: 'inset 0 1px 0 var(--edge-specular)',
       }}
     >
       {/* 5 Pips container */}
       <div
-        className={`flex items-center gap-1.5 transition-opacity duration-300 ${
+        className={`flex items-center gap-1 transition-opacity duration-300 sm:gap-1.5 ${
           isZero ? 'opacity-25' : 'opacity-100'
         }`}
       >
@@ -126,7 +126,7 @@ export function QuotaHUD({ initialQuota, className = '' }: QuotaHUDProps) {
                 opacity: isFilled ? 1 : 0.25,
               }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className={`block h-2 w-2 rounded-full transition-colors duration-200 ${
+              className={`block h-1.5 w-1.5 rounded-full transition-colors duration-200 sm:h-2 sm:w-2 ${
                 isFilled
                   ? 'bg-[var(--cyan)] shadow-[0_0_8px_rgba(6,182,212,0.45)]'
                   : 'bg-[rgba(255,255,255,0.18)]'
@@ -136,9 +136,22 @@ export function QuotaHUD({ initialQuota, className = '' }: QuotaHUDProps) {
         })}
       </div>
 
-      {/* Quota Label per DESIGN.md §7.4 */}
+      {/* Mobile condensed label: count only per TASKS.md [T-7.30] */}
       <span
-        className={`font-mono text-xs tabular-nums tracking-tight ${
+        className={`font-mono text-xs font-semibold tabular-nums tracking-tight sm:hidden ${
+          isZero
+            ? 'text-[var(--text-tertiary)]'
+            : isOneLeft
+              ? 'text-[var(--accent-warning)]'
+              : 'text-[var(--text-primary)]'
+        }`}
+      >
+        {remaining}
+      </span>
+
+      {/* Desktop full label with countdown per DESIGN.md §7.4 */}
+      <span
+        className={`hidden font-mono text-xs tabular-nums tracking-tight sm:inline ${
           isZero
             ? 'text-[var(--text-tertiary)]'
             : isOneLeft

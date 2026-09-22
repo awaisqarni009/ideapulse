@@ -5,7 +5,7 @@ import { getCurrentUser } from '@/lib/auth/user';
 import { ideaSubmissionSchema, type IdeaSubmissionInput } from '@/lib/validation';
 import { formatNextSlotMessage } from '@/lib/ideas';
 import { format } from 'date-fns';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export type SubmitIdeaResult =
   | { success: true; slug: string; ideaId: string }
@@ -189,9 +189,11 @@ export async function submitIdeaAction(input: IdeaSubmissionInput): Promise<Subm
     };
   }
 
-  // 4. Revalidate paths
+  // 4. Revalidate paths & tags per ARCHITECTURE.md §5.5
   revalidatePath('/');
+  revalidatePath('/feed');
   revalidatePath('/submit');
+  revalidateTag('feed');
   revalidatePath(`/idea/${insertedIdea.slug}`);
 
   return {

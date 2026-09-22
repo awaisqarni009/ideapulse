@@ -51,7 +51,7 @@ export function WinnerModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="winner-modal-title"
-      className="fixed inset-0 z-[401] flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-[401] flex items-end justify-center p-0 sm:items-center sm:p-6"
     >
       {/* Scrim backdrop */}
       <div
@@ -59,15 +59,21 @@ export function WinnerModal() {
         className="fixed inset-0 bg-[#070A11]/80 backdrop-blur-sm transition-opacity"
       />
 
-      {/* Modal Dialog Surface */}
+      {/* Modal Dialog Surface: Mobile bottom-sheet & Desktop modal */}
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="animate-in fade-in zoom-in-95 relative z-10 w-full max-w-md overflow-hidden rounded-[28px] border border-[var(--border-qualified)] bg-[var(--surface-3)] p-6 text-center shadow-[var(--glow-violet-lg)] duration-300 sm:p-8"
+        className="animate-in fade-in zoom-in-95 relative z-10 max-h-[92vh] w-full max-w-full overflow-y-auto rounded-t-[28px] border border-[var(--border-qualified)] bg-[var(--surface-3)] p-6 text-center shadow-[var(--glow-violet-lg)] duration-300 sm:max-w-md sm:rounded-[28px] sm:p-8"
         style={{
           boxShadow: 'inset 0 1px 0 var(--edge-specular), 0 0 40px -8px rgba(139,92,246,0.35)',
         }}
       >
+        {/* Mobile Bottom-sheet Drag Handle Indicator */}
+        <div
+          className="mx-auto -mt-2 mb-4 h-1.5 w-12 rounded-full bg-[rgba(255,255,255,0.22)] sm:hidden"
+          aria-hidden="true"
+        />
+
         {/* Dismiss Button */}
         <button
           type="button"

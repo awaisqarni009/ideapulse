@@ -61,7 +61,7 @@ export function ReportModal({ isOpen, onClose, ideaId, ideaTitle, ideaSlug }: Re
       role="dialog"
       aria-modal="true"
       aria-labelledby="report-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
     >
       {/* Backdrop */}
       <div
@@ -70,15 +70,21 @@ export function ReportModal({ isOpen, onClose, ideaId, ideaTitle, ideaSlug }: Re
         aria-hidden="true"
       />
 
-      {/* Modal Surface */}
+      {/* Modal Surface: Mobile bottom-sheet & Desktop modal */}
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="relative w-full max-w-lg rounded-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-3)] p-6 shadow-2xl transition-all focus:outline-none"
+        className="relative max-h-[92vh] w-full max-w-full overflow-y-auto rounded-t-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-3)] p-6 shadow-2xl transition-all focus:outline-none sm:max-w-lg sm:rounded-[var(--radius-xl)]"
       >
+        {/* Mobile Bottom-sheet Drag Handle Indicator */}
+        <div
+          className="mx-auto -mt-2 mb-4 h-1.5 w-12 rounded-full bg-[rgba(255,255,255,0.22)] sm:hidden"
+          aria-hidden="true"
+        />
+
         {/* Specular top highlight */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-[var(--radius-xl)] shadow-[inset_0_1px_0_var(--edge-specular)]"
+          className="pointer-events-none absolute inset-0 rounded-t-[var(--radius-xl)] shadow-[inset_0_1px_0_var(--edge-specular)] sm:rounded-[var(--radius-xl)]"
           aria-hidden="true"
         />
 

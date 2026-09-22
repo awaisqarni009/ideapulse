@@ -86,7 +86,7 @@ export function AuthModal({ isOpen, onClose, pendingIdeaId, onVoteReplayed }: Au
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-modal-title"
-        className="fixed inset-0 z-[300] flex items-center justify-center p-4"
+        className="fixed inset-0 z-[300] flex items-end justify-center p-0 sm:items-center sm:p-4"
       >
         {/* Backdrop overlay */}
         <motion.div
@@ -97,19 +97,25 @@ export function AuthModal({ isOpen, onClose, pendingIdeaId, onVoteReplayed }: Au
           className="fixed inset-0 bg-black/75 backdrop-blur-[var(--blur-sm)]"
         />
 
-        {/* Modal Panel (L4 glass, radius-xl) */}
+        {/* Modal Panel: Mobile bottom-sheet & Desktop modal [T-7.31] */}
         <motion.div
           ref={modalRef}
           tabIndex={-1}
-          initial={{ opacity: 0, scale: 0.96, y: 12 }}
+          initial={{ opacity: 0, scale: 0.98, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: 12 }}
+          exit={{ opacity: 0, scale: 0.98, y: 30 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-panel relative w-full max-w-md overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-7 shadow-2xl"
+          className="glass-panel relative max-h-[92vh] w-full max-w-full overflow-y-auto rounded-t-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-6 shadow-2xl sm:max-w-md sm:rounded-[var(--radius-xl)] sm:p-7"
           style={{
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 var(--edge-specular)',
           }}
         >
+          {/* Mobile Bottom-sheet Drag Handle Indicator [T-7.31] */}
+          <div
+            className="mx-auto -mt-2 mb-4 h-1.5 w-12 rounded-full bg-[rgba(255,255,255,0.22)] sm:hidden"
+            aria-hidden="true"
+          />
+
           {/* Close button */}
           <button
             type="button"

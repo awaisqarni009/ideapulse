@@ -45,7 +45,7 @@ export function WithdrawModal({ isOpen, onClose, ideaId, voteCount }: WithdrawMo
       aria-modal="true"
       aria-labelledby="withdraw-title"
       aria-describedby="withdraw-description"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
     >
       {/* Backdrop per DESIGN.md §7.9: rgba(7,10,17,0.72) + backdrop-filter: blur(6px) */}
       <div
@@ -53,15 +53,20 @@ export function WithdrawModal({ isOpen, onClose, ideaId, voteCount }: WithdrawMo
         className="fixed inset-0 bg-[#070a11]/75 backdrop-blur-[6px] transition-opacity"
       />
 
-      {/* Modal Panel: L4 glass, radius-xl, space-8 (32px) padding, max-w-520px, shadow-xl */}
+      {/* Modal Panel: Mobile bottom-sheet & Desktop modal */}
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="relative z-10 w-full max-w-[520px] rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-8 shadow-2xl focus:outline-none"
+        className="relative z-10 max-h-[92vh] w-full max-w-full overflow-y-auto rounded-t-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-4)] p-6 shadow-2xl focus:outline-none sm:max-w-[520px] sm:rounded-[var(--radius-xl)] sm:p-8"
         style={{
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 var(--edge-specular)',
         }}
       >
+        {/* Mobile Bottom-sheet Drag Handle Indicator */}
+        <div
+          className="mx-auto -mt-2 mb-4 h-1.5 w-12 rounded-full bg-[rgba(255,255,255,0.22)] sm:hidden"
+          aria-hidden="true"
+        />
         <button
           type="button"
           onClick={onClose}

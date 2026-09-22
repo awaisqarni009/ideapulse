@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { parseVoteError, type VoteError } from '@/lib/votes/errors';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export type CastVoteResult =
   | {
@@ -76,7 +76,9 @@ export async function castVoteAction(ideaId: string): Promise<CastVoteResult> {
   };
 
   revalidatePath('/');
+  revalidatePath('/feed');
   revalidatePath('/leaderboard');
+  revalidateTag(`idea:${payload.idea_id}`);
 
   return {
     success: true,
@@ -111,7 +113,9 @@ export async function retractVoteAction(ideaId: string): Promise<RetractVoteResu
   const payload = data as { idea_id: string; quota_refunded: boolean };
 
   revalidatePath('/');
+  revalidatePath('/feed');
   revalidatePath('/leaderboard');
+  revalidateTag(`idea:${payload.idea_id}`);
 
   return {
     success: true,
