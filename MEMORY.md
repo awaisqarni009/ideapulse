@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Current phase**    | Phase 8 — Launch (🟡 In Progress)                                                                                                                                              |
-| **Phase progress**   | 12 / 31 tasks (Batch 1: Testing & Verification Complete; Batch 2: Production Supabase & Security Complete: T-8.6 through T-8.12)                                               |
-| **Overall progress** | 180 / 199 tasks                                                                                                                                                                |
-| **Status**           | Phase 8 Batch 2 PASSED! Remote Supabase verified (10/10 tables RLS enabled), production RLS test suite 100% green, pg_cron active, DR runbook created. 196 Vitest tests green. |
-| **Blocked on**       | None. Ready for Phase 8 Batch 3: Vercel Deployment & Headers (T-8.13 through T-8.18).                                                                                          |
-| **Next action**      | Review Batch 3 plan: Vercel integration, security headers, production env vars, and vercel cron fallback.                                                                      |
-| **Target launch**    | TBD                                                                                                                                                                            |
-| **Active branch**    | `main`                                                                                                                                                                         |
-| **Last deploy**      | —                                                                                                                                                                              |
+| Field                | Value                                                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 8 — Launch (🟡 In Progress)                                                                                                                                               |
+| **Phase progress**   | 18 / 31 tasks (Batch 1: Testing Complete; Batch 2: Supabase Complete; Batch 3: Vercel & Security Headers Complete: T-8.13 through T-8.18)                                       |
+| **Overall progress** | 186 / 199 tasks                                                                                                                                                                 |
+| **Status**           | Phase 8 Batch 3 PASSED! Hardened security headers (CSP, HSTS, X-Frame-Options, Referrer, Permissions) verified on live server, Vercel cron endpoints verified. 200 tests green. |
+| **Blocked on**       | None. Ready for Phase 8 Batch 4: Observability & Health Checks (T-8.19 through T-8.24).                                                                                         |
+| **Next action**      | Review Batch 4 plan: Health endpoints, latency checks, abuse rate monitoring, and error reporting.                                                                              |
+| **Target launch**    | TBD                                                                                                                                                                             |
+| **Active branch**    | `main`                                                                                                                                                                          |
+| **Last deploy**      | —                                                                                                                                                                               |
 
 ### 1.1 Phase board
 
@@ -44,7 +44,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
 | 7     | Polish              | 🟢 Complete    | 31/31 | ✅            |
-| 8     | Launch              | 🟡 In progress | 12/31 | ❌            |
+| 8     | Launch              | 🟡 In progress | 18/31 | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
 

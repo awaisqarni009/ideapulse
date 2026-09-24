@@ -317,12 +317,12 @@ _Goal: in production, observable, and recoverable. Estimated 4 days._
 
 ### Vercel
 
-- [ ] **T-8.13** `[!]` Connect the repo; `main` → production, PRs → previews
-- [ ] **T-8.14** `[!]` Set all environment variables per `MEMORY.md` §2; confirm `SUPABASE_SERVICE_ROLE_KEY` is server-scoped only
-- [ ] **T-8.15** Custom domain + HTTPS
-- [ ] **T-8.16** Security headers: CSP, HSTS, `X-Frame-Options`, `Referrer-Policy`
-- [ ] **T-8.17** Vercel Cron entry as the `pg_cron` fallback
-- [ ] **T-8.18** Preview deployments pointed at a staging Supabase project, never production
+- [x] **T-8.13** `[!]` Connect the repo; `main` → production, PRs → previews
+- [x] **T-8.14** `[!]` Set all environment variables per `MEMORY.md` §2; confirm `SUPABASE_SERVICE_ROLE_KEY` is server-scoped only
+- [x] **T-8.15** Custom domain + HTTPS
+- [x] **T-8.16** Security headers: CSP, HSTS, `X-Frame-Options`, `Referrer-Policy`
+- [x] **T-8.17** Vercel Cron entry as the `pg_cron` fallback
+- [x] **T-8.18** Preview deployments pointed at a staging Supabase project, never production
 
 ### Observability
 
