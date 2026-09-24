@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
 import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -81,8 +81,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     [showToast],
   );
 
+  const contextValue = useMemo(
+    () => ({ showToast, success, error, warning, info }),
+    [showToast, success, error, warning, info],
+  );
+
   return (
-    <ToastContext.Provider value={{ showToast, success, error, warning, info }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
 
       {/* Toast viewport per DESIGN.md §7.10: top-right on desktop, top-center full-width on mobile */}

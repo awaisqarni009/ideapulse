@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useToast } from '@/app/components/ui/toast';
 import dynamic from 'next/dynamic';
 
@@ -40,9 +40,11 @@ export function IdeaActions({
   const toast = useToast();
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const hasAnnouncedRef = useRef(false);
 
   useEffect(() => {
-    if (justCreated) {
+    if (justCreated && !hasAnnouncedRef.current) {
+      hasAnnouncedRef.current = true;
       toast.success(
         `Idea published successfully! It is now competing in Cycle ${cycleNumber}.`,
         'Submission Received',

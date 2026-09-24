@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                                                                        |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 7 — Polish, accessibility & performance (🟢 Complete — Exit Gate Passed!)                                                                                              |
-| **Phase progress**   | 31 / 31 tasks (All Phase 7 tasks complete: Design QA, Error States, Accessibility, Performance & Responsive!)                                                                |
-| **Overall progress** | 168 / 178 tasks                                                                                                                                                              |
-| **Status**           | Phase 7 Batch 6 (T-7.26–T-7.31: SQL Optimization, Caching & Responsive UX) PASSED! 167 Vitest unit tests passing across 26 test suites. 0 ESLint warnings. Exit Gate Signed! |
-| **Blocked on**       | None. Ready for Phase 8 — Launch.                                                                                                                                            |
-| **Next action**      | Stop at Phase 7 Exit Gate. Await explicit approval before starting Phase 8 (Launch).                                                                                         |
-| **Target launch**    | TBD                                                                                                                                                                          |
-| **Active branch**    | `main`                                                                                                                                                                       |
-| **Last deploy**      | —                                                                                                                                                                            |
+| Field                | Value                                                                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Current phase**    | Phase 8 — Launch (🟡 In Progress)                                                                                                                                              |
+| **Phase progress**   | 5 / 31 tasks (Batch 1: Testing & Verification Matrix Complete: T-8.1 through T-8.5)                                                                                            |
+| **Overall progress** | 173 / 178 tasks                                                                                                                                                                |
+| **Status**           | Phase 8 Batch 1 PASSED! E2E Full Journey, Abuse Suite, Concurrency Load (200 voters), Rules Matrix Audit (100%), and Cross-Browser tests 100% passing. 188 Vitest tests green. |
+| **Blocked on**       | None. Ready for Phase 8 Batch 2: Production Supabase & Security (T-8.6 through T-8.12).                                                                                        |
+| **Next action**      | Review Batch 2 plan: verify production Supabase schema, RLS test suite against remote, and cron schedules.                                                                     |
+| **Target launch**    | TBD                                                                                                                                                                            |
+| **Active branch**    | `main`                                                                                                                                                                         |
+| **Last deploy**      | —                                                                                                                                                                              |
 
 ### 1.1 Phase board
 
@@ -44,7 +44,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
 | 7     | Polish              | 🟢 Complete    | 31/31 | ✅            |
-| 8     | Launch              | ⬜ Not started | 0/31  | ❌            |
+| 8     | Launch              | 🟡 In progress | 5/31  | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
 

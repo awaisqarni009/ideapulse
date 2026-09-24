@@ -299,11 +299,11 @@ _Goal: in production, observable, and recoverable. Estimated 4 days._
 
 ### Testing
 
-- [ ] **T-8.1** `[!]` Playwright E2E: register → confirm → submit → vote → hit quota → see the leaderboard
-- [ ] **T-8.2** `[!]` E2E abuse suite: self-vote, double-vote, over-quota, second submission — all correctly rejected
-- [ ] **T-8.3** Load test: 200 concurrent voters over 5 minutes; assert no over-quota rows
-- [ ] **T-8.4** Verify every checkbox in `RULES.md` §9 has a passing test
-- [ ] **T-8.5** Cross-browser: Chrome, Safari, Firefox, iOS Safari, Chrome Android — with `backdrop-filter` fallbacks confirmed
+- [x] **T-8.1** `[!]` Playwright E2E: register → confirm → submit → vote → hit quota → see the leaderboard
+- [x] **T-8.2** `[!]` E2E abuse suite: self-vote, double-vote, over-quota, second submission — all correctly rejected
+- [x] **T-8.3** Load test: 200 concurrent voters over 5 minutes; assert no over-quota rows
+- [x] **T-8.4** Verify every checkbox in `RULES.md` §9 has a passing test
+- [x] **T-8.5** Cross-browser: Chrome, Safari, Firefox, iOS Safari, Chrome Android — with `backdrop-filter` fallbacks confirmed
 
 ### Production Supabase
 

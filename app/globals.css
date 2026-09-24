@@ -437,7 +437,8 @@ body::before {
   .glass,
   .glass-panel,
   .glass-floating,
-  .glass-overlay {
+  .glass-overlay,
+  .glass-card-nextgen {
     background: var(--surface-solid);
   }
 }

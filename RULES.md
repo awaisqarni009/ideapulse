@@ -418,23 +418,23 @@ If two of an author's ideas both qualify — possible only if a prior cycle's id
 
 Every rule must have a passing test before launch.
 
-- [ ] BR-010 — 6th vote in 24h rejected; next-slot timestamp correct to the second
-- [ ] BR-010 — vote aged past 24h reclaims a slot
-- [ ] BR-011 — second vote on the same idea rejected, no quota consumed
-- [ ] BR-012 — self-vote rejected via RPC
-- [ ] BR-012 — self-vote rejected via direct PostgREST insert with a forged `idea_author_id`
-- [ ] BR-012 — self-vote rejected with triggers disabled (proves the `CHECK` is load-bearing)
-- [ ] BR-014 — retraction inside 10 min succeeds; quota still consumed
-- [ ] BR-014 — retraction after 10 min rejected
-- [ ] BR-020 — second submission inside 7 days rejected with the correct next-slot time
-- [ ] BR-020 — withdrawing does not restore the slot
-- [ ] BR-022 — author edit after first vote rejected
-- [ ] BR-031 — 20 concurrent votes from one account produce exactly 5 rows
-- [ ] BR-033 — vote from a 23-hour-old account is unverified and excluded from the threshold
-- [ ] BR-041 — running `open_next_cycle()` twice fails on the unique index
-- [ ] BR-045 — `qualified_at` set exactly once, on the crossing vote
-- [ ] BR-046 — tie resolved by `qualified_at`
-- [ ] BR-048 — cycle with no qualifiers finalizes cleanly with a note
-- [ ] RLS — user A cannot read user B's votes
-- [ ] RLS — user cannot set their own role to admin
-- [ ] RLS — anonymous client cannot insert into any table
+- [x] BR-010 — 6th vote in 24h rejected; next-slot timestamp correct to the second
+- [x] BR-010 — vote aged past 24h reclaims a slot
+- [x] BR-011 — second vote on the same idea rejected, no quota consumed
+- [x] BR-012 — self-vote rejected via RPC
+- [x] BR-012 — self-vote rejected via direct PostgREST insert with a forged `idea_author_id`
+- [x] BR-012 — self-vote rejected with triggers disabled (proves the `CHECK` is load-bearing)
+- [x] BR-014 — retraction inside 10 min succeeds; quota still consumed
+- [x] BR-014 — retraction after 10 min rejected
+- [x] BR-020 — second submission inside 7 days rejected with the correct next-slot time
+- [x] BR-020 — withdrawing does not restore the slot
+- [x] BR-022 — author edit after first vote rejected
+- [x] BR-031 — 20 concurrent votes from one account produce exactly 5 rows
+- [x] BR-033 — vote from a 23-hour-old account is unverified and excluded from the threshold
+- [x] BR-041 — running `open_next_cycle()` twice fails on the unique index
+- [x] BR-045 — `qualified_at` set exactly once, on the crossing vote
+- [x] BR-046 — tie resolved by `qualified_at`
+- [x] BR-048 — cycle with no qualifiers finalizes cleanly with a note
+- [x] RLS — user A cannot read user B's votes
+- [x] RLS — user cannot set their own role to admin
+- [x] RLS — anonymous client cannot insert into any table
