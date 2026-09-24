@@ -307,13 +307,13 @@ _Goal: in production, observable, and recoverable. Estimated 4 days._
 
 ### Production Supabase
 
-- [ ] **T-8.6** `[!]` Create the production project; never reuse the dev instance
-- [ ] **T-8.7** `[!]` `supabase db push` all migrations; verify RLS is enabled on every table
-- [ ] **T-8.8** `[!]` Run the RLS test suite **against production** before any real user exists
-- [ ] **T-8.9** Configure production auth: SMTP, redirect URLs, rate limits
-- [ ] **T-8.10** Seed cycle 1 with correct `starts_at` / `ends_at` boundaries
-- [ ] **T-8.11** Confirm the `pg_cron` schedule exists and is enabled in production
-- [ ] **T-8.12** Enable daily backups; document the restore procedure
+- [x] **T-8.6** `[!]` Create the production project; never reuse the dev instance
+- [x] **T-8.7** `[!]` `supabase db push` all migrations; verify RLS is enabled on every table
+- [x] **T-8.8** `[!]` Run the RLS test suite **against production** before any real user exists
+- [x] **T-8.9** Configure production auth: SMTP, redirect URLs, rate limits
+- [x] **T-8.10** Seed cycle 1 with correct `starts_at` / `ends_at` boundaries
+- [x] **T-8.11** Confirm the `pg_cron` schedule exists and is enabled in production
+- [x] **T-8.12** Enable daily backups; document the restore procedure
 
 ### Vercel
 

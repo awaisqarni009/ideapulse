@@ -23,11 +23,11 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | Field                | Value                                                                                                                                                                          |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Current phase**    | Phase 8 — Launch (🟡 In Progress)                                                                                                                                              |
-| **Phase progress**   | 5 / 31 tasks (Batch 1: Testing & Verification Matrix Complete: T-8.1 through T-8.5)                                                                                            |
-| **Overall progress** | 173 / 178 tasks                                                                                                                                                                |
-| **Status**           | Phase 8 Batch 1 PASSED! E2E Full Journey, Abuse Suite, Concurrency Load (200 voters), Rules Matrix Audit (100%), and Cross-Browser tests 100% passing. 188 Vitest tests green. |
-| **Blocked on**       | None. Ready for Phase 8 Batch 2: Production Supabase & Security (T-8.6 through T-8.12).                                                                                        |
-| **Next action**      | Review Batch 2 plan: verify production Supabase schema, RLS test suite against remote, and cron schedules.                                                                     |
+| **Phase progress**   | 12 / 31 tasks (Batch 1: Testing & Verification Complete; Batch 2: Production Supabase & Security Complete: T-8.6 through T-8.12)                                               |
+| **Overall progress** | 180 / 199 tasks                                                                                                                                                                |
+| **Status**           | Phase 8 Batch 2 PASSED! Remote Supabase verified (10/10 tables RLS enabled), production RLS test suite 100% green, pg_cron active, DR runbook created. 196 Vitest tests green. |
+| **Blocked on**       | None. Ready for Phase 8 Batch 3: Vercel Deployment & Headers (T-8.13 through T-8.18).                                                                                          |
+| **Next action**      | Review Batch 3 plan: Vercel integration, security headers, production env vars, and vercel cron fallback.                                                                      |
 | **Target launch**    | TBD                                                                                                                                                                            |
 | **Active branch**    | `main`                                                                                                                                                                         |
 | **Last deploy**      | —                                                                                                                                                                              |
@@ -44,7 +44,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
 | 7     | Polish              | 🟢 Complete    | 31/31 | ✅            |
-| 8     | Launch              | 🟡 In progress | 5/31  | ❌            |
+| 8     | Launch              | 🟡 In progress | 12/31 | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
 
