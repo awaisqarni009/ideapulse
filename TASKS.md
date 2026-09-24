@@ -326,12 +326,12 @@ _Goal: in production, observable, and recoverable. Estimated 4 days._
 
 ### Observability
 
-- [ ] **T-8.19** Sentry for client and server errors, with release tagging
-- [ ] **T-8.20** Vercel Analytics + Speed Insights
-- [ ] **T-8.21** Alert: cycle failed to rotate within 30 minutes of the boundary
-- [ ] **T-8.22** Alert: `abuse_events` rate spikes above 3× the rolling baseline
-- [ ] **T-8.23** Alert: p95 vote latency above 800 ms
-- [ ] **T-8.24** Uptime check on `/` and `/api/health`
+- [x] **T-8.19** Sentry for client and server errors, with release tagging
+- [x] **T-8.20** Vercel Analytics + Speed Insights
+- [x] **T-8.21** Alert: cycle failed to rotate within 30 minutes of the boundary
+- [x] **T-8.22** Alert: `abuse_events` rate spikes above 3× the rolling baseline
+- [x] **T-8.23** Alert: p95 vote latency above 800 ms
+- [x] **T-8.24** Uptime check on `/` and `/api/health`
 
 ### Launch readiness
 

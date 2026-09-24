@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                                                                           |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 8 — Launch (🟡 In Progress)                                                                                                                                               |
-| **Phase progress**   | 18 / 31 tasks (Batch 1: Testing Complete; Batch 2: Supabase Complete; Batch 3: Vercel & Security Headers Complete: T-8.13 through T-8.18)                                       |
-| **Overall progress** | 186 / 199 tasks                                                                                                                                                                 |
-| **Status**           | Phase 8 Batch 3 PASSED! Hardened security headers (CSP, HSTS, X-Frame-Options, Referrer, Permissions) verified on live server, Vercel cron endpoints verified. 200 tests green. |
-| **Blocked on**       | None. Ready for Phase 8 Batch 4: Observability & Health Checks (T-8.19 through T-8.24).                                                                                         |
-| **Next action**      | Review Batch 4 plan: Health endpoints, latency checks, abuse rate monitoring, and error reporting.                                                                              |
-| **Target launch**    | TBD                                                                                                                                                                             |
-| **Active branch**    | `main`                                                                                                                                                                          |
-| **Last deploy**      | —                                                                                                                                                                               |
+| Field                | Value                                                                                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 8 — Launch (🟡 In Progress)                                                                                                                                      |
+| **Phase progress**   | 24 / 31 tasks (Batches 1, 2, 3, 4 Complete: T-8.1 through T-8.24)                                                                                                      |
+| **Overall progress** | 192 / 199 tasks                                                                                                                                                        |
+| **Status**           | Phase 8 Batch 4 PASSED! Sentry logger, Web Vitals, cycle boundary alert, abuse spike alert, p95 latency alert, and /api/health endpoint all verified. 206 tests green. |
+| **Blocked on**       | None. Ready for Phase 8 Batch 5 (Final Batch): Launch Readiness (T-8.25 through T-8.31).                                                                               |
+| **Next action**      | Review Batch 5 plan: /rules, privacy & terms, SEO (robots, sitemap, OpenGraph), support routing, rollback runbook, and exit gate watch.                                |
+| **Target launch**    | Launch Ready                                                                                                                                                           |
+| **Active branch**    | `main`                                                                                                                                                                 |
+| **Last deploy**      | —                                                                                                                                                                      |
 
 ### 1.1 Phase board
 
@@ -44,7 +44,7 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 | 5     | Cycles & rewards    | 🟢 Complete    | 13/13 | ✅            |
 | 6     | Trust & admin       | 🟢 Complete    | 14/14 | ✅            |
 | 7     | Polish              | 🟢 Complete    | 31/31 | ✅            |
-| 8     | Launch              | 🟡 In progress | 18/31 | ❌            |
+| 8     | Launch              | 🟡 In progress | 24/31 | ❌            |
 
 Legend: ⬜ not started · 🟡 in progress · 🟢 complete · 🔴 blocked
 

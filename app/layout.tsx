@@ -16,6 +16,8 @@ const WinnerModal = dynamic(
   { ssr: false },
 );
 
+import { WebVitalsReporter } from '@/app/components/observability/web-vitals';
+
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-display',
@@ -53,6 +55,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Header />
               <UnconfirmedBanner />
               <WinnerModal />
+              <WebVitalsReporter />
               <div className="flex-1">{children}</div>
               <Footer />
             </ToastProvider>
