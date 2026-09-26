@@ -3,7 +3,22 @@
 import React, { useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CATEGORIES, CATEGORY_LABELS, type Category } from '@/lib/constants';
-import { Filter, X, Tag as TagIcon } from 'lucide-react';
+import {
+  Filter,
+  X,
+  Tag as TagIcon,
+  Cpu,
+  Code2,
+  Leaf,
+  Coins,
+  HeartPulse,
+  Radio,
+  LayoutGrid,
+  Users,
+  GraduationCap,
+  Sparkles,
+  Layers,
+} from 'lucide-react';
 
 interface FilterChipsProps {
   selectedCategories: string[];
@@ -12,12 +27,26 @@ interface FilterChipsProps {
   className?: string;
 }
 
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  all: Layers,
+  ai: Cpu,
+  'developer-tools': Code2,
+  sustainability: Leaf,
+  fintech: Coins,
+  health: HeartPulse,
+  hardware: Radio,
+  product: LayoutGrid,
+  social: Users,
+  education: GraduationCap,
+  other: Sparkles,
+};
+
 /**
- * FilterChips Component per DESIGN.md §7.8 and TASKS.md [T-4.6]
- * - Multi-select category pills
- * - Tag filter chips
- * - Synchronized with URL searchParams (`?category=...&tag=...`)
- * - "Clear filters" quick action
+ * FilterChips Component
+ * - Premium interactive visual category chips with icons
+ * - Popular tags row with active states
+ * - URL searchParams synchronization
+ * - "Clear all filters" quick action
  */
 export function FilterChips({
   selectedCategories,
@@ -84,87 +113,101 @@ export function FilterChips({
   };
 
   const hasActiveFilters = selectedCategories.length > 0 || selectedTags.length > 0;
+  const totalActive = selectedCategories.length + selectedTags.length;
 
   return (
-    <section aria-label="Feed filter options" className={`flex flex-col gap-3 py-2 ${className}`}>
-      {/* Category Pills Row */}
-      <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        <div className="flex items-center gap-1.5 pr-2 font-medium text-[var(--text-tertiary)]">
+    <section
+      aria-label="Event filter options"
+      className={`flex flex-col gap-3.5 py-1 ${className}`}
+    >
+      {/* Category Pills Row with Icons */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)]">
           <Filter className="h-3.5 w-3.5 text-[var(--indigo-bright)]" />
           <span>Categories:</span>
         </div>
 
-        {/* All Categories Reset Button */}
-        <button
-          type="button"
-          onClick={() => updateFilters([], selectedTags)}
-          className={`flex-shrink-0 rounded-full px-3 py-1 font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
-            selectedCategories.length === 0
-              ? 'border border-[var(--indigo-bright)] bg-[rgba(99,102,241,0.15)] text-[var(--text-primary)] shadow-[var(--glow-indigo-sm)]'
-              : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          All
-        </button>
+        <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1 text-xs [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {/* All Categories Pill */}
+          <button
+            type="button"
+            onClick={() => updateFilters([], selectedTags)}
+            className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
+              selectedCategories.length === 0
+                ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
+                : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <Layers className="h-3.5 w-3.5" />
+            <span>All Events</span>
+          </button>
 
-        {CATEGORIES.map((cat) => {
-          const isSelected = selectedCategories.includes(cat);
-          const label = CATEGORY_LABELS[cat as Category] || cat;
+          {/* Individual Category Pills */}
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategories.includes(cat);
+            const label = CATEGORY_LABELS[cat as Category] || cat;
+            const Icon = CATEGORY_ICONS[cat] || Sparkles;
 
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => toggleCategory(cat)}
-              aria-pressed={isSelected}
-              className={`flex-shrink-0 rounded-full px-3 py-1 font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
-                isSelected
-                  ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
-                  : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => toggleCategory(cat)}
+                aria-pressed={isSelected}
+                className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
+                  isSelected
+                    ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
+                    : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Icon
+                  className={`h-3.5 w-3.5 ${isSelected ? 'text-white' : 'text-[var(--indigo-bright)]'}`}
+                />
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Popular Tags Row */}
-      <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        <div className="flex items-center gap-1.5 pr-2 font-medium text-[var(--text-tertiary)]">
-          <TagIcon className="h-3.5 w-3.5 text-[var(--cyan-bright)]" />
-          <span>Tags:</span>
+      {/* Popular Tags Row & Clear Button */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-2.5">
+        <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto text-xs [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex shrink-0 items-center gap-1 pr-1 text-[11px] font-medium text-[var(--text-tertiary)]">
+            <TagIcon className="h-3 w-3 text-[var(--cyan-bright)]" />
+            <span>Hot Topics:</span>
+          </div>
+
+          {availableTags.map((tag) => {
+            const isSelected = selectedTags.includes(tag);
+
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => toggleTag(tag)}
+                aria-pressed={isSelected}
+                className={`flex-shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[11px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cyan-bright)] ${
+                  isSelected
+                    ? 'border border-[var(--cyan-bright)] bg-[rgba(34,211,238,0.18)] text-[var(--cyan-bright)] shadow-[0_0_8px_rgba(34,211,238,0.3)]'
+                    : 'border border-[var(--border-default)] bg-[var(--surface-1)] text-[var(--text-tertiary)] hover:border-[var(--border-strong)] hover:text-[var(--text-secondary)]'
+                }`}
+              >
+                #{tag}
+              </button>
+            );
+          })}
         </div>
 
-        {availableTags.map((tag) => {
-          const isSelected = selectedTags.includes(tag);
-
-          return (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => toggleTag(tag)}
-              aria-pressed={isSelected}
-              className={`flex-shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[11px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cyan-bright)] ${
-                isSelected
-                  ? 'border border-[var(--cyan-bright)] bg-[rgba(34,211,238,0.18)] text-[var(--cyan-bright)] shadow-[0_0_8px_rgba(34,211,238,0.3)]'
-                  : 'border border-[var(--border-default)] bg-[var(--surface-1)] text-[var(--text-tertiary)] hover:border-[var(--border-strong)] hover:text-[var(--text-secondary)]'
-              }`}
-            >
-              #{tag}
-            </button>
-          );
-        })}
-
-        {/* Clear Filters button */}
+        {/* Clear Filters Button */}
         {hasActiveFilters && (
           <button
             type="button"
             onClick={clearAllFilters}
-            className="flex flex-shrink-0 items-center gap-1 rounded-full border border-[rgba(248,113,113,0.3)] bg-[var(--surface-2)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--danger)] transition-all hover:bg-[rgba(248,113,113,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--danger)]"
+            className="flex flex-shrink-0 items-center gap-1 rounded-full border border-[rgba(248,113,113,0.3)] bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-medium text-[var(--danger)] transition-all hover:bg-[rgba(248,113,113,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--danger)]"
           >
             <X className="h-3 w-3" />
-            <span>Clear filters</span>
+            <span>Reset filters ({totalActive})</span>
           </button>
         )}
       </div>

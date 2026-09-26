@@ -2,12 +2,14 @@
 
 import { useTransition, useState, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { Search, X, Loader2 } from 'lucide-react';
 
 interface SearchBarProps {
   initialSearch?: string;
+  className?: string;
 }
 
-export function SearchBar({ initialSearch = '' }: SearchBarProps) {
+export function SearchBar({ initialSearch = '', className = '' }: SearchBarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -38,22 +40,9 @@ export function SearchBar({ initialSearch = '' }: SearchBarProps) {
   };
 
   return (
-    <div className="relative w-full max-w-md flex-1">
+    <div className={`relative w-full max-w-md flex-1 ${className}`}>
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)]">
-        <svg
-          aria-hidden="true"
-          className="h-4 w-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
+        <Search className="h-4 w-4" />
       </div>
 
       <input
@@ -74,9 +63,12 @@ export function SearchBar({ initialSearch = '' }: SearchBarProps) {
             updateSearch(query);
           }
         }}
-        placeholder="Search proposals by title or topic..."
-        aria-label="Search ideas by title or summary"
-        className="w-full rounded-xl border border-[var(--edge-subtle)] bg-[var(--surface-2)] py-2 pl-10 pr-10 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] shadow-inner backdrop-blur-md transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--indigo-bright)]"
+        placeholder="Search events, summits, keynotes & topics..."
+        aria-label="Search events by title or summary"
+        className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-10 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] shadow-inner backdrop-blur-md transition-all hover:border-[var(--border-strong)] focus:border-[var(--indigo-bright)] focus:outline-none focus:ring-2 sm:text-sm"
+        style={{
+          boxShadow: 'inset 0 1px 0 var(--edge-specular)',
+        }}
       />
 
       {query && (
@@ -86,21 +78,13 @@ export function SearchBar({ initialSearch = '' }: SearchBarProps) {
           aria-label="Clear search"
           className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)]"
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <X className="h-4 w-4" />
         </button>
       )}
 
       {isPending && (
-        <span className="absolute right-10 top-2.5 flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--cyan-bright)] opacity-75"></span>
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--cyan-bright)]"></span>
+        <span className="absolute right-10 top-3 flex h-3 w-3">
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--cyan-bright)]" />
         </span>
       )}
     </div>

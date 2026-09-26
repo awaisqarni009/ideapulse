@@ -13,12 +13,12 @@ interface SortTabsProps {
 const SORT_OPTIONS: { id: FeedSortOption; label: string; icon: React.ElementType }[] = [
   { id: 'trending', label: 'Trending', icon: Flame },
   { id: 'newest', label: 'Newest', icon: Clock },
-  { id: 'top', label: 'Top this Cycle', icon: Trophy },
+  { id: 'top', label: 'Top Ranked', icon: Trophy },
 ];
 
 /**
- * SortTabs Component per DESIGN.md §7.1 and TASKS.md [T-4.4]
- * Switches between Trending, Newest, and Top this Cycle, with state reflected in the URL.
+ * SortTabs Component
+ * Switches between Trending, Newest, and Top Ranked, with state reflected in the URL.
  */
 export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
   const router = useRouter();
@@ -56,7 +56,7 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
     <div
       role="tablist"
       aria-label="Feed sorting options"
-      className={`glass-panel inline-flex items-center gap-1 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] p-1 backdrop-blur-[var(--blur-md)] ${className}`}
+      className={`glass-panel inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] p-1 shadow-sm backdrop-blur-[var(--blur-md)] ${className}`}
       style={{
         boxShadow: 'inset 0 1px 0 var(--edge-specular)',
       }}
@@ -74,7 +74,7 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
             aria-selected={isActive}
             onClick={() => handleSortChange(option.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
+            className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
               isActive
                 ? 'border border-[var(--border-accent)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
                 : 'text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]'
