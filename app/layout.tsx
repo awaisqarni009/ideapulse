@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
@@ -10,6 +10,17 @@ import { ToastProvider } from '@/app/components/ui/toast';
 import { Header } from '@/app/components/ui/header';
 import { Footer } from '@/app/components/ui/footer';
 import dynamic from 'next/dynamic';
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0b0f19' },
+    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+};
 
 const WinnerModal = dynamic(
   () => import('@/app/components/cycles/winner-modal').then((mod) => mod.WinnerModal),

@@ -56,7 +56,7 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
     <div
       role="tablist"
       aria-label="Feed sorting options"
-      className={`glass-panel inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] p-1 shadow-sm backdrop-blur-[var(--blur-md)] ${className}`}
+      className={`glass-panel flex w-full shrink-0 items-center justify-between gap-1 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] p-1 shadow-sm backdrop-blur-[var(--blur-md)] sm:w-auto sm:justify-start ${className}`}
       style={{
         boxShadow: 'inset 0 1px 0 var(--edge-specular)',
       }}
@@ -74,14 +74,14 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
             aria-selected={isActive}
             onClick={() => handleSortChange(option.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
-            className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] sm:flex-initial sm:px-3.5 sm:text-xs ${
               isActive
                 ? 'border border-[var(--border-accent)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
                 : 'text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]'
             }`}
           >
             <Icon
-              className={`h-3.5 w-3.5 ${
+              className={`h-3.5 w-3.5 shrink-0 ${
                 isActive
                   ? 'text-white'
                   : option.id === 'trending'
@@ -89,7 +89,7 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
                     : 'text-[var(--text-tertiary)]'
               }`}
             />
-            <span>{option.label}</span>
+            <span className="truncate">{option.label}</span>
           </button>
         );
       })}

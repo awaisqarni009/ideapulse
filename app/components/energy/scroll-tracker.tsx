@@ -64,7 +64,7 @@ export function ScrollTracker() {
   const progressPct = Math.min(100, Math.round((currentSeconds / targetSeconds) * 100));
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 select-none">
+    <div className="pb-safe fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] select-none sm:bottom-6 sm:right-6">
       <AnimatePresence>
         {isMinimized ? (
           <motion.button
@@ -73,7 +73,7 @@ export function ScrollTracker() {
             exit={{ scale: 0.8, opacity: 0 }}
             onClick={() => setIsMinimized(false)}
             aria-label="Expand 30-second scroll quest tracker"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-accent)] bg-[var(--surface-solid)] shadow-[var(--shadow-lg)] backdrop-blur-md transition-transform hover:scale-105"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-accent)] bg-[var(--surface-solid)] shadow-[var(--shadow-lg)] backdrop-blur-md transition-transform hover:scale-105 active:scale-95"
             style={{
               boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.25), inset 0 1px 0 var(--edge-specular)',
             }}
@@ -87,7 +87,7 @@ export function ScrollTracker() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
-            className="bg-[var(--surface-solid)]/95 flex items-center gap-3 rounded-2xl border border-[var(--border-default)] p-3 shadow-2xl backdrop-blur-xl transition-all duration-300"
+            className="bg-[var(--surface-solid)]/95 flex max-w-full items-center gap-2.5 rounded-2xl border border-[var(--border-default)] p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 sm:gap-3 sm:p-3"
             style={{
               boxShadow: '0 16px 36px -8px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--edge-specular)',
             }}

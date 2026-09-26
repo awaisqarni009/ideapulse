@@ -64,13 +64,13 @@ export function EnergyHubModal() {
       onClick={(e) => {
         if (e.target === e.currentTarget) setIsHubOpen(false);
       }}
-      className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 10 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 10 }}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--border-default)] bg-[var(--surface-solid)] p-6 shadow-2xl backdrop-blur-2xl transition-all"
+        className="scroll-touch max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--border-default)] bg-[var(--surface-solid)] p-4 shadow-2xl backdrop-blur-2xl transition-all sm:max-h-[90vh] sm:p-6"
         style={{
           boxShadow: '0 24px 64px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 var(--edge-specular)',
         }}

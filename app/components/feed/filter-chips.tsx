@@ -127,7 +127,7 @@ export function FilterChips({
           <span>Categories:</span>
         </div>
 
-        <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1 text-xs [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="no-scrollbar scroll-touch flex items-center gap-2 overflow-x-auto pb-1 text-xs [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* All Categories Pill */}
           <button
             type="button"
@@ -172,7 +172,7 @@ export function FilterChips({
 
       {/* Popular Tags Row & Clear Button */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-2.5">
-        <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto text-xs [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="no-scrollbar scroll-touch flex items-center gap-1.5 overflow-x-auto text-xs [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="flex shrink-0 items-center gap-1 pr-1 text-[11px] font-medium text-[var(--text-tertiary)]">
             <TagIcon className="h-3 w-3 text-[var(--cyan-bright)]" />
             <span>Hot Topics:</span>
