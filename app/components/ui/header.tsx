@@ -16,12 +16,20 @@ export function Header() {
   const { user, profile } = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks = [
+  const baseNavLinks = [
     { label: 'Feed', href: '/' },
     { label: 'Leaderboard', href: '/leaderboard' },
     { label: 'How It Works', href: '/how-it-works' },
     { label: 'About', href: '/about' },
     { label: 'FAQ', href: '/faq' },
+  ];
+
+  const navLinks = [
+    ...(user ? [{ label: 'Dashboard', href: '/dashboard' }] : []),
+    ...baseNavLinks,
+    ...(profile?.role === 'admin' || profile?.role === 'moderator'
+      ? [{ label: 'Admin', href: '/admin' }]
+      : []),
   ];
 
   return (

@@ -79,8 +79,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Protected routes requiring authentication (/submit, /settings)
-  const isProtectedRoute = pathname.startsWith('/submit') || pathname.startsWith('/settings');
+  // 3. Protected routes requiring authentication (/submit, /settings, /dashboard)
+  const isProtectedRoute =
+    pathname.startsWith('/submit') ||
+    pathname.startsWith('/settings') ||
+    pathname.startsWith('/dashboard');
 
   if (isProtectedRoute && !user) {
     const redirectUrl = new URL('/login', request.url);
