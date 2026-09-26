@@ -175,6 +175,9 @@ export function IdeaCard({
             <span className="rounded-md bg-white/20 px-2 py-0.5 backdrop-blur-sm">
               {visualMeta.accessBadge}
             </span>
+            <span className="rounded-md border border-emerald-500/40 bg-emerald-950/80 px-2 py-0.5 text-[10px] font-bold text-emerald-300 shadow-sm backdrop-blur-sm">
+              $50k Pool
+            </span>
           </div>
         </div>
 
@@ -359,9 +362,14 @@ export function IdeaCard({
               <span className="font-mono text-[10px] text-white/70">{visualMeta.format}</span>
             </div>
 
-            <span className="shrink-0 rounded-md border border-white/20 bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-              {visualMeta.accessBadge}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="shrink-0 rounded-md border border-white/20 bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+                {visualMeta.accessBadge}
+              </span>
+              <span className="shrink-0 rounded-md border border-emerald-500/40 bg-emerald-950/80 px-2 py-0.5 text-[10px] font-bold text-emerald-300 shadow-sm backdrop-blur-sm">
+                $50k Pool
+              </span>
+            </div>
           </div>
         </div>
 
