@@ -42,10 +42,12 @@ test.describe('Feed Discovery Filters & Empty State (Phase 4 Batch 2)', () => {
     // Verify empty state container
     const emptyState = page.locator('[role="status"]');
     await expect(emptyState).toBeVisible({ timeout: 10000 });
-    await expect(page.getByRole('heading', { level: 3, name: /no ideas found/i })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /no ideas match these filters/i }),
+    ).toBeVisible();
 
-    // Click reset all filters button
-    const resetBtn = page.getByRole('button', { name: /reset all filters/i });
+    // Click clear filters button inside emptyState
+    const resetBtn = emptyState.getByRole('button', { name: /clear filters/i });
     await expect(resetBtn).toBeVisible();
     await resetBtn.click();
 

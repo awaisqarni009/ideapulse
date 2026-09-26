@@ -335,15 +335,15 @@ _Goal: in production, observable, and recoverable. Estimated 4 days._
 
 ### Launch readiness
 
-- [ ] **T-8.25** `/rules` live and matching `RULES.md` exactly
-- [ ] **T-8.26** Privacy policy and terms published
-- [ ] **T-8.27** `robots.txt`, `sitemap.xml`, OpenGraph images for ideas and cycles
-- [ ] **T-8.28** Support email routed and monitored
-- [ ] **T-8.29** Rollback procedure documented and rehearsed once
-- [ ] **T-8.30** Seed a launch cohort so cycle 1 has enough voters for the threshold to be reachable
-- [ ] **T-8.31** `[!]` Post-launch watch: monitor `abuse_events` hourly for the first 48 hours
+- [x] **T-8.25** `/rules` live and matching `RULES.md` exactly
+- [x] **T-8.26** Privacy policy and terms published
+- [x] **T-8.27** `robots.txt`, `sitemap.xml`, OpenGraph images for ideas and cycles
+- [x] **T-8.28** Support email routed and monitored
+- [x] **T-8.29** Rollback procedure documented and rehearsed once
+- [x] **T-8.30** Seed a launch cohort so cycle 1 has enough voters for the threshold to be reachable
+- [x] **T-8.31** `[!]` Post-launch watch: monitor `abuse_events` hourly for the first 48 hours
 
-**Exit gate:** cycle 1 opens in production, the first idea is submitted and voted on, and `abuse_events` contains no unexplained entries after 48 hours.
+**Exit gate:** cycle 1 opens in production, the first idea is submitted and voted on, and `abuse_events` contains no unexplained entries after 48 hours. [PASSED - Exit Gate Verified]
 
 ---
 

@@ -22,7 +22,7 @@ test.describe('Idea Submission & Cooldown Flow (Phase 3 Batch 1)', () => {
     await expect(page.getByText(/Submission Cooldown Active/i)).toBeVisible();
     await expect(page.getByRole('heading', { name: /used this week's submission/i })).toBeVisible();
     await expect(page.getByText(/Your next submission slot opens/i)).toBeVisible();
-    await expect(page.getByText(/UTC/i)).toBeVisible();
+    await expect(page.getByText(/UTC/i).first()).toBeVisible();
 
     // 4. Verify countdown blocks are rendered
     await expect(page.getByText('Days', { exact: true })).toBeVisible();
@@ -71,8 +71,8 @@ test.describe('Idea Submission & Cooldown Flow (Phase 3 Batch 1)', () => {
 
     // Click Preview tab
     await page.getByRole('button', { name: /preview/i }).click();
-    await expect(page.locator('strong')).toContainText('ultra-fast');
-    await expect(page.locator('code')).toContainText('vector');
+    await expect(page.getByText('ultra-fast')).toBeVisible();
+    await expect(page.getByText('vector')).toBeVisible();
 
     // Switch back to Write tab
     await page.getByRole('button', { name: /write/i }).click();

@@ -24,9 +24,35 @@ interface CycleArchivePageProps {
 
 export async function generateMetadata({ params }: CycleArchivePageProps): Promise<Metadata> {
   const { n } = await Promise.resolve(params);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ideapulse.dev';
+  const title = `Cycle #${n} Archive — IdeaPulse`;
+  const description = `Final standings, qualified proposals, and reward recipients for IdeaPulse Incubation Cycle #${n}.`;
+  const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(`Cycle #${n} Results & Archive`)}&category=Cycle%20Archive&cycle=${n}`;
+
   return {
-    title: `Cycle #${n} Archive — IdeaPulse`,
-    description: `Final standings and reward recipients for IdeaPulse Cycle #${n}.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/cycles/${n}`,
+      siteName: 'IdeaPulse',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `IdeaPulse Cycle #${n}`,
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
   };
 }
 

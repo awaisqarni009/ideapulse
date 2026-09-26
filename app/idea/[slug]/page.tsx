@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: IdeaPageProps): Promise<Metad
   const supabase = await createClient();
   const { data: idea } = await supabase
     .from('ideas')
-    .select('title, summary')
+    .select('title, summary, category, verified_vote_count')
     .eq('slug', params.slug)
     .maybeSingle();
 
@@ -31,9 +31,36 @@ export async function generateMetadata({ params }: IdeaPageProps): Promise<Metad
     return { title: 'Idea Not Found — IdeaPulse' };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ideapulse.dev';
+  const categoryLabel = idea.category
+    ? CATEGORY_LABELS[idea.category as Category] || idea.category
+    : 'General';
+  const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(idea.title)}&category=${encodeURIComponent(categoryLabel)}&votes=${idea.verified_vote_count || 0}`;
+
   return {
     title: `${idea.title} — IdeaPulse`,
     description: idea.summary,
+    openGraph: {
+      title: `${idea.title} — IdeaPulse`,
+      description: idea.summary,
+      url: `${baseUrl}/idea/${params.slug}`,
+      siteName: 'IdeaPulse',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: idea.title,
+        },
+      ],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${idea.title} — IdeaPulse`,
+      description: idea.summary,
+      images: [ogImage],
+    },
   };
 }
 

@@ -196,10 +196,10 @@ export function Footer() {
           </p>
 
           <div className="flex flex-wrap items-center gap-6 text-xs text-[var(--text-tertiary)]">
-            <Link href="/rules" className="transition-colors hover:text-[var(--text-secondary)]">
+            <Link href="/privacy" className="transition-colors hover:text-[var(--text-secondary)]">
               Privacy Policy
             </Link>
-            <Link href="/rules" className="transition-colors hover:text-[var(--text-secondary)]">
+            <Link href="/terms" className="transition-colors hover:text-[var(--text-secondary)]">
               Terms of Incubation
             </Link>
             <Link href="/about" className="transition-colors hover:text-[var(--text-secondary)]">

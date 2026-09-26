@@ -25,13 +25,13 @@ test.describe('Idea Lifecycle, Draft Autosave & Withdrawal (T-3.6 – T-3.8)', (
     await page.reload();
 
     // 4. Verify draft restored notice and values
-    await expect(page.getByText(/Restored from unsaved draft/i)).toBeVisible();
+    await expect(page.getByText(/Draft restored from/i)).toBeVisible();
     await expect(page.locator('#idea-title')).toHaveValue(testTitle);
 
     // 5. Test discard draft
     await page.getByRole('button', { name: /discard draft/i }).click();
     await expect(page.locator('#idea-title')).toHaveValue('');
-    await expect(page.getByText(/Restored from unsaved draft/i)).not.toBeVisible();
+    await expect(page.getByText(/Draft restored from/i)).not.toBeVisible();
   });
 
   test('idea detail page displays full content and withdrawal modal copy [T-3.7, T-3.8]', async ({

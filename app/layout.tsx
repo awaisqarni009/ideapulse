@@ -24,9 +24,41 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ideapulse.dev';
+
 export const metadata: Metadata = {
-  title: 'IdeaPulse — Community Idea Incubator',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'IdeaPulse — Community Idea Incubator',
+    template: '%s · IdeaPulse',
+  },
   description: 'Where the crowd decides which ideas deserve funding and attention.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: 'IdeaPulse',
+    title: 'IdeaPulse — Community Idea Incubator',
+    description: 'Where the crowd decides which ideas deserve funding and attention.',
+    images: [
+      {
+        url: '/api/og?title=IdeaPulse%20—%20Community%20Idea%20Incubator',
+        width: 1200,
+        height: 630,
+        alt: 'IdeaPulse Incubator',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'IdeaPulse — Community Idea Incubator',
+    description: 'Where the crowd decides which ideas deserve funding and attention.',
+    images: ['/api/og?title=IdeaPulse%20—%20Community%20Idea%20Incubator'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
