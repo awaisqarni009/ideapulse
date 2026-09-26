@@ -104,7 +104,7 @@ export function QuotaHUD({ initialQuota, className = '' }: QuotaHUDProps) {
       aria-live="polite"
       aria-atomic="true"
       aria-label={`Vote quota: ${remaining} of ${totalLimit} remaining`}
-      className={`glass-panel flex h-[32px] items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2.5 shadow-sm transition-colors sm:h-[36px] sm:gap-3 sm:px-3.5 ${className}`}
+      className={`glass-panel flex h-[34px] shrink-0 items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 shadow-sm transition-colors sm:gap-2.5 sm:px-3.5 ${className}`}
       style={{
         boxShadow: 'inset 0 1px 0 var(--edge-specular)',
       }}

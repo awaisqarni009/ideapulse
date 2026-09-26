@@ -35,25 +35,28 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-[200] h-[64px] border-b border-[var(--border-subtle)] bg-[var(--surface-1)] backdrop-blur-[var(--blur-md)] transition-colors duration-300"
+      className="bg-[var(--surface-1)]/95 sticky top-0 z-[200] h-[68px] border-b border-[var(--border-subtle)] backdrop-blur-[var(--blur-md)] transition-colors duration-300"
       style={{
-        boxShadow: 'inset 0 1px 0 var(--edge-specular), inset 0 -1px 0 var(--border-subtle)',
+        boxShadow: 'inset 0 1px 0 var(--edge-specular), 0 1px 3px 0 rgba(0, 0, 0, 0.04)',
       }}
     >
-      <div className="container mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Left: Brand / Logo */}
-        <div className="flex items-center gap-6 lg:gap-8">
+      <div className="container mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Left Section: Brand Logo & Desktop Navigation */}
+        <div className="flex items-center gap-5 lg:gap-8">
           <Link
             href="/"
             className="group flex items-center gap-2.5 text-base font-bold tracking-tight text-[var(--text-primary)]"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-transform group-hover:scale-105">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-transform duration-200 group-hover:scale-105">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <span className="font-display text-lg font-bold tracking-tight">
+            <span className="font-display text-[19px] font-bold tracking-tight">
               Idea<span className="text-[var(--cyan-bright)]">Pulse</span>
             </span>
           </Link>
+
+          {/* Vertical divider */}
+          <div className="hidden h-5 w-px bg-[var(--border-subtle)] md:block" aria-hidden="true" />
 
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-1 md:flex">
@@ -65,9 +68,9 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-[var(--radius-xs)] px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`rounded-lg px-3 py-1.5 text-[13px] font-medium transition-all ${
                     isActive
-                      ? 'bg-[var(--surface-3)] font-semibold text-[var(--indigo-bright)]'
+                      ? 'bg-[var(--surface-3)] font-semibold text-[var(--indigo-bright)] shadow-sm'
                       : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -78,14 +81,14 @@ export function Header() {
           </nav>
         </div>
 
-        {/* Center: Cycle Countdown in header [T-4.14] */}
-        <div className="hidden sm:block">
-          <CycleCountdown />
-        </div>
+        {/* Right Section: Utilities, Status & User Controls */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Active Cycle Countdown Pill (responsive) */}
+          <div className="hidden xl:block">
+            <CycleCountdown />
+          </div>
 
-        {/* Right: Actions, QuotaHUD, Theme Switch & User */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Theme Switch (Dark & Bright Mode) */}
+          {/* Theme Switcher (Dark & Bright Mode) */}
           <ThemeToggle />
 
           {/* Voting Energy Reservoir & Daily Quests Hub */}
@@ -94,7 +97,7 @@ export function Header() {
           {/* Submit Idea CTA */}
           <Link
             href="/submit"
-            className="hidden items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-accent)] bg-[var(--tint-indigo)] px-2.5 py-1.5 text-xs font-semibold text-[var(--indigo-bright)] transition-all hover:bg-[var(--indigo)] hover:text-white lg:inline-flex"
+            className="hidden h-[34px] items-center gap-1.5 rounded-full border border-[var(--border-accent)] bg-[var(--tint-indigo)] px-3.5 text-xs font-semibold text-[var(--indigo-bright)] transition-all hover:bg-[var(--indigo)] hover:text-white sm:inline-flex"
           >
             <PlusCircle className="h-3.5 w-3.5" />
             <span>Submit</span>
@@ -102,13 +105,13 @@ export function Header() {
 
           {user ? (
             <>
-              {/* Header Quota HUD [T-3.16, T-3.17] */}
+              {/* Header Quota HUD */}
               <QuotaHUD />
 
-              {/* User badge / settings */}
+              {/* User badge / profile */}
               <Link
                 href="/settings"
-                className="flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] py-1 pl-1.5 pr-3 text-xs font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--border-default)]"
+                className="flex h-[34px] items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] py-1 pl-1.5 pr-3 text-xs font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--border-default)]"
               >
                 <div className="relative flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[var(--surface-3)] text-[10px] text-[var(--indigo-bright)]">
                   {profile?.avatar_url ? (
@@ -124,7 +127,7 @@ export function Header() {
                     <User className="h-3 w-3" />
                   )}
                 </div>
-                <span className="hidden max-w-[100px] truncate sm:inline">
+                <span className="hidden max-w-[90px] truncate sm:inline">
                   {profile?.display_name || profile?.username || user.email?.split('@')[0]}
                 </span>
               </Link>
@@ -135,22 +138,22 @@ export function Header() {
                 onClick={() => signOutAction()}
                 title="Sign out"
                 aria-label="Sign out"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-tertiary)] transition-colors hover:border-[rgba(239,68,68,0.3)] hover:text-[var(--accent-danger)]"
+                className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-tertiary)] transition-colors hover:border-[rgba(239,68,68,0.3)] hover:text-[var(--accent-danger)]"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>
             </>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Link
                 href="/login"
-                className="rounded-[var(--radius-sm)] px-2.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+                className="inline-flex h-[34px] items-center rounded-lg px-3 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
               >
                 Sign In
               </Link>
               <Link
                 href="/register"
-                className="rounded-[var(--radius-sm)] border border-[var(--border-accent)] bg-[var(--indigo)] px-3 py-1.5 text-xs font-medium text-white shadow-[var(--glow-indigo-sm)] transition-all hover:bg-[var(--indigo-bright)] active:scale-95"
+                className="inline-flex h-[34px] items-center rounded-full border border-[var(--border-accent)] bg-[var(--indigo)] px-3.5 text-xs font-semibold text-white shadow-[var(--glow-indigo-sm)] transition-all hover:bg-[var(--indigo-bright)] active:scale-95"
               >
                 Register
               </Link>
@@ -162,7 +165,7 @@ export function Header() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:hidden"
+            className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:hidden"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
