@@ -72,22 +72,22 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
 
       {/* Floating Dollar / Currency Particle Elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Floating Badge 1 - Top Right */}
-        <div className="animate-float-dollar-1 absolute right-8 top-12 hidden select-none items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-3 py-1 text-xs font-bold text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] backdrop-blur-md md:flex">
+        {/* Floating Badge 1 - Top Right above vault */}
+        <div className="animate-float-dollar-1 absolute right-8 top-4 hidden select-none items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-950/60 px-3 py-1 text-xs font-bold text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] backdrop-blur-md xl:flex">
           <DollarSign className="h-3.5 w-3.5 text-emerald-300" />
           <span>+$25,000 Grand Prize</span>
         </div>
 
-        {/* Floating Badge 2 - Mid Left */}
-        <div className="animate-float-dollar-2 absolute -left-2 top-28 hidden select-none items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 text-xs font-bold text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.3)] backdrop-blur-md lg:flex">
+        {/* Floating Badge 2 - Top Center Header */}
+        <div className="animate-float-dollar-2 absolute left-1/2 top-4 hidden -translate-x-1/2 select-none items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/50 px-3.5 py-1 text-xs font-bold text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.3)] backdrop-blur-md 2xl:flex">
           <Coins className="h-3.5 w-3.5 text-cyan-300" />
-          <span>$50,000 Total Pool</span>
+          <span>$50,000 Treasury Backed</span>
         </div>
 
-        {/* Floating Badge 3 - Bottom Center */}
-        <div className="animate-float-dollar-3 absolute bottom-4 right-1/3 hidden select-none items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-950/40 px-3 py-1 text-xs font-bold text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.25)] backdrop-blur-md sm:flex">
+        {/* Floating Badge 3 - Floating near bottom right above metrics */}
+        <div className="animate-float-dollar-3 absolute right-[390px] top-1/2 hidden -translate-y-1/2 select-none items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-950/60 px-3 py-1 text-xs font-bold text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.25)] backdrop-blur-md xl:flex">
           <Trophy className="h-3.5 w-3.5 text-amber-400" />
-          <span>Top 3 Backed Automatically</span>
+          <span>Top 3 Backed</span>
         </div>
 
         {/* Ambient Glowing Floating Coins */}
