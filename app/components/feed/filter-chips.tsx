@@ -132,13 +132,13 @@ export function FilterChips({
           <button
             type="button"
             onClick={() => updateFilters([], selectedTags)}
-            className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
+            className={`group flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] active:scale-95 ${
               selectedCategories.length === 0
-                ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
-                : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
+                ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)] hover:shadow-[var(--glow-indigo-md)]'
+                : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] hover:shadow-sm'
             }`}
           >
-            <Layers className="h-3.5 w-3.5" />
+            <Layers className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110" />
             <span>All Events</span>
           </button>
 
@@ -154,14 +154,14 @@ export function FilterChips({
                 type="button"
                 onClick={() => toggleCategory(cat)}
                 aria-pressed={isSelected}
-                className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] ${
+                className={`group flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-medium transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] active:scale-95 ${
                   isSelected
-                    ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
-                    : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]'
+                    ? 'border border-[var(--indigo-bright)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)] hover:shadow-[var(--glow-indigo-md)]'
+                    : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] hover:shadow-sm'
                 }`}
               >
                 <Icon
-                  className={`h-3.5 w-3.5 ${isSelected ? 'text-white' : 'text-[var(--indigo-bright)]'}`}
+                  className={`h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110 ${isSelected ? 'text-white' : 'text-[var(--indigo-bright)]'}`}
                 />
                 <span>{label}</span>
               </button>
@@ -187,10 +187,10 @@ export function FilterChips({
                 type="button"
                 onClick={() => toggleTag(tag)}
                 aria-pressed={isSelected}
-                className={`flex-shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[11px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cyan-bright)] ${
+                className={`flex-shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[11px] transition-all duration-150 hover:-translate-y-0.5 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cyan-bright)] active:scale-95 ${
                   isSelected
                     ? 'border border-[var(--cyan-bright)] bg-[rgba(34,211,238,0.18)] text-[var(--cyan-bright)] shadow-[0_0_8px_rgba(34,211,238,0.3)]'
-                    : 'border border-[var(--border-default)] bg-[var(--surface-1)] text-[var(--text-tertiary)] hover:border-[var(--border-strong)] hover:text-[var(--text-secondary)]'
+                    : 'border border-[var(--border-default)] bg-[var(--surface-1)] text-[var(--text-tertiary)] hover:border-[var(--cyan-bright)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 #{tag}

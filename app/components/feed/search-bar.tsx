@@ -65,7 +65,7 @@ export function SearchBar({ initialSearch = '', className = '' }: SearchBarProps
         }}
         placeholder="Search events, summits, keynotes & topics..."
         aria-label="Search events by title or summary"
-        className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-10 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] shadow-inner backdrop-blur-md transition-all hover:border-[var(--border-strong)] focus:border-[var(--indigo-bright)] focus:outline-none focus:ring-2 sm:text-sm"
+        className="hover:border-[var(--indigo-bright)]/60 focus:ring-[var(--indigo-bright)]/30 w-full rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-10 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] shadow-inner backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_16px_rgba(99,102,241,0.18)] focus:border-[var(--indigo-bright)] focus:shadow-[0_0_20px_rgba(99,102,241,0.25)] focus:outline-none focus:ring-2 sm:text-sm"
         style={{
           boxShadow: 'inset 0 1px 0 var(--edge-specular)',
         }}
@@ -76,7 +76,7 @@ export function SearchBar({ initialSearch = '', className = '' }: SearchBarProps
           type="button"
           onClick={handleClear}
           aria-label="Clear search"
-          className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)]"
+          className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[var(--text-tertiary)] transition-transform duration-200 hover:rotate-90 hover:scale-110 hover:text-[var(--text-primary)] active:scale-95"
         >
           <X className="h-4 w-4" />
         </button>

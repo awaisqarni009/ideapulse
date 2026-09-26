@@ -294,7 +294,7 @@ export function VoteButton({
                 ? 'cursor-not-allowed border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-tertiary)] opacity-45'
                 : state === 'pending'
                   ? 'pointer-events-none border border-[var(--border-accent)] bg-[var(--surface-2)] opacity-80'
-                  : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-indigo-md)]'
+                  : 'border border-[var(--border-default)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:-translate-y-0.5 hover:border-[var(--border-accent)] hover:bg-[var(--surface-3)] hover:shadow-[var(--glow-indigo-md)]'
         } ${className}`}
         style={{
           boxShadow:

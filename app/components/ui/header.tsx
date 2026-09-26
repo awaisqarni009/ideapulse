@@ -47,10 +47,10 @@ export function Header() {
             href="/feed"
             className="group flex items-center gap-2.5 text-base font-bold tracking-tight text-[var(--text-primary)]"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-transform duration-200 group-hover:scale-105">
-              <Sparkles className="h-4 w-4 text-white" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-all duration-300 group-hover:rotate-6 group-hover:scale-105 group-hover:shadow-[var(--glow-indigo-md)]">
+              <Sparkles className="h-4 w-4 text-white transition-transform duration-500 group-hover:rotate-45 group-hover:scale-110" />
             </div>
-            <span className="font-display text-[19px] font-bold tracking-tight">
+            <span className="font-display text-[19px] font-bold tracking-tight transition-colors duration-200 group-hover:text-white">
               Idea<span className="text-[var(--cyan-bright)]">Pulse</span>
             </span>
           </Link>
@@ -68,10 +68,10 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-lg px-3 py-1.5 text-[13px] font-medium transition-all ${
+                  className={`rounded-lg px-3 py-1.5 text-[13px] font-medium transition-all duration-200 hover:-translate-y-0.5 active:scale-95 ${
                     isActive
                       ? 'bg-[var(--surface-3)] font-semibold text-[var(--indigo-bright)] shadow-sm'
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] hover:shadow-sm'
                   }`}
                 >
                   {link.label}
@@ -97,9 +97,9 @@ export function Header() {
           {/* Submit Idea CTA (tablets & laptops) */}
           <Link
             href="/submit"
-            className="hidden h-[34px] items-center gap-1.5 rounded-full border border-[var(--border-accent)] bg-[var(--tint-indigo)] px-3.5 text-xs font-semibold text-[var(--indigo-bright)] transition-all hover:bg-[var(--indigo)] hover:text-white sm:inline-flex"
+            className="group hidden h-[34px] items-center gap-1.5 rounded-full border border-[var(--border-accent)] bg-[var(--tint-indigo)] px-3.5 text-xs font-semibold text-[var(--indigo-bright)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--indigo)] hover:text-white hover:shadow-[var(--glow-indigo-md)] active:scale-95 sm:inline-flex"
           >
-            <PlusCircle className="h-3.5 w-3.5" />
+            <PlusCircle className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-90 group-hover:scale-110" />
             <span>Submit</span>
           </Link>
 
@@ -114,7 +114,7 @@ export function Header() {
               <Link
                 href="/settings"
                 title="Account Settings"
-                className="flex h-[34px] items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] py-1 pl-1.5 pr-1.5 text-xs font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--border-default)] sm:pr-3"
+                className="active:scale-98 flex h-[34px] items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] py-1 pl-1.5 pr-1.5 text-xs font-medium text-[var(--text-primary)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--indigo-bright)] hover:shadow-sm sm:pr-3"
               >
                 <div className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--surface-3)] text-[10px] text-[var(--indigo-bright)]">
                   {profile?.avatar_url ? (
@@ -141,7 +141,7 @@ export function Header() {
                 onClick={() => signOutAction()}
                 title="Sign out"
                 aria-label="Sign out"
-                className="hidden h-[34px] w-[34px] items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-tertiary)] transition-colors hover:border-[rgba(239,68,68,0.3)] hover:text-[var(--accent-danger)] sm:inline-flex"
+                className="hidden h-[34px] w-[34px] items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-tertiary)] transition-all duration-200 hover:-translate-y-0.5 hover:rotate-6 hover:border-[rgba(239,68,68,0.4)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[var(--accent-danger)] active:scale-95 sm:inline-flex"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>
@@ -150,13 +150,13 @@ export function Header() {
             <div className="hidden items-center gap-1.5 sm:flex sm:gap-2">
               <Link
                 href="/login"
-                className="inline-flex h-[34px] items-center rounded-lg px-3 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+                className="inline-flex h-[34px] items-center rounded-lg px-3 text-xs font-medium text-[var(--text-secondary)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] active:scale-95"
               >
                 Sign In
               </Link>
               <Link
                 href="/register"
-                className="inline-flex h-[34px] items-center rounded-full border border-[var(--border-accent)] bg-[var(--indigo)] px-3.5 text-xs font-semibold text-white shadow-[var(--glow-indigo-sm)] transition-all hover:bg-[var(--indigo-bright)] active:scale-95"
+                className="inline-flex h-[34px] items-center rounded-full border border-[var(--border-accent)] bg-[var(--indigo)] px-3.5 text-xs font-semibold text-white shadow-[var(--glow-indigo-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--indigo-bright)] hover:shadow-[var(--glow-indigo-md)] active:scale-95"
               >
                 Register
               </Link>
@@ -168,7 +168,7 @@ export function Header() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:hidden"
+            className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-secondary)] transition-all duration-200 hover:scale-105 hover:text-[var(--text-primary)] active:scale-95 md:hidden"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>

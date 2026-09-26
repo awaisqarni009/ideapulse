@@ -74,14 +74,14 @@ export function SortTabs({ currentSort, className = '' }: SortTabsProps) {
             aria-selected={isActive}
             onClick={() => handleSortChange(option.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] sm:flex-initial sm:px-3.5 sm:text-xs ${
+            className={`group flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--indigo-bright)] active:scale-95 sm:flex-initial sm:px-3.5 sm:text-xs ${
               isActive
-                ? 'border border-[var(--border-accent)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)]'
-                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]'
+                ? 'border border-[var(--border-accent)] bg-gradient-to-r from-[var(--indigo)] to-[var(--indigo-deep)] text-white shadow-[var(--glow-indigo-sm)] hover:shadow-[var(--glow-indigo-md)]'
+                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] hover:shadow-sm'
             }`}
           >
             <Icon
-              className={`h-3.5 w-3.5 shrink-0 ${
+              className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${
                 isActive
                   ? 'text-white'
                   : option.id === 'trending'

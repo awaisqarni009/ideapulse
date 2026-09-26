@@ -32,10 +32,10 @@ export function Footer() {
               href="/feed"
               className="group inline-flex items-center gap-2.5 text-base font-bold tracking-tight text-[var(--text-primary)]"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-transform group-hover:scale-105">
-                <Sparkles className="h-4 w-4 text-white" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-all duration-300 group-hover:rotate-6 group-hover:scale-105 group-hover:shadow-[var(--glow-indigo-md)]">
+                <Sparkles className="h-4 w-4 text-white transition-transform duration-500 group-hover:rotate-45 group-hover:scale-110" />
               </div>
-              <span className="font-display text-xl font-bold tracking-tight">
+              <span className="font-display text-xl font-bold tracking-tight transition-colors duration-200 group-hover:text-white">
                 Idea<span className="text-[var(--cyan-bright)]">Pulse</span>
               </span>
             </Link>
@@ -93,7 +93,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/feed"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   Live Feed
                 </Link>
@@ -101,7 +101,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/leaderboard"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   Leaderboard
                 </Link>
@@ -109,7 +109,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/submit"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   Submit Proposal
                 </Link>
@@ -117,10 +117,10 @@ export function Footer() {
               <li>
                 <Link
                   href="/how-it-works"
-                  className="inline-flex items-center gap-1 text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center gap-1 text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   How It Works
-                  <ArrowUpRight className="h-3 w-3 opacity-60" />
+                  <ArrowUpRight className="h-3 w-3 opacity-60 transition-transform duration-200 hover:-translate-y-0.5 hover:translate-x-0.5" />
                 </Link>
               </li>
             </ul>
@@ -135,7 +135,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   About Us
                 </Link>
@@ -143,7 +143,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/faq"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   Frequently Asked
                 </Link>
@@ -151,7 +151,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/rules"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   Incubation Rules
                 </Link>
@@ -159,7 +159,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/cycles/1"
-                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
+                  className="inline-flex items-center text-[var(--text-secondary)] transition-all duration-200 hover:translate-x-1 hover:text-[var(--indigo-bright)]"
                 >
                   Cycle Archives
                 </Link>

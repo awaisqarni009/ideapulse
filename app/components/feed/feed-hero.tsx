@@ -138,26 +138,26 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
           <div className="mt-6 flex flex-wrap items-center gap-3 sm:mt-7">
             <Link
               href="/submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-[0_0_25px_rgba(16,185,129,0.35)] transition-all hover:scale-[1.03] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)] active:scale-[0.98] sm:text-sm"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-[0_0_25px_rgba(16,185,129,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)] active:scale-[0.98] sm:text-sm"
             >
-              <PlusCircle className="h-4 w-4" />
+              <PlusCircle className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90 group-hover:scale-110" />
               <span>Submit for $50K Grants</span>
             </Link>
 
             <button
               type="button"
               onClick={() => setIsHubOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--border-accent)] bg-[var(--surface-2)] px-5 py-3 text-xs font-semibold text-[var(--indigo-bright)] shadow-sm transition-all hover:border-[var(--indigo)] hover:bg-[var(--surface-3)] active:scale-[0.98] sm:text-sm"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-[var(--border-accent)] bg-[var(--surface-2)] px-5 py-3 text-xs font-semibold text-[var(--indigo-bright)] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--indigo)] hover:bg-[var(--surface-3)] hover:shadow-md active:scale-[0.98] sm:text-sm"
             >
-              <Zap className="h-4 w-4 text-amber-400" />
+              <Zap className="h-4 w-4 text-amber-400 transition-transform duration-200 group-hover:rotate-12 group-hover:scale-125" />
               <span>Energy Quests ({energy}⚡)</span>
             </button>
 
             <Link
               href="/how-it-works"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-xs font-medium text-[var(--text-secondary)] transition-all hover:text-[var(--text-primary)] sm:text-sm"
+              className="group inline-flex items-center justify-center gap-1.5 rounded-full border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-xs font-medium text-[var(--text-secondary)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] hover:shadow-sm sm:text-sm"
             >
-              <HelpCircle className="h-4 w-4 text-[var(--text-tertiary)]" />
+              <HelpCircle className="h-4 w-4 text-[var(--text-tertiary)] transition-transform duration-200 group-hover:rotate-12 group-hover:scale-110" />
               <span>How Grants Work</span>
             </Link>
           </div>
@@ -170,7 +170,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
             role="button"
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && triggerSparkle()}
-            className={`group relative cursor-pointer overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-[var(--surface-2)] to-[var(--surface-3)] p-5 shadow-[0_0_40px_rgba(16,185,129,0.15)] backdrop-blur-xl transition-all duration-300 hover:border-emerald-400 hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] sm:p-6 ${
+            className={`group relative cursor-pointer overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-[var(--surface-2)] to-[var(--surface-3)] p-5 shadow-[0_0_40px_rgba(16,185,129,0.15)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-emerald-400 hover:shadow-[0_0_55px_rgba(16,185,129,0.35)] sm:p-6 ${
               isSparkling
                 ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[var(--surface-1)]'
                 : ''
@@ -180,7 +180,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
             {/* Top Vault Ribbon */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-500/40 bg-emerald-500/20 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-500/40 bg-emerald-500/20 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)] transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
                   <DollarSign className="h-4 w-4" />
                 </div>
                 <div>
@@ -194,7 +194,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
                 </div>
               </div>
 
-              <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+              <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 transition-transform duration-200 group-hover:scale-105">
                 Active
               </span>
             </div>
@@ -204,7 +204,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
               <div className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
                 Total Available Backing
               </div>
-              <div className="animate-shimmer-dollar font-display text-4xl font-black tracking-tight sm:text-5xl">
+              <div className="animate-shimmer-dollar font-display text-4xl font-black tracking-tight transition-transform duration-300 group-hover:scale-105 sm:text-5xl">
                 $50,000
               </div>
               <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
@@ -214,7 +214,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
 
             {/* Prize Distribution Tiers */}
             <div className="bg-[var(--surface-1)]/70 space-y-2 rounded-2xl border border-[var(--border-subtle)] p-3">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between rounded-lg p-1 text-xs transition-all duration-200 hover:translate-x-1 hover:bg-[var(--surface-2)]">
                 <span className="flex items-center gap-1.5 font-medium text-[var(--text-primary)]">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-400">
                     1
@@ -224,7 +224,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
                 <span className="font-mono font-bold text-emerald-400">$25,000</span>
               </div>
 
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between rounded-lg p-1 text-xs transition-all duration-200 hover:translate-x-1 hover:bg-[var(--surface-2)]">
                 <span className="flex items-center gap-1.5 font-medium text-[var(--text-primary)]">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-400/20 text-[10px] font-bold text-slate-300">
                     2
@@ -234,7 +234,7 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
                 <span className="font-mono font-bold text-teal-400">$15,000</span>
               </div>
 
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between rounded-lg p-1 text-xs transition-all duration-200 hover:translate-x-1 hover:bg-[var(--surface-2)]">
                 <span className="flex items-center gap-1.5 font-medium text-[var(--text-primary)]">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-700/20 text-[10px] font-bold text-amber-600">
                     3
@@ -261,8 +261,8 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
 
       {/* Bottom Mini Metrics Bar: Cycle, Goal, Votes, Security */}
       <div className="mt-8 grid grid-cols-2 gap-3 border-t border-[var(--border-subtle)] pt-6 sm:grid-cols-4 sm:gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+        <div className="group flex items-center gap-3 rounded-2xl p-2 transition-all duration-200 hover:-translate-y-1 hover:bg-[var(--surface-2)] hover:shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400 transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
             <Activity className="h-5 w-5" />
           </div>
           <div>
@@ -273,8 +273,8 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+        <div className="group flex items-center gap-3 rounded-2xl p-2 transition-all duration-200 hover:-translate-y-1 hover:bg-[var(--surface-2)] hover:shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
             <DollarSign className="h-5 w-5" />
           </div>
           <div>
@@ -283,8 +283,8 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400">
+        <div className="group flex items-center gap-3 rounded-2xl p-2 transition-all duration-200 hover:-translate-y-1 hover:bg-[var(--surface-2)] hover:shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400 transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
             <Zap className="h-5 w-5" />
           </div>
           <div>
@@ -295,8 +295,8 @@ export function FeedHero({ cycleNumber = 1, totalIdeasCount = 12 }: FeedHeroProp
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+        <div className="group flex items-center gap-3 rounded-2xl p-2 transition-all duration-200 hover:-translate-y-1 hover:bg-[var(--surface-2)] hover:shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
             <Trophy className="h-5 w-5" />
           </div>
           <div>

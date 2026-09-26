@@ -122,10 +122,10 @@ export function IdeaCard({
     return (
       <article
         aria-labelledby={`idea-title-${idea.id}`}
-        className={`glass-panel group relative flex flex-col overflow-hidden rounded-2xl border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl md:flex-row ${
+        className={`glass-panel group relative flex flex-col overflow-hidden rounded-2xl border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4),0_0_20px_rgba(99,102,241,0.2)] md:flex-row ${
           isQualified
             ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
-            : 'border-[var(--border-default)] hover:border-[var(--border-strong)]'
+            : 'border-[var(--border-default)] hover:border-[var(--border-accent)]'
         } ${className}`}
         style={{
           boxShadow: isQualified
@@ -282,10 +282,10 @@ export function IdeaCard({
   return (
     <article
       aria-labelledby={`idea-title-${idea.id}`}
-      className={`glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl ${
+      className={`glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45),0_0_24px_rgba(99,102,241,0.22)] ${
         isQualified
           ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
-          : 'border-[var(--border-default)] hover:border-[var(--border-strong)]'
+          : 'border-[var(--border-default)] hover:border-[var(--border-accent)]'
       } ${className}`}
       style={{
         boxShadow: isQualified
