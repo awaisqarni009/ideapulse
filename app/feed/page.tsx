@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     'Explore premier community showcases, live summits, and breakthrough projects competing in the active cycle.',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface FeedPageProps {
   searchParams:
     | Promise<{

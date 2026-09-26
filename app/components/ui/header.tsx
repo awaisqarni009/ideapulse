@@ -18,7 +18,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const baseNavLinks = [
-    { label: 'Feed', href: '/' },
+    { label: 'Feed', href: '/feed' },
     { label: 'Leaderboard', href: '/leaderboard' },
     { label: 'How It Works', href: '/how-it-works' },
     { label: 'About', href: '/about' },
@@ -44,7 +44,7 @@ export function Header() {
         {/* Left Section: Brand Logo & Desktop Navigation */}
         <div className="flex items-center gap-5 lg:gap-8">
           <Link
-            href="/"
+            href="/feed"
             className="group flex items-center gap-2.5 text-base font-bold tracking-tight text-[var(--text-primary)]"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-transform duration-200 group-hover:scale-105">

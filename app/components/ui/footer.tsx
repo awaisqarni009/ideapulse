@@ -29,7 +29,7 @@ export function Footer() {
           {/* Col 1 & 2: Brand & Mission */}
           <div className="lg:col-span-2">
             <Link
-              href="/"
+              href="/feed"
               className="group inline-flex items-center gap-2.5 text-base font-bold tracking-tight text-[var(--text-primary)]"
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-accent)] bg-gradient-to-br from-[var(--indigo)] to-[var(--violet)] shadow-[var(--glow-indigo-sm)] transition-transform group-hover:scale-105">
@@ -92,7 +92,7 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
                 <Link
-                  href="/"
+                  href="/feed"
                   className="text-[var(--text-secondary)] transition-colors hover:text-[var(--indigo-bright)]"
                 >
                   Live Feed
