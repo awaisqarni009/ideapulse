@@ -234,7 +234,7 @@ export default async function DashboardPage() {
               <span className="font-mono font-medium text-[var(--text-primary)]">{timeLeft}</span>
             </div>
             <div className="mt-2 text-[11px] text-[var(--text-tertiary)]">
-              Ends {endsAtDate ? format(endsAtDate, 'MMM d, HH:mm UTC') : 'Weekly rotation'}
+              Ends {endsAtDate ? `${format(endsAtDate, 'MMM d, HH:mm')} UTC` : 'Weekly rotation'}
             </div>
           </div>
 

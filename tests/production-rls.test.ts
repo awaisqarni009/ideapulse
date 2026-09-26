@@ -80,12 +80,36 @@ describe('T-8.8: Production RLS Security & Access Control Suite', () => {
     if (signErrB) throw signErrB;
     expect(sessionB.session).not.toBeNull();
 
-    // Get active cycle
-    const { data: cycle } = await adminClient
+    // Get active cycle or create/use latest
+    let { data: cycle } = await adminClient
       .from('cycles')
       .select('id')
       .eq('status', 'active')
-      .single();
+      .maybeSingle();
+
+    if (!cycle) {
+      const { data: latest } = await adminClient
+        .from('cycles')
+        .select('id, cycle_number')
+        .order('cycle_number', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const nextNum = (latest?.cycle_number ?? 4) + 1;
+      const { data: newCycle } = await adminClient
+        .from('cycles')
+        .insert({
+          cycle_number: nextNum,
+          starts_at: new Date().toISOString(),
+          ends_at: new Date(Date.now() + 7 * 86400000).toISOString(),
+          status: 'active',
+          vote_threshold: 50,
+          daily_vote_limit: 5,
+        })
+        .select('id')
+        .single();
+      cycle = newCycle;
+    }
 
     // Insert an idea authored by user A using adminClient
     const { data: idea, error: ideaErr } = await adminClient
