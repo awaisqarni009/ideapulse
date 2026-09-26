@@ -8,6 +8,7 @@ import { useUser } from '@/lib/auth/use-user';
 import { QuotaHUD } from '@/app/components/votes/quota-hud';
 import { CycleCountdown } from '@/app/components/layout/cycle-countdown';
 import { ThemeToggle } from '@/app/components/ui/theme-toggle';
+import { EnergyBadge } from '@/app/components/energy/energy-badge';
 import { signOutAction } from '@/app/actions/auth';
 import { Sparkles, PlusCircle, User, LogOut, Menu, X } from 'lucide-react';
 
@@ -86,6 +87,9 @@ export function Header() {
         <div className="flex items-center gap-2.5 sm:gap-3">
           {/* Theme Switch (Dark & Bright Mode) */}
           <ThemeToggle />
+
+          {/* Voting Energy Reservoir & Daily Quests Hub */}
+          <EnergyBadge />
 
           {/* Submit Idea CTA */}
           <Link

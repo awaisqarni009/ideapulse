@@ -14,7 +14,8 @@ const ReportModal = dynamic(
   { ssr: false },
 );
 
-import { Flag, Trash2 } from 'lucide-react';
+import { Flag, Trash2, Share2 } from 'lucide-react';
+import { useEnergy } from '@/lib/energy/energy-context';
 
 interface IdeaActionsProps {
   ideaId: string;
@@ -38,9 +39,17 @@ export function IdeaActions({
   cycleNumber,
 }: IdeaActionsProps) {
   const toast = useToast();
+  const { recordIdeaView, recordIdeaShare } = useEnergy();
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const hasAnnouncedRef = useRef(false);
+
+  // Automatically count idea proposal reading toward Daily Quests
+  useEffect(() => {
+    if (ideaId) {
+      recordIdeaView(ideaId);
+    }
+  }, [ideaId, recordIdeaView]);
 
   useEffect(() => {
     if (justCreated && !hasAnnouncedRef.current) {
@@ -54,9 +63,34 @@ export function IdeaActions({
     }
   }, [justCreated, cycleNumber, toast]);
 
+  const handleShare = async () => {
+    try {
+      if (typeof window !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(window.location.href);
+      }
+      recordIdeaShare(ideaId);
+      toast.success('Proposal link copied to clipboard! (+20⚡ quest progress)', 'Proposal Shared');
+    } catch {
+      recordIdeaShare(ideaId);
+      toast.info('Proposal ready to share!', 'Proposal Shared');
+    }
+  };
+
   return (
     <>
       <div className="flex items-center gap-2">
+        {/* Share Idea button with Daily Quest connection */}
+        <button
+          type="button"
+          onClick={handleShare}
+          className="btn inline-flex items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--surface-1)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-accent)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--indigo-bright)]"
+          title="Share this proposal (+20⚡ Energy Quest)"
+          aria-label="Share proposal link to clipboard"
+        >
+          <Share2 className="h-3.5 w-3.5" />
+          <span>Share</span>
+        </button>
+
         {canWithdraw && (
           <button
             type="button"

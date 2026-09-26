@@ -278,6 +278,9 @@ body {
   background-color: var(--canvas);
   color: var(--text-primary);
   font-family: var(--font-body);
+  transition:
+    background-color var(--dur-sm) var(--ease-standard),
+    color var(--dur-sm) var(--ease-standard);
 }
 
 body::before {
@@ -286,6 +289,14 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 12% -6%, rgba(99, 102, 241, 0.08), transparent 62%),
+    radial-gradient(52rem 36rem at 92% 108%, rgba(8, 145, 178, 0.06), transparent 60%),
+    radial-gradient(40rem 30rem at 68% 24%, rgba(124, 58, 237, 0.04), transparent 66%);
+  transition: opacity var(--dur-sm) var(--ease-standard);
+}
+
+.dark body::before {
   background:
     radial-gradient(60rem 40rem at 12% -6%, rgba(99, 102, 241, 0.16), transparent 62%),
     radial-gradient(52rem 36rem at 92% 108%, rgba(34, 211, 238, 0.12), transparent 60%),

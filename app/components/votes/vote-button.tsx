@@ -14,6 +14,7 @@ const AuthModal = dynamic(
   { ssr: false },
 );
 import { Zap, Lock, Loader2, X, AlertCircle } from 'lucide-react';
+import { useEnergy } from '@/lib/energy/energy-context';
 
 export type VoteButtonState =
   | 'available'
@@ -52,6 +53,7 @@ export function VoteButton({
 }: VoteButtonProps) {
   const router = useRouter();
   const toast = useToast();
+  const { consumeEnergyForVote } = useEnergy();
   const reduce = useReducedMotion() ?? false;
   const [isPending, startTransition] = useTransition();
 
@@ -146,6 +148,11 @@ export function VoteButton({
 
     // 2. Disabled cases
     if (isAuthor || optimisticState.hasVoted || isQuotaExhausted || isPending) {
+      return;
+    }
+
+    // 3. Voting Energy Check
+    if (!consumeEnergyForVote()) {
       return;
     }
 

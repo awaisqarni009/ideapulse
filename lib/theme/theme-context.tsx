@@ -22,8 +22,7 @@ export const themeScript = `
 (function() {
   try {
     var stored = localStorage.getItem('${THEME_STORAGE_KEY}');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
+    var theme = (stored === 'light' || stored === 'dark') ? stored : 'dark';
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -40,22 +39,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
-      if (stored === 'light' || stored === 'dark') {
-        setThemeState(stored);
-        if (stored === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+      const initialTheme: Theme = stored === 'light' || stored === 'dark' ? stored : 'dark';
+      setThemeState(initialTheme);
+      if (initialTheme === 'dark') {
+        document.documentElement.classList.add('dark');
       } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const initialTheme: Theme = prefersDark ? 'dark' : 'light';
-        setThemeState(initialTheme);
-        if (initialTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+        document.documentElement.classList.remove('dark');
       }
     } catch {
       // Fallback to dark

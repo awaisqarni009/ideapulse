@@ -11,11 +11,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: { DEFAULT: '#0B0F19', deep: '#070A11', solid: '#131826' },
-        indigo: { DEFAULT: '#6366F1', bright: '#818CF8', deep: '#4338CA' },
-        violet: { DEFAULT: '#8B5CF6', bright: '#A78BFA' },
-        cyan: { DEFAULT: '#22D3EE', bright: '#67E8F9' },
-        ink: { 1: '#F1F4FB', 2: '#A9B2C8', 3: '#6E778F' },
+        canvas: {
+          DEFAULT: 'var(--canvas)',
+          deep: 'var(--canvas-deep)',
+          solid: 'var(--surface-solid)',
+        },
+        indigo: {
+          DEFAULT: 'var(--indigo)',
+          bright: 'var(--indigo-bright)',
+          deep: 'var(--indigo-deep)',
+        },
+        violet: {
+          DEFAULT: 'var(--violet)',
+          bright: 'var(--violet-bright)',
+        },
+        cyan: {
+          DEFAULT: 'var(--cyan)',
+          bright: 'var(--cyan-bright)',
+        },
+        ink: {
+          1: 'var(--text-primary)',
+          2: 'var(--text-secondary)',
+          3: 'var(--text-tertiary)',
+        },
       },
       backdropBlur: { glass: '16px', panel: '24px', overlay: '40px' },
       borderRadius: { xs: '6px', sm: '10px', md: '14px', lg: '20px', xl: '28px' },
