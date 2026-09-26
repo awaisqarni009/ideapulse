@@ -28,7 +28,7 @@ export default function ForgotPasswordPage() {
             </span>
           </Link>
           <h1 className="mt-4 font-display text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl">
-            Reset your password
+            Reset password
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
             Enter your account email and we&apos;ll send you instructions to safely recover your

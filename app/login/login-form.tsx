@@ -45,15 +45,12 @@ export function LoginForm() {
 
       <OAuthButtons nextUrl={nextParam} />
 
-      <div className="relative my-7 text-center">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-[var(--border-subtle)]" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-[var(--surface-1)] px-3 font-mono text-[var(--text-tertiary)]">
-            or continue with email
-          </span>
-        </div>
+      <div className="relative my-6 flex items-center">
+        <div className="flex-grow border-t border-[var(--border-subtle)]" />
+        <span className="mx-4 flex-shrink-0 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+          or continue with email
+        </span>
+        <div className="flex-grow border-t border-[var(--border-subtle)]" />
       </div>
 
       {state?.error && (
