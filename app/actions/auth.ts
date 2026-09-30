@@ -23,8 +23,13 @@ export async function registerAction(
   formData: FormData,
 ): Promise<AuthActionResult> {
   const rawData = {
-    email: formData.get('email'),
-    password: formData.get('password'),
+    fullName: formData.get('fullName')?.toString() || '',
+    username: formData.get('username')?.toString() || '',
+    countryCode: formData.get('countryCode')?.toString() || '',
+    phone: formData.get('phone')?.toString() || '',
+    email: formData.get('email')?.toString() || '',
+    password: formData.get('password')?.toString() || '',
+    confirmPassword: formData.get('confirmPassword')?.toString() || '',
   };
 
   const parseResult = registerSchema.safeParse(rawData);
@@ -37,17 +42,26 @@ export async function registerAction(
     };
   }
 
-  const { email, password } = parseResult.data;
+  const { email, password, fullName, username, countryCode, phone } = parseResult.data;
   const supabase = await createClient();
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
   const redirectTo = `${siteUrl}/auth/callback`;
+
+  const fullPhoneNumber = countryCode && phone ? `${countryCode}${phone}` : phone || undefined;
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: redirectTo,
+      data: {
+        ...(fullName ? { full_name: fullName, display_name: fullName } : {}),
+        ...(username ? { username } : {}),
+        ...(fullPhoneNumber
+          ? { phone: fullPhoneNumber, phone_number: phone, country_code: countryCode }
+          : {}),
+      },
     },
   });
 

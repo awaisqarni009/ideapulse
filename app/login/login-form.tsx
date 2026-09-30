@@ -4,7 +4,17 @@ import { useFormState, useFormStatus } from 'react-dom';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Sparkles,
+  LogIn,
+  UserPlus,
+} from 'lucide-react';
 import { loginAction, type AuthActionResult } from '@/app/actions/auth';
 import { OAuthButtons } from '@/app/components/auth/oauth-buttons';
 
@@ -42,6 +52,21 @@ export function LoginForm() {
       noValidate
     >
       <input type="hidden" name="next" value={nextParam} />
+
+      {/* Visual Navigation Tabs on Card Top */}
+      <div className="mb-6 flex rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-1">
+        <div className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[var(--indigo)] to-[var(--violet)] py-2.5 text-xs font-semibold text-white shadow-[var(--glow-indigo-sm)]">
+          <LogIn className="h-4 w-4 text-white" />
+          <span>Sign In</span>
+        </div>
+        <Link
+          href={nextParam ? `/register?next=${encodeURIComponent(nextParam)}` : '/register'}
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-semibold text-[var(--text-secondary)] transition-all hover:text-[var(--text-primary)]"
+        >
+          <UserPlus className="h-4 w-4 text-[var(--text-tertiary)]" />
+          <span>Create Account</span>
+        </Link>
+      </div>
 
       <OAuthButtons nextUrl={nextParam} />
 

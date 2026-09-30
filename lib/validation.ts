@@ -88,24 +88,88 @@ export const retractVoteSchema = z.object({
   voteId: z.string().uuid('Invalid vote identifier.'),
 });
 
+export const COUNTRY_CODES = [
+  { code: '+92', name: 'Pakistan', flag: '🇵🇰' },
+  { code: '+1', name: 'United States / Canada', flag: '🇺🇸' },
+  { code: '+44', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: '+91', name: 'India', flag: '🇮🇳' },
+  { code: '+971', name: 'United Arab Emirates', flag: '🇦🇪' },
+  { code: '+966', name: 'Saudi Arabia', flag: '🇸🇦' },
+  { code: '+61', name: 'Australia', flag: '🇦🇺' },
+  { code: '+49', name: 'Germany', flag: '🇩🇪' },
+  { code: '+33', name: 'France', flag: '🇫🇷' },
+  { code: '+81', name: 'Japan', flag: '🇯🇵' },
+  { code: '+86', name: 'China', flag: '🇨🇳' },
+  { code: '+65', name: 'Singapore', flag: '🇸🇬' },
+  { code: '+90', name: 'Turkey', flag: '🇹🇷' },
+  { code: '+60', name: 'Malaysia', flag: '🇲🇾' },
+] as const;
+
 /**
- * Registration validation per AC-01.1 and AC-01.4:
+ * Registration validation:
+ * - Full name (separate from username, max 48 chars)
+ * - Username (separate from name, 3-24 alphanumeric + underscore)
+ * - Country code + Phone number (must be exactly 11 digits)
  * - Valid email
- * - Password at least 10 characters
- * - Password must contain at least one digit
+ * - Password at least 10 characters with alphabet, number, and sign/symbol
  */
-export const registerSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Please enter your email address.')
-    .email('Please enter a valid email address.')
-    .trim()
-    .toLowerCase(),
-  password: z
-    .string()
-    .min(10, 'Password must be at least 10 characters long.')
-    .regex(/\d/, 'Password must contain at least one digit (0-9).'),
-});
+export const registerSchema = z
+  .object({
+    fullName: z
+      .string()
+      .min(1, 'Please enter your full name.')
+      .max(48, 'Full name cannot exceed 48 characters.')
+      .trim()
+      .optional()
+      .or(z.literal('')),
+    username: z
+      .string()
+      .min(3, 'Username must be at least 3 characters.')
+      .max(24, 'Username cannot exceed 24 characters.')
+      .regex(
+        /^[a-z0-9_]{3,24}$/i,
+        'Username may only contain letters, numbers, and underscores (3-24 chars).',
+      )
+      .trim()
+      .optional()
+      .or(z.literal('')),
+    countryCode: z.string().optional().or(z.literal('')),
+    phone: z
+      .string()
+      .optional()
+      .or(z.literal(''))
+      .refine((val) => !val || /^\d{11}$/.test(val), {
+        message: 'Phone number must be exactly 11 digits.',
+      }),
+    email: z
+      .string()
+      .min(1, 'Please enter your email address.')
+      .email('Please enter a valid email address.')
+      .trim()
+      .toLowerCase(),
+    password: z
+      .string()
+      .min(10, 'Password must be at least 10 characters long.')
+      .regex(/[a-zA-Z]/, 'Password must contain at least one alphabet letter (a-z, A-Z).')
+      .regex(/\d/, 'Password must contain at least one digit (0-9).')
+      .regex(
+        /[!@#$%^&*(),.?":{}|<>\-_=+]/,
+        'Password must contain at least one sign or symbol (!@#$%^&* etc).',
+      ),
+    confirmPassword: z.string().optional().or(z.literal('')),
+  })
+  .refine(
+    (data) => {
+      if (data.confirmPassword && data.password !== data.confirmPassword) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: 'Passwords do not match.',
+      path: ['confirmPassword'],
+    },
+  );
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 

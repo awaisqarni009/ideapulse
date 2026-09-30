@@ -6,7 +6,7 @@ import { AuthVisualHero } from '@/app/components/auth/auth-visual-hero';
 import { Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Sign In — IdeaPulse',
+  title: 'Sign In',
   description: 'Sign in to IdeaPulse to submit ideas, track cycles, and cast your daily votes.',
 };
 

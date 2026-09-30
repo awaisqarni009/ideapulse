@@ -83,20 +83,27 @@ describe('Constants & Validation Schemas [T-0.15, T-0.16, T-0.17]', () => {
   describe('Auth validation [T-2.5, T-2.6]', () => {
     it('accepts valid registration input', () => {
       const valid = {
+        fullName: 'Sarah Connor',
+        username: 'sarah_connor',
+        countryCode: '+92',
+        phone: '03001234567',
         email: 'User@Example.Com',
-        password: 'ValidPass123',
+        password: 'ValidPass123!',
       };
       const parsed = registerSchema.safeParse(valid);
       expect(parsed.success).toBe(true);
       if (parsed.success) {
         expect(parsed.data.email).toBe('user@example.com');
+        expect(parsed.data.fullName).toBe('Sarah Connor');
+        expect(parsed.data.username).toBe('sarah_connor');
+        expect(parsed.data.phone).toBe('03001234567');
       }
     });
 
     it('rejects password under 10 characters (AC-01.4)', () => {
       const result = registerSchema.safeParse({
         email: 'test@example.com',
-        password: 'Short9',
+        password: 'Short9!',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -107,11 +114,34 @@ describe('Constants & Validation Schemas [T-0.15, T-0.16, T-0.17]', () => {
     it('rejects password missing a digit (AC-01.4)', () => {
       const result = registerSchema.safeParse({
         email: 'test@example.com',
-        password: 'NoDigitsHere',
+        password: 'NoDigitsHere!',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0]?.message).toContain('at least one digit');
+      }
+    });
+
+    it('rejects password missing a sign or symbol', () => {
+      const result = registerSchema.safeParse({
+        email: 'test@example.com',
+        password: 'Password1234',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toContain('sign or symbol');
+      }
+    });
+
+    it('rejects phone number that is not exactly 11 digits', () => {
+      const result = registerSchema.safeParse({
+        email: 'test@example.com',
+        password: 'ValidPass123!',
+        phone: '12345',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toContain('exactly 11 digits');
       }
     });
 

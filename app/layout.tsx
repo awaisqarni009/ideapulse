@@ -4,12 +4,10 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { UserProvider } from '@/lib/auth/use-user';
 import { getCurrentUser } from '@/lib/auth/user';
-import { UnconfirmedBanner } from '@/app/components/auth/unconfirmed-banner';
 import { ThemeProvider, themeScript } from '@/lib/theme/theme-context';
 import { ToastProvider } from '@/app/components/ui/toast';
-import { Header } from '@/app/components/ui/header';
-import { Footer } from '@/app/components/ui/footer';
-import dynamic from 'next/dynamic';
+import { EnergyProvider } from '@/lib/energy/energy-context';
+import { SiteShell } from '@/app/components/layout/site-shell';
 
 export const viewport: Viewport = {
   themeColor: [
@@ -21,25 +19,6 @@ export const viewport: Viewport = {
   maximumScale: 5,
   viewportFit: 'cover',
 };
-
-const WinnerModal = dynamic(
-  () => import('@/app/components/cycles/winner-modal').then((mod) => mod.WinnerModal),
-  { ssr: false },
-);
-
-const ScrollTracker = dynamic(
-  () => import('@/app/components/energy/scroll-tracker').then((mod) => mod.ScrollTracker),
-  { ssr: false },
-);
-
-const EnergyHubModal = dynamic(
-  () => import('@/app/components/energy/energy-hub-modal').then((mod) => mod.EnergyHubModal),
-  { ssr: false },
-);
-
-import { EnergyProvider } from '@/lib/energy/energy-context';
-
-import { WebVitalsReporter } from '@/app/components/observability/web-vitals';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -101,21 +80,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <UserProvider initialUser={user} initialProfile={profile}>
             <ToastProvider>
               <EnergyProvider>
-                {/* Skip to main content link as first tab stop (DESIGN.md §8, T-7.13) */}
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-[var(--radius-sm)] focus:border focus:border-[var(--indigo-bright)] focus:bg-[var(--surface-solid)] focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-[var(--text-primary)] focus:shadow-[var(--glow-indigo-md)] focus:outline-none focus:ring-2 focus:ring-[var(--indigo-bright)]"
-                >
-                  Skip to content
-                </a>
-                <Header />
-                <UnconfirmedBanner />
-                <WinnerModal />
-                <ScrollTracker />
-                <EnergyHubModal />
-                <WebVitalsReporter />
-                <div className="flex-1">{children}</div>
-                <Footer />
+                <SiteShell>{children}</SiteShell>
               </EnergyProvider>
             </ToastProvider>
           </UserProvider>
