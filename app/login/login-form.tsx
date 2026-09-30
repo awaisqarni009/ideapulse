@@ -16,7 +16,6 @@ import {
   UserPlus,
 } from 'lucide-react';
 import { loginAction, type AuthActionResult } from '@/app/actions/auth';
-import { OAuthButtons } from '@/app/components/auth/oauth-buttons';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -66,16 +65,6 @@ export function LoginForm() {
           <UserPlus className="h-4 w-4 text-[var(--text-tertiary)]" />
           <span>Create Account</span>
         </Link>
-      </div>
-
-      <OAuthButtons nextUrl={nextParam} />
-
-      <div className="relative my-6 flex items-center">
-        <div className="flex-grow border-t border-[var(--border-subtle)]" />
-        <span className="mx-4 flex-shrink-0 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-          or continue with email
-        </span>
-        <div className="flex-grow border-t border-[var(--border-subtle)]" />
       </div>
 
       {state?.error && (

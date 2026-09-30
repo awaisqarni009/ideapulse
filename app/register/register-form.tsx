@@ -21,7 +21,6 @@ import {
   Globe,
 } from 'lucide-react';
 import { registerAction, type AuthActionResult } from '@/app/actions/auth';
-import { OAuthButtons } from '@/app/components/auth/oauth-buttons';
 import { COUNTRY_CODES } from '@/lib/validation';
 
 function SubmitButton() {
@@ -119,16 +118,6 @@ export function RegisterForm() {
           <UserPlus className="h-4 w-4 text-white" />
           <span>Create Account</span>
         </div>
-      </div>
-
-      <OAuthButtons />
-
-      <div className="relative my-6 flex items-center">
-        <div className="flex-grow border-t border-[var(--border-subtle)]" />
-        <span className="mx-4 flex-shrink-0 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-          or register with credentials
-        </span>
-        <div className="flex-grow border-t border-[var(--border-subtle)]" />
       </div>
 
       {state?.error && !state?.fieldErrors && (
