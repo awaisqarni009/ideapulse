@@ -162,16 +162,22 @@ export function RegisterForm() {
               autoComplete="name"
               required
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                // Strictly accept alphabet letters and spaces only (no numbers or signs)
+                const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+                setFullName(lettersOnly);
+              }}
               placeholder="e.g. Sarah Connor"
               aria-invalid={Boolean(state?.fieldErrors?.fullName)}
               className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-3.5 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
             />
           </div>
-          {state?.fieldErrors?.fullName && (
+          {state?.fieldErrors?.fullName ? (
             <p className="mt-1 text-xs text-[var(--accent-danger)]">
               {state.fieldErrors.fullName[0]}
             </p>
+          ) : (
+            <p className="mt-1 text-[11px] text-[var(--text-tertiary)]">Letters and spaces only</p>
           )}
         </div>
 

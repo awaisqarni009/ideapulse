@@ -145,6 +145,28 @@ describe('Constants & Validation Schemas [T-0.15, T-0.16, T-0.17]', () => {
       }
     });
 
+    it('rejects full name with numbers or signs', () => {
+      const withNumbers = registerSchema.safeParse({
+        fullName: 'Sarah123',
+        email: 'test@example.com',
+        password: 'ValidPass123!',
+      });
+      expect(withNumbers.success).toBe(false);
+      if (!withNumbers.success) {
+        expect(withNumbers.error.issues[0]?.message).toContain('alphabet letters and spaces');
+      }
+
+      const withSigns = registerSchema.safeParse({
+        fullName: 'Sarah @ Connor!',
+        email: 'test@example.com',
+        password: 'ValidPass123!',
+      });
+      expect(withSigns.success).toBe(false);
+      if (!withSigns.success) {
+        expect(withSigns.error.issues[0]?.message).toContain('alphabet letters and spaces');
+      }
+    });
+
     it('validates login input', () => {
       const valid = loginSchema.safeParse({
         email: 'user@example.com',

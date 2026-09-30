@@ -120,6 +120,9 @@ export const registerSchema = z
       .min(1, 'Please enter your full name.')
       .max(48, 'Full name cannot exceed 48 characters.')
       .trim()
+      .refine((val) => !val || /^[a-zA-Z\s]+$/.test(val), {
+        message: 'Full name may only contain alphabet letters and spaces (no numbers or signs).',
+      })
       .optional()
       .or(z.literal('')),
     username: z
