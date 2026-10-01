@@ -26,6 +26,26 @@ export default function StoreHomePage() {
   );
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
 
+  // Sync category from URL query parameters (e.g. from header navigation)
+  React.useEffect(() => {
+    const handleUrlSync = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get('category');
+        if (cat && ['hoodie', 'jacket', 'bestseller', 'new', 'all'].includes(cat)) {
+          setSelectedCategory(cat);
+        }
+      }
+    };
+    handleUrlSync();
+    window.addEventListener('popstate', handleUrlSync);
+    window.addEventListener('hashchange', handleUrlSync);
+    return () => {
+      window.removeEventListener('popstate', handleUrlSync);
+      window.removeEventListener('hashchange', handleUrlSync);
+    };
+  }, []);
+
   // Filter & sort logic
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((item) => {
