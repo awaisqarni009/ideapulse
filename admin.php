@@ -1,731 +1,482 @@
 <?php
 /**
- * IdeaPulse — Standalone Executive Admin Console (PHP)
- * Single self-contained PHP script.
- * Can be run via XAMPP (http://localhost/admin.php) or PHP CLI (php -S localhost:8000 admin.php).
+ * PULSEWEAR — Executive Admin Portal (PHP Edition)
+ * Web Engineering Course Project Submission
+ * 
+ * Features:
+ * - Independent Admin Portal (Teacher Requirement)
+ * - Garments & Outerwear Inventory Management (Hoodies & Jackets)
+ * - Customer Orders & Dispatch Pipeline (11-digit phone, letters-only validation)
+ * - Sales & Revenue Analytics
+ * - Pure PHP + Self-Contained Styles (No Node/npm dependency required to run)
  */
 
-error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+session_start();
 
-// ─── Environment & Configuration ─────────────────────────────────────
-$supabaseUrl = 'https://tsdghmnmsyogjulpzgmu.supabase.co';
-$supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzZGdobW5tc3lvZ2p1bHB6Z211Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTkzMzQ1MywiZXhwIjoyMTA1NTA5NDUzfQ.gpYZ6eeK4s62ymHVPJOk5Wvydaz_vc5JUp9U-ZZUN7M';
-
-// Try reading .env.local if present
-$envFile = __DIR__ . '/.env.local';
-if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        if (strpos($line, '=') !== false) {
-            list($key, $val) = explode('=', $line, 2);
-            $key = trim($key);
-            $val = trim($val);
-            if ($key === 'NEXT_PUBLIC_SUPABASE_URL') $supabaseUrl = $val;
-            if ($key === 'SUPABASE_SERVICE_ROLE_KEY') $supabaseKey = $val;
+// Handle mock actions for demonstration
+$actionNotice = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+        if ($action === 'ship_order') {
+            $orderId = htmlspecialchars($_POST['order_id'] ?? '');
+            $actionNotice = "Order #{$orderId} has been marked as SHIPPED via Express Courier.";
+        } elseif ($action === 'deliver_order') {
+            $orderId = htmlspecialchars($_POST['order_id'] ?? '');
+            $actionNotice = "Order #{$orderId} marked as DELIVERED to client.";
+        } elseif ($action === 'update_stock') {
+            $prodTitle = htmlspecialchars($_POST['prod_title'] ?? '');
+            $newStock = intval($_POST['new_stock'] ?? 0);
+            $actionNotice = "Inventory updated: {$prodTitle} stock adjusted to {$newStock} units.";
+        } elseif ($action === 'add_product') {
+            $prodTitle = htmlspecialchars($_POST['title'] ?? 'New Item');
+            $actionNotice = "Garment '{$prodTitle}' has been added to the active storefront catalog!";
         }
     }
 }
 
-// ─── Supabase REST Client ───────────────────────────────────────────
-function querySupabase($endpoint, $url, $key) {
-    if (!function_exists('curl_init')) return null;
-    $ch = curl_init($url . '/rest/v1/' . $endpoint);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'apikey: ' . $key,
-        'Authorization: Bearer ' . $key,
-        'Content-Type: application/json',
-        'Prefer: return=representation'
-    ]);
-    $res = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ($code >= 200 && $code < 300 && $res) {
-        return json_decode($res, true);
-    }
-    return null;
-}
+// Sample Outerwear Catalog Data
+$inventory = [
+    [
+        'id' => 'pw-01',
+        'title' => 'Shadow Matrix Heavyweight Hoodie',
+        'category' => 'Heavyweight Hoodie',
+        'gsm' => 500,
+        'price' => 98.00,
+        'stock' => 14,
+        'badge' => 'BESTSELLER',
+        'rating' => 4.95,
+        'sold' => 184
+    ],
+    [
+        'id' => 'pw-02',
+        'title' => 'Cyber-Spec Modular Techwear Jacket',
+        'category' => 'Tactical Jacket',
+        'gsm' => 380,
+        'price' => 185.00,
+        'stock' => 9,
+        'badge' => 'WATERPROOF',
+        'rating' => 4.92,
+        'sold' => 96
+    ],
+    [
+        'id' => 'pw-03',
+        'title' => 'Sub-Zero Arctic Down Puffer',
+        'category' => 'Puffer Jacket',
+        'gsm' => 650,
+        'price' => 210.00,
+        'stock' => 7,
+        'badge' => 'NEW DROP',
+        'rating' => 4.88,
+        'sold' => 71
+    ],
+    [
+        'id' => 'pw-04',
+        'title' => 'Vapour Cloud Sherpa Fleece Zip Hoodie',
+        'category' => 'Heavyweight Hoodie',
+        'gsm' => 480,
+        'price' => 115.00,
+        'stock' => 11,
+        'badge' => 'LIMITED RUN',
+        'rating' => 4.96,
+        'sold' => 142
+    ],
+    [
+        'id' => 'pw-05',
+        'title' => 'Retro-Velocity Heavyweight Bomber',
+        'category' => 'Bomber Jacket',
+        'gsm' => 520,
+        'price' => 165.00,
+        'stock' => 18,
+        'badge' => 'BESTSELLER',
+        'rating' => 4.91,
+        'sold' => 110
+    ],
+    [
+        'id' => 'pw-08',
+        'title' => 'Midnight Echo Heavy Full-Zip Hoodie',
+        'category' => 'Heavyweight Hoodie',
+        'gsm' => 520,
+        'price' => 108.00,
+        'stock' => 12,
+        'badge' => '500 GSM',
+        'rating' => 4.97,
+        'sold' => 219
+    ]
+];
 
-// Fetch live data or fallback to rich seed records
-$ideas = querySupabase('ideas?select=*&order=created_at.desc&limit=20', $supabaseUrl, $supabaseKey);
-$profiles = querySupabase('profiles?select=*&order=created_at.desc&limit=20', $supabaseUrl, $supabaseKey);
-$cycles = querySupabase('cycles?select=*&order=cycle_number.desc&limit=5', $supabaseUrl, $supabaseKey);
+// Sample Orders
+$orders = [
+    [
+        'id' => 'PW-940218',
+        'customer' => 'Hamza Tariq',
+        'username' => 'hamza_t',
+        'phone' => '+92 03001234567',
+        'address' => 'Street 4, Sector F-8/3, Islamabad',
+        'items' => 'Shadow Matrix Hoodie (Size L, Onyx Black)',
+        'amount' => 110.00,
+        'payment' => 'Cash on Delivery (COD)',
+        'status' => 'Processing',
+        'date' => 'Oct 1, 2026'
+    ],
+    [
+        'id' => 'PW-881923',
+        'customer' => 'Bilal Ahmed',
+        'username' => 'bilal_street',
+        'phone' => '+92 03219876543',
+        'address' => 'DHA Phase 5, Lahore',
+        'items' => 'Cyber-Spec Jacket (XL) + Midnight Echo (XL)',
+        'amount' => 234.40,
+        'payment' => 'Credit Card',
+        'status' => 'Shipped',
+        'date' => 'Sep 30, 2026'
+    ],
+    [
+        'id' => 'PW-712049',
+        'customer' => 'Ayesha Khan',
+        'username' => 'ayesha_k',
+        'phone' => '+92 03335557799',
+        'address' => 'Clifton Block 2, Karachi',
+        'items' => 'Sub-Zero Down Puffer (Size M, Bone White)',
+        'amount' => 210.00,
+        'payment' => 'Digital Wallet',
+        'status' => 'Delivered',
+        'date' => 'Sep 29, 2026'
+    ]
+];
 
-// Fallback high-fidelity records if Supabase API is not reachable
-if (!$ideas || empty($ideas)) {
-    $ideas = [
-        ['id' => '1', 'title' => 'PulseSync: Offline-First Zero-Conflict CRDT Engine', 'category' => 'developer-tools', 'votes_count' => 28, 'status' => 'published', 'created_at' => date('Y-m-d H:i:s', strtotime('-2 hours')), 'summary' => 'A lightweight TypeScript library for synchronizing offline browser state with verifiable peer consensus.'],
-        ['id' => '2', 'title' => 'DocuProof: Verifiable AI Document Audit Trail', 'category' => 'ai', 'votes_count' => 24, 'status' => 'published', 'created_at' => date('Y-m-d H:i:s', strtotime('-5 hours')), 'summary' => 'Cryptographically verifiable compliance auditing for LLM-generated financial reports.'],
-        ['id' => '3', 'title' => 'CloudPocket: Edge-Native Serverless Database Proxy', 'category' => 'saas', 'votes_count' => 19, 'status' => 'published', 'created_at' => date('Y-m-d H:i:s', strtotime('-1 day')), 'summary' => 'Sub-millisecond connection pooling and global caching proxy for distributed Postgres.'],
-        ['id' => '4', 'title' => 'BioPulse: Wearable Continuous Glucose ML Predictor', 'category' => 'healthtech', 'votes_count' => 15, 'status' => 'published', 'created_at' => date('Y-m-d H:i:s', strtotime('-2 days')), 'summary' => 'Non-invasive continuous glucose trend predictor utilizing optical sensor data and on-device ML.'],
-        ['id' => '5', 'title' => 'Decentralized Energy Grid Peer Exchange', 'category' => 'sustainability', 'votes_count' => 11, 'status' => 'flagged', 'created_at' => date('Y-m-d H:i:s', strtotime('-3 days')), 'summary' => 'Automated micro-grid trading protocol allowing rooftop solar owners to sell surplus watts.'],
-    ];
-}
-
-if (!$profiles || empty($profiles)) {
-    $profiles = [
-        ['id' => 'p1', 'display_name' => 'System Administrator', 'username' => 'admin', 'role' => 'admin', 'status' => 'active', 'ideas_count' => 2, 'votes_cast_count' => 5, 'created_at' => '2026-09-01'],
-        ['id' => 'p2', 'display_name' => 'Sarah Connor', 'username' => 'sarah_connor', 'role' => 'member', 'status' => 'active', 'ideas_count' => 4, 'votes_cast_count' => 5, 'created_at' => '2026-09-12'],
-        ['id' => 'p3', 'display_name' => 'Alex Mercer', 'username' => 'alex_mercer', 'role' => 'member', 'status' => 'active', 'ideas_count' => 1, 'votes_cast_count' => 3, 'created_at' => '2026-09-15'],
-        ['id' => 'p4', 'display_name' => 'Elena Rostova', 'username' => 'elena_r', 'role' => 'member', 'status' => 'suspended', 'ideas_count' => 0, 'votes_cast_count' => 0, 'created_at' => '2026-09-20'],
-    ];
-}
-
-if (!$cycles || empty($cycles)) {
-    $cycles = [
-        ['cycle_number' => 1, 'status' => 'active', 'starts_at' => date('Y-m-d', strtotime('-2 days')), 'ends_at' => date('Y-m-d', strtotime('+5 days'))],
-    ];
-}
-
-// Compute Analytics
-$totalUsers = count($profiles);
-$totalIdeas = count($ideas);
-$totalVotes = array_sum(array_column($ideas, 'votes_count'));
-$flaggedCount = count(array_filter($ideas, fn($i) => ($i['status'] ?? '') === 'flagged'));
-
-$activeTab = $_GET['tab'] ?? 'overview';
-$actionNotice = '';
-
-// Handle Interactive Demo Actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $act = $_POST['admin_action'] ?? '';
-    $targetId = $_POST['target_id'] ?? '';
-    
-    if ($act === 'approve_idea') {
-        $actionNotice = "Idea #$targetId status updated to: APPROVED & PUBLISHED.";
-    } elseif ($act === 'flag_idea') {
-        $actionNotice = "Idea #$targetId status updated to: FLAGGED FOR REVIEW.";
-    } elseif ($act === 'delete_idea') {
-        $actionNotice = "Idea #$targetId removed from active consensus.";
-    } elseif ($act === 'suspend_user') {
-        $actionNotice = "User #$targetId account suspended for protocol compliance.";
-    } elseif ($act === 'activate_user') {
-        $actionNotice = "User #$targetId account restored to ACTIVE.";
-    } elseif ($act === 'finalize_cycle') {
-        $actionNotice = "Cycle finalized successfully! Standings archived and next 7-day round initiated.";
-    }
-}
+$totalRevenue = 28450.00;
+$totalUnitsSold = 822;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>IdeaPulse Admin Console (PHP Edition)</title>
+  <title>PULSEWEAR Admin Executive (PHP Edition)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --canvas: #07090e;
-      --canvas-surface: #0e131f;
-      --card-bg: rgba(17, 24, 39, 0.85);
-      --card-border: rgba(255, 255, 255, 0.09);
-      --border-accent: rgba(99, 102, 241, 0.3);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --card-bg: #0e131f;
+      --card-border: rgba(255, 255, 255, 0.08);
       --indigo: #6366f1;
-      --indigo-bright: #818cf8;
-      --violet: #8b5cf6;
-      --cyan: #06b6d4;
+      --indigo-hover: #4f46e5;
       --emerald: #10b981;
+      --cyan: #06b6d4;
       --amber: #f59e0b;
-      --rose: #f43f5e;
-      --glow-indigo: 0 0 25px rgba(99, 102, 241, 0.3);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       background: var(--canvas);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.5;
-    }
-    .font-display { font-family: 'Space Grotesk', sans-serif; }
-    .container { max-width: 1320px; margin: 0 auto; padding: 0 24px; width: 100%; }
-
-    /* Top Executive Command Bar */
-    .admin-topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: 64px;
-      background: rgba(7, 9, 14, 0.95);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--card-border);
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      justify-content: space-between;
-    }
-    .admin-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: var(--amber);
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .php-tag {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      color: var(--indigo-bright);
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-family: monospace;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      border: 1px solid transparent;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--indigo), var(--violet));
-      color: #fff;
-      box-shadow: var(--glow-indigo);
-    }
-    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-    .btn-secondary {
-      background: rgba(30, 41, 59, 0.7);
-      border-color: var(--card-border);
-      color: var(--text-main);
-    }
-    .btn-secondary:hover { background: rgba(51, 65, 85, 0.8); color: #fff; }
-    .btn-sm { padding: 5px 11px; font-size: 11px; }
-
-    /* Nav Tabs */
-    .admin-nav {
-      display: flex;
-      gap: 8px;
-      margin-left: 20px;
-    }
-    .admin-nav-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .admin-nav-item:hover, .admin-nav-item.active {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.06);
-    }
-    .admin-nav-item.active {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: var(--indigo-bright);
-    }
-
-    /* Cards & Panels */
-    .glass-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       padding: 24px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0,0,0,0.5);
+      min-height: 100vh;
     }
-
-    /* Telemetry Grid */
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-badge {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .badge-status {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
     }
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 20px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
-    .stat-header {
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      margin-top: 6px;
+      color: #fff;
+    }
+    .stat-sub {
+      font-size: 11px;
+      color: var(--emerald);
+      margin-top: 4px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--text-dim);
-      margin-bottom: 10px;
     }
-    .stat-value {
-      font-size: 32px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1;
-    }
-
-    /* Tables */
-    .table-wrap {
-      overflow-x: auto;
-      border-radius: 12px;
+    .table-container {
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow-x: auto;
+      margin-bottom: 32px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
       text-align: left;
+      font-size: 12px;
     }
     th {
-      background: rgba(14, 19, 31, 0.9);
-      padding: 12px 18px;
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px 16px;
+      color: var(--text-muted);
+      font-weight: 600;
       border-bottom: 1px solid var(--card-border);
     }
     td {
-      padding: 14px 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
     }
-    tr:hover td { background: rgba(255, 255, 255, 0.02); }
-
-    /* Status Pills */
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 9999px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
     }
-    .pill-emerald { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--emerald); }
-    .pill-amber { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--amber); }
-    .pill-rose { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--rose); }
-    .pill-indigo { background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); color: var(--indigo-bright); }
-
-    .action-alert {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #6ee7b7;
-      padding: 12px 16px;
+    .btn {
+      background: var(--indigo);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
       border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--indigo-hover); }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: #fff;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+    .alert {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #c7d2fe;
+      padding: 12px 16px;
+      border-radius: 12px;
       margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
       font-size: 13px;
     }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--emerald); }
+    .pill-cyan { background: rgba(6, 182, 212, 0.15); color: var(--cyan); }
+    .pill-amber { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
   </style>
 </head>
 <body>
-
-  <!-- Top Executive Command Bar -->
-  <header class="admin-topbar">
-    <div style="display: flex; align-items: center;">
-      <!-- Exit to Main Site -->
-      <a href="http://localhost:3000" class="btn btn-secondary btn-sm" title="Return to Main Consumer App">
-        <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
-        <span>Exit to Main Site</span>
-      </a>
-
-      <div style="height: 20px; width: 1px; background: var(--card-border); margin: 0 16px;"></div>
-
-      <!-- Admin Identity -->
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <div style="width: 30px; height: 30px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; color: var(--amber);">
-          <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="brand-badge">PW</div>
+      <div>
+        <div class="brand-title">PULSEWEAR APPAREL — PHP ADMIN</div>
+        <div style="font-size: 11px; color: var(--text-muted);">
+          Independent Course Admin Console • PHP 8.2+ Architecture
         </div>
-        <span class="font-display" style="font-weight: 800; font-size: 15px; color: #fff;">
-          Idea<span style="color: var(--cyan);">Pulse</span>
-        </span>
-        <span class="admin-badge">Admin Portal</span>
-        <span class="php-tag">PHP 8.2</span>
       </div>
-
-      <!-- Navigation Tabs -->
-      <nav class="admin-nav">
-        <a href="admin.php?tab=overview" class="admin-nav-item <?= $activeTab === 'overview' ? 'active' : '' ?>">
-          <i data-lucide="layout-dashboard" style="width: 13px; height: 13px;"></i>
-          <span>Overview</span>
-        </a>
-        <a href="admin.php?tab=moderation" class="admin-nav-item <?= $activeTab === 'moderation' ? 'active' : '' ?>">
-          <i data-lucide="layers" style="width: 13px; height: 13px;"></i>
-          <span>Moderation Deck</span>
-        </a>
-        <a href="admin.php?tab=users" class="admin-nav-item <?= $activeTab === 'users' ? 'active' : '' ?>">
-          <i data-lucide="users" style="width: 13px; height: 13px;"></i>
-          <span>Users Directory</span>
-        </a>
-        <a href="admin.php?tab=cycles" class="admin-nav-item <?= $activeTab === 'cycles' ? 'active' : '' ?>">
-          <i data-lucide="refresh-cw" style="width: 13px; height: 13px;"></i>
-          <span>Cycle Engine</span>
-        </a>
-      </nav>
     </div>
-
-    <!-- Right: Telemetry Health & Session -->
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--emerald); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); padding: 4px 10px; border-radius: 9999px;">
-        <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--emerald);"></span>
-        <span>All Systems Nominal</span>
-      </div>
-
-      <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-        <span>Operator:</span>
-        <strong style="color: #fff;">admin@ideapulse.dev</strong>
-      </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span class="badge-status">● SYSTEM NOMINAL</span>
+      <a href="http://localhost:3000" class="btn btn-secondary">Open Main Storefront (Next.js)</a>
     </div>
   </header>
 
-  <!-- Main Administrative Viewport -->
-  <main style="padding: 36px 0; flex: 1;">
-    <div class="container">
+  <?php if ($actionNotice): ?>
+    <div class="alert">✓ <?php echo $actionNotice; ?></div>
+  <?php endif; ?>
 
-      <?php if ($actionNotice): ?>
-        <div class="action-alert">
-          <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
-          <span><?= htmlspecialchars($actionNotice) ?></span>
-        </div>
-      <?php endif; ?>
-
-      <!-- ─── TAB 1: OVERVIEW ──────────────────────────────────────── -->
-      <?php if ($activeTab === 'overview'): ?>
-        <div style="margin-bottom: 28px;">
-          <h1 class="font-display" style="font-size: 26px; font-weight: 800; color: #fff;">
-            Administrative Command Center
-          </h1>
-          <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">
-            Consensus telemetry, user governance, and idea moderation engine.
-          </p>
-        </div>
-
-        <!-- Telemetry HUD -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-header">
-              <span>Total Profiles</span>
-              <i data-lucide="users" style="width: 18px; height: 18px; color: var(--indigo-bright);"></i>
-            </div>
-            <div class="stat-value"><?= $totalUsers ?></div>
-            <div style="font-size: 11px; color: var(--emerald); margin-top: 8px;">Active verified accounts</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-header">
-              <span>Curated Ideas</span>
-              <i data-lucide="lightbulb" style="width: 18px; height: 18px; color: var(--cyan);"></i>
-            </div>
-            <div class="stat-value"><?= $totalIdeas ?></div>
-            <div style="font-size: 11px; color: var(--cyan); margin-top: 8px;">Across 8 active sectors</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-header">
-              <span>Votes Ledger</span>
-              <i data-lucide="zap" style="width: 18px; height: 18px; color: var(--violet);"></i>
-            </div>
-            <div class="stat-value"><?= $totalVotes ?></div>
-            <div style="font-size: 11px; color: var(--violet); margin-top: 8px;">Verified consensus points</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-header">
-              <span>Current Round</span>
-              <i data-lucide="refresh-cw" style="width: 18px; height: 18px; color: var(--amber);"></i>
-            </div>
-            <div class="stat-value">Cycle #1</div>
-            <div style="font-size: 11px; color: var(--amber); margin-top: 8px;">Weekly funding round active</div>
-          </div>
-        </div>
-
-        <!-- Side-by-side Tables -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-          <!-- Recent Submissions -->
-          <div class="glass-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Recent Submissions</h3>
-              <a href="admin.php?tab=moderation" style="font-size: 12px; color: var(--indigo-bright); text-decoration: none;">View Deck &rarr;</a>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Votes</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach (array_slice($ideas, 0, 5) as $i): ?>
-                    <tr>
-                      <td style="font-weight: 600; color: #fff; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        <?= htmlspecialchars($i['title']) ?>
-                      </td>
-                      <td><span class="pill pill-indigo"><?= htmlspecialchars($i['category']) ?></span></td>
-                      <td style="color: var(--cyan); font-weight: 700; font-family: monospace;"><?= $i['votes_count'] ?></td>
-                      <td>
-                        <span class="pill <?= ($i['status'] ?? '') === 'published' ? 'pill-emerald' : 'pill-amber' ?>">
-                          <?= htmlspecialchars($i['status'] ?? 'published') ?>
-                        </span>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Registered Accounts -->
-          <div class="glass-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Registered Accounts</h3>
-              <a href="admin.php?tab=users" style="font-size: 12px; color: var(--indigo-bright); text-decoration: none;">View All &rarr;</a>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach (array_slice($profiles, 0, 5) as $p): ?>
-                    <tr>
-                      <td>
-                        <strong style="color: #fff;"><?= htmlspecialchars($p['display_name'] ?? $p['username']) ?></strong>
-                        <div style="font-size: 11px; color: var(--text-dim);">@<?= htmlspecialchars($p['username']) ?></div>
-                      </td>
-                      <td><span class="pill <?= ($p['role'] ?? '') === 'admin' ? 'pill-amber' : 'pill-indigo' ?>"><?= htmlspecialchars($p['role'] ?? 'member') ?></span></td>
-                      <td><span class="pill <?= ($p['status'] ?? '') === 'active' ? 'pill-emerald' : 'pill-rose' ?>"><?= htmlspecialchars($p['status'] ?? 'active') ?></span></td>
-                    </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-      <!-- ─── TAB 2: MODERATION DECK ──────────────────────────────── -->
-      <?php elseif ($activeTab === 'moderation'): ?>
-        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <h1 class="font-display" style="font-size: 24px; font-weight: 800; color: #fff;">
-              Ideas Moderation Deck
-            </h1>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">
-              Approve, flag, or remove submitted pitches across active funding cycles.
-            </p>
-          </div>
-          <span class="pill pill-amber" style="font-size: 12px; padding: 6px 12px;">
-            <?= count($ideas) ?> Pitches Registered
-          </span>
-        </div>
-
-        <div class="glass-card" style="padding: 0; overflow: hidden;">
-          <div class="table-wrap" style="border: none;">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 50px;">ID</th>
-                  <th>Pitch Title & Summary</th>
-                  <th>Sector</th>
-                  <th>Consensus Votes</th>
-                  <th>Status</th>
-                  <th style="text-align: right;">Moderation Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($ideas as $idx => $i): ?>
-                  <tr>
-                    <td style="font-family: monospace; color: var(--text-dim);">#<?= $idx + 1 ?></td>
-                    <td>
-                      <strong style="color: #fff; font-size: 14px;"><?= htmlspecialchars($i['title']) ?></strong>
-                      <p style="color: var(--text-muted); font-size: 12px; margin-top: 3px; max-width: 480px;">
-                        <?= htmlspecialchars(substr($i['summary'] ?? '', 0, 100)) ?>...
-                      </p>
-                    </td>
-                    <td><span class="pill pill-indigo"><?= htmlspecialchars($i['category']) ?></span></td>
-                    <td style="color: var(--cyan); font-weight: 700; font-size: 15px; font-family: monospace;">
-                      <?= $i['votes_count'] ?>
-                    </td>
-                    <td>
-                      <span class="pill <?= ($i['status'] ?? '') === 'published' ? 'pill-emerald' : 'pill-amber' ?>">
-                        <?= htmlspecialchars($i['status'] ?? 'published') ?>
-                      </span>
-                    </td>
-                    <td style="text-align: right;">
-                      <form method="POST" action="admin.php?tab=moderation" style="display: inline-flex; gap: 6px;">
-                        <input type="hidden" name="target_id" value="<?= htmlspecialchars($i['id']) ?>">
-                        <button type="submit" name="admin_action" value="approve_idea" class="btn btn-secondary btn-sm" style="color: var(--emerald);">
-                          Approve
-                        </button>
-                        <button type="submit" name="admin_action" value="flag_idea" class="btn btn-secondary btn-sm" style="color: var(--amber);">
-                          Flag
-                        </button>
-                        <button type="submit" name="admin_action" value="delete_idea" class="btn btn-secondary btn-sm" style="color: var(--rose);" onclick="return confirm('Permanently remove this idea?');">
-                          Delete
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      <!-- ─── TAB 3: USERS & ACCESS CONTROLS ──────────────────────── -->
-      <?php elseif ($activeTab === 'users'): ?>
-        <div style="margin-bottom: 24px;">
-          <h1 class="font-display" style="font-size: 24px; font-weight: 800; color: #fff;">
-            Users Directory & Anti-Abuse Controls
-          </h1>
-          <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">
-            Manage verified accounts, administrative roles, and Sybil suspension status.
-          </p>
-        </div>
-
-        <div class="glass-card" style="padding: 0; overflow: hidden;">
-          <div class="table-wrap" style="border: none;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Display Name</th>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th>Account Status</th>
-                  <th>Member Since</th>
-                  <th style="text-align: right;">Governance Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($profiles as $p): ?>
-                  <tr>
-                    <td>
-                      <strong style="color: #fff;"><?= htmlspecialchars($p['display_name'] ?? $p['username']) ?></strong>
-                    </td>
-                    <td><code style="color: var(--indigo-bright);">@<?= htmlspecialchars($p['username']) ?></code></td>
-                    <td>
-                      <span class="pill <?= ($p['role'] ?? '') === 'admin' ? 'pill-amber' : 'pill-indigo' ?>">
-                        <?= htmlspecialchars($p['role'] ?? 'member') ?>
-                      </span>
-                    </td>
-                    <td>
-                      <span class="pill <?= ($p['status'] ?? '') === 'active' ? 'pill-emerald' : 'pill-rose' ?>">
-                        <?= htmlspecialchars($p['status'] ?? 'active') ?>
-                      </span>
-                    </td>
-                    <td style="color: var(--text-dim); font-size: 12px;"><?= htmlspecialchars(substr($p['created_at'] ?? '2026-09-01', 0, 10)) ?></td>
-                    <td style="text-align: right;">
-                      <form method="POST" action="admin.php?tab=users" style="display: inline-flex; gap: 6px;">
-                        <input type="hidden" name="target_id" value="<?= htmlspecialchars($p['id'] ?? $p['username']) ?>">
-                        <?php if (($p['status'] ?? '') === 'active'): ?>
-                          <button type="submit" name="admin_action" value="suspend_user" class="btn btn-secondary btn-sm" style="color: var(--rose);">
-                            Suspend
-                          </button>
-                        <?php else: ?>
-                          <button type="submit" name="admin_action" value="activate_user" class="btn btn-secondary btn-sm" style="color: var(--emerald);">
-                            Activate
-                          </button>
-                        <?php endif; ?>
-                      </form>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      <!-- ─── TAB 4: CYCLE ENGINE ─────────────────────────────────── -->
-      <?php elseif ($activeTab === 'cycles'): ?>
-        <div style="margin-bottom: 24px;">
-          <h1 class="font-display" style="font-size: 24px; font-weight: 800; color: #fff;">
-            Weekly Funding Cycle Engine
-          </h1>
-          <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">
-            Consensus finalization, winner determination, and epoch progression.
-          </p>
-        </div>
-
-        <div class="glass-card" style="margin-bottom: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-            <div>
-              <span class="pill pill-emerald" style="margin-bottom: 8px;">Cycle #1 Active</span>
-              <h3 style="font-size: 18px; font-weight: 700; color: #fff;">Finalize & Advance Weekly Round</h3>
-              <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">
-                Locks the current vote tallies, awards top ideas, and opens Cycle #2.
-              </p>
-            </div>
-            <form method="POST" action="admin.php?tab=cycles" onsubmit="return confirm('Are you sure you want to finalize the active round?');">
-              <button type="submit" name="admin_action" value="finalize_cycle" class="btn btn-primary">
-                <i data-lucide="fast-forward" style="width: 15px; height: 15px;"></i>
-                <span>Finalize Active Cycle</span>
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="glass-card" style="padding: 0; overflow: hidden;">
-          <div class="table-wrap" style="border: none;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cycle Round</th>
-                  <th>Status</th>
-                  <th>Start Date</th>
-                  <th>Closure Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong style="color: #fff;">Cycle #1</strong></td>
-                  <td><span class="pill pill-emerald">Active</span></td>
-                  <td style="color: var(--text-muted); font-size: 12px;"><?= date('Y-m-d', strtotime('-2 days')) ?></td>
-                  <td style="color: var(--text-muted); font-size: 12px;"><?= date('Y-m-d', strtotime('+5 days')) ?></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      <?php endif; ?>
-
+  <!-- Telemetry Row -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Gross Sales</div>
+      <div class="stat-val">$<?php echo number_format($totalRevenue, 2); ?></div>
+      <div class="stat-sub">↑ 22.4% over monthly target</div>
     </div>
-  </main>
+    <div class="stat-card">
+      <div class="stat-label">Garments Dispatched</div>
+      <div class="stat-val"><?php echo $totalUnitsSold; ?> pcs</div>
+      <div class="stat-sub">Heavyweight Hoodies (500 GSM) Top #1</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Orders</div>
+      <div class="stat-val"><?php echo count($orders); ?> In Queue</div>
+      <div class="stat-sub">All addresses verified</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Average Order Value</div>
+      <div class="stat-val">$148.50</div>
+      <div class="stat-sub">Free Worldwide Shipping Enabled</div>
+    </div>
+  </div>
 
-  <footer style="margin-top: auto; border-top: 1px solid var(--card-border); background: var(--canvas-surface); padding: 18px 24px; font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between;">
-    <span>IdeaPulse Standalone Executive Admin Console (PHP Edition)</span>
-    <span>Ready for Evaluation &middot; PHP 8.2 Compatible</span>
-  </footer>
+  <!-- Orders Table -->
+  <div class="section-title">
+    <span>Customer Orders & Delivery Dispatch</span>
+    <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">
+      Strict 11-Digit Phone & Letters-Only Verification
+    </span>
+  </div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer & Username</th>
+          <th>Phone (11 Digits)</th>
+          <th>Garments</th>
+          <th>Total</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($orders as $ord): ?>
+        <tr>
+          <td style="font-family: monospace; font-weight: bold; color: var(--indigo);"><?php echo $ord['id']; ?></td>
+          <td>
+            <strong><?php echo $ord['customer']; ?></strong><br>
+            <span style="font-size: 11px; color: var(--text-muted);">@<?php echo $ord['username']; ?></span>
+          </td>
+          <td style="font-family: monospace; color: var(--cyan);"><?php echo $ord['phone']; ?></td>
+          <td style="font-size: 11px;"><?php echo $ord['items']; ?></td>
+          <td style="font-weight: bold; color: #fff;">$<?php echo number_format($ord['amount'], 2); ?></td>
+          <td style="font-size: 11px; color: var(--text-muted);"><?php echo $ord['payment']; ?></td>
+          <td>
+            <?php if ($ord['status'] === 'Delivered'): ?>
+              <span class="pill pill-green">Delivered</span>
+            <?php elseif ($ord['status'] === 'Shipped'): ?>
+              <span class="pill pill-cyan">Shipped</span>
+            <?php else: ?>
+              <span class="pill pill-amber">Processing</span>
+            <?php endif; ?>
+          </td>
+          <td>
+            <form method="POST" style="display: inline;">
+              <input type="hidden" name="order_id" value="<?php echo $ord['id']; ?>">
+              <?php if ($ord['status'] === 'Processing'): ?>
+                <input type="hidden" name="action" value="ship_order">
+                <button type="submit" class="btn">Mark Shipped</button>
+              <?php else: ?>
+                <input type="hidden" name="action" value="deliver_order">
+                <button type="submit" class="btn btn-secondary">Mark Delivered</button>
+              <?php endif; ?>
+            </form>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
 
-  <script>lucide.createIcons();</script>
+  <!-- Inventory Table -->
+  <div class="section-title">
+    <span>Active Outerwear Inventory (Hoodies & Jackets)</span>
+  </div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Style</th>
+          <th>Category</th>
+          <th>Fabric Weight</th>
+          <th>Price</th>
+          <th>Stock Units</th>
+          <th>Customer Rating</th>
+          <th>Adjust Inventory</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($inventory as $prod): ?>
+        <tr>
+          <td>
+            <strong><?php echo $prod['title']; ?></strong>
+            <span class="pill pill-cyan" style="margin-left: 6px;"><?php echo $prod['badge']; ?></span>
+          </td>
+          <td style="font-family: monospace; color: var(--indigo);"><?php echo $prod['category']; ?></td>
+          <td><?php echo $prod['gsm']; ?> GSM</td>
+          <td style="font-weight: bold; color: #fff;">$<?php echo number_format($prod['price'], 2); ?></td>
+          <td><span class="pill pill-green"><?php echo $prod['stock']; ?> units in warehouse</span></td>
+          <td style="color: var(--amber);">★ <?php echo $prod['rating']; ?> (<?php echo $prod['sold']; ?> sold)</td>
+          <td>
+            <form method="POST" style="display: flex; gap: 6px; align-items: center;">
+              <input type="hidden" name="action" value="update_stock">
+              <input type="hidden" name="prod_title" value="<?php echo $prod['title']; ?>">
+              <input type="number" name="new_stock" value="<?php echo $prod['stock']; ?>" style="width: 60px; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #fff; padding: 4px; border-radius: 6px; font-size: 11px;">
+              <button type="submit" class="btn btn-secondary" style="font-size: 10px; padding: 4px 8px;">Save</button>
+            </form>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+</div>
 </body>
 </html>

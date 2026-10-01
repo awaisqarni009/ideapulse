@@ -31,17 +31,19 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ideapulse.dev';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'IdeaPulse — Community Idea Incubator',
-    template: '%s · IdeaPulse',
+    default: 'PULSEWEAR — Heavyweight Streetwear, Hoodies & Tactical Jackets',
+    template: '%s · PULSEWEAR',
   },
-  description: 'Where the crowd decides which ideas deserve funding and attention.',
+  description:
+    'Engineered for warmth. Cut for the streets. Heavyweight 500 GSM loopback cotton hoodies and 3-layer weatherproof tactical jackets.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: siteUrl,
-    siteName: 'IdeaPulse',
-    title: 'IdeaPulse — Community Idea Incubator',
-    description: 'Where the crowd decides which ideas deserve funding and attention.',
+    siteName: 'PULSEWEAR',
+    title: 'PULSEWEAR — Heavyweight Streetwear, Hoodies & Tactical Jackets',
+    description:
+      'Engineered for warmth. Cut for the streets. Heavyweight 500 GSM loopback cotton hoodies and 3-layer weatherproof tactical jackets.',
     images: [
       {
         url: '/api/og?title=IdeaPulse%20—%20Community%20Idea%20Incubator',

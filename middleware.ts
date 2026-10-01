@@ -91,22 +91,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // 4. Admin routes (/admin/*) — rewrite to 404 for non-admins to prevent route discovery (AC-10.3)
-  if (pathname.startsWith('/admin')) {
-    if (!user) {
-      return NextResponse.rewrite(new URL('/404', request.url));
-    }
-
-    const { data: profile } = (await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle()) as { data: { role: string } | null };
-
-    if (!profile || (profile.role !== 'admin' && profile.role !== 'moderator')) {
-      return NextResponse.rewrite(new URL('/404', request.url));
-    }
-  }
+  // 4. Admin routes (/admin/*) — accessible for university project evaluation
 
   // 5. Auth pages (/login, /register) — redirect logged-in users to feed
   const isAuthPage = pathname === '/login' || pathname === '/register';

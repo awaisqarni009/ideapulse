@@ -1,574 +1,587 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
-import { getCurrentUser } from '@/lib/auth/user';
-import { createClient } from '@/lib/supabase/server';
-import { Admin3DTelemetry } from '@/app/components/admin/admin-3d-telemetry';
-import { CycleControlManager } from './cycle-control-manager';
-import { IdeasModerationDeck, type IdeaItem } from './ideas-moderation-deck';
-import { UsersDirectoryManager, type UserProfileItem } from './users-directory-manager';
-import { AdminTabsContainer } from './admin-tabs-container';
-import { ManualFinalizeButton } from './cycles/finalize-button';
-import { RecountButton } from './cycles/recount-button';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { PRODUCTS, Product } from '@/lib/store/products';
 import {
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  Clock,
-  Flag,
-  RefreshCw,
   Shield,
-  Sparkles,
-  Users,
+  Package,
+  ShoppingCart,
+  DollarSign,
+  TrendingUp,
+  Plus,
+  Check,
+  ArrowLeft,
+  RefreshCw,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Admin Command Center — IdeaPulse',
-  robots: {
-    index: false,
-    follow: false,
+interface AdminOrder {
+  orderId: string;
+  date: string;
+  customer: {
+    fullName: string;
+    username: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  paymentMethod: string;
+  items: any[];
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  total: number;
+  status?: 'Processing' | 'Shipped' | 'Delivered';
+}
+
+const INITIAL_DEMO_ORDERS: AdminOrder[] = [
+  {
+    orderId: 'PW-940218',
+    date: 'Oct 1, 2026',
+    customer: {
+      fullName: 'Hamza Tariq',
+      username: 'hamza_t',
+      email: 'hamza@example.com',
+      phone: '+92 03001234567',
+      address: 'Street 4, F-8/3, Islamabad',
+    },
+    paymentMethod: 'Cash on Delivery (COD)',
+    items: [
+      {
+        id: 'item-1',
+        title: 'Shadow Matrix Heavyweight Hoodie',
+        size: 'L',
+        color: { name: 'Onyx Black' },
+        quantity: 1,
+        price: 98,
+      },
+    ],
+    subtotal: 98,
+    discount: 0,
+    shipping: 12,
+    total: 110,
+    status: 'Processing',
   },
-};
+  {
+    orderId: 'PW-881923',
+    date: 'Sep 30, 2026',
+    customer: {
+      fullName: 'Bilal Ahmed',
+      username: 'bilal_street',
+      email: 'bilal@pulse.io',
+      phone: '+92 03219876543',
+      address: 'DHA Phase 5, Lahore',
+    },
+    paymentMethod: 'Credit Card',
+    items: [
+      {
+        id: 'item-2',
+        title: 'Cyber-Spec Modular Techwear Jacket',
+        size: 'XL',
+        color: { name: 'Stealth Black' },
+        quantity: 1,
+        price: 185,
+      },
+      {
+        id: 'item-3',
+        title: 'Midnight Echo Heavy Full-Zip Hoodie',
+        size: 'XL',
+        color: { name: 'Deep Obsidian' },
+        quantity: 1,
+        price: 108,
+      },
+    ],
+    subtotal: 293,
+    discount: 58.6,
+    shipping: 0,
+    total: 234.4,
+    status: 'Shipped',
+  },
+];
 
-export const revalidate = 0; // Real-time admin telemetry
+export default function AdminPage() {
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders'>('overview');
+  const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
+  const [ordersList, setOrdersList] = useState<AdminOrder[]>(INITIAL_DEMO_ORDERS);
 
-export default async function AdminPage() {
-  const { user, profile, isAdmin } = await getCurrentUser();
+  // New product form modal state
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newCategory, setNewCategory] = useState<'hoodie' | 'jacket'>('hoodie');
+  const [newPrice, setNewPrice] = useState('89');
+  const [newGsm, setNewGsm] = useState('500');
+  const [newStock, setNewStock] = useState('20');
 
-  // Server-side guard: Non-admins receive 404 per AC-10.3
-  if (!user || !isAdmin) {
-    notFound();
-  }
+  // Load any real orders placed from checkout
+  useEffect(() => {
+    try {
+      const savedOrders = localStorage.getItem('pulsewear_orders_v1');
+      if (savedOrders) {
+        const parsed: AdminOrder[] = JSON.parse(savedOrders);
+        const mapped = parsed.map((o) => ({ ...o, status: o.status || 'Processing' }));
+        setOrdersList([...mapped, ...INITIAL_DEMO_ORDERS]);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
-  const supabase = await createClient();
+  // Update order status
+  const handleUpdateOrderStatus = (
+    orderId: string,
+    newStatus: 'Processing' | 'Shipped' | 'Delivered',
+  ) => {
+    setOrdersList((prev) =>
+      prev.map((ord) => (ord.orderId === orderId ? { ...ord, status: newStatus } : ord)),
+    );
+  };
 
-  // 1. Fetch active cycle
-  const { data: activeCycle } = await supabase
-    .from('cycles')
-    .select('*')
-    .eq('status', 'active')
-    .maybeSingle();
+  // Add new product
+  const handleCreateProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
 
-  // 2. Fetch latest cycle number for next cycle default
-  const { data: latestCycle } = await supabase
-    .from('cycles')
-    .select('cycle_number')
-    .order('cycle_number', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    const newProd: Product = {
+      id: `pw-${Date.now()}`,
+      title: newTitle,
+      slug: newTitle.toLowerCase().replace(/\s+/g, '-'),
+      subtitle: `${newGsm} GSM Custom Outerwear Drop`,
+      price: parseFloat(newPrice) || 99,
+      category: newCategory,
+      subcategory: newCategory === 'hoodie' ? 'pullover' : 'techwear',
+      badge: 'NEW DROP',
+      description: 'Newly added outerwear item via the Admin Management Deck.',
+      fabricDetails: ['100% Heavyweight Cotton or DWR Technical Shell'],
+      features: ['Architectural silhouette', 'Reinforced stitching'],
+      weightGsm: parseInt(newGsm) || 450,
+      fit: 'Boxy Oversized',
+      colors: [
+        { name: 'Onyx Black', hex: '#0a0d14', bgClass: 'bg-[#0a0d14]' },
+        { name: 'Smoke Grey', hex: '#64748b', bgClass: 'bg-[#64748b]' },
+      ],
+      sizes: ['S', 'M', 'L', 'XL'],
+      image:
+        newCategory === 'hoodie'
+          ? '/images/hoodie-collection.jpg'
+          : '/images/jacket-collection.jpg',
+      stock: parseInt(newStock) || 15,
+      rating: 5.0,
+      reviewsCount: 1,
+    };
 
-  const latestCycleNumber = latestCycle?.cycle_number ?? activeCycle?.cycle_number ?? 0;
+    setProductsList([newProd, ...productsList]);
+    setShowAddProductModal(false);
+    setNewTitle('');
+    alert(`Product "${newTitle}" created and added to active inventory!`);
+  };
 
-  // 3. Fetch system health check via RPC
-  const { data: healthData } = await supabase.rpc('check_cycle_health');
-  const health = healthData as {
-    healthy: boolean;
-    active_cycle_id?: string;
-    cycle_number?: number;
-    ends_at?: string;
-    overdue_minutes?: number;
-    heartbeat_count?: number;
-    error?: string;
-  } | null;
-
-  // 4. Count qualifying ideas in active cycle
-  const threshold = activeCycle?.vote_threshold ?? 50;
-  const { count: qualifyingCount } = activeCycle
-    ? await supabase
-        .from('ideas')
-        .select('*', { count: 'exact', head: true })
-        .eq('cycle_id', activeCycle.id)
-        .gte('verified_vote_count', threshold)
-    : { count: 0 };
-
-  // 5. Platform Metrics
-  const [{ count: totalIdeasCount }, { count: totalVotesCount }, { count: totalUsersCount }] =
-    await Promise.all([
-      supabase.from('ideas').select('*', { count: 'exact', head: true }),
-      supabase.from('votes').select('*', { count: 'exact', head: true }),
-      supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    ]);
-
-  // 6. Unresolved Reports count
-  const { count: unresolvedReportsCount } = await supabase
-    .from('reports')
-    .select('*', { count: 'exact', head: true })
-    .is('resolved_at', null);
-
-  // 7. Flagged Ring Clusters count
-  const { count: pendingClustersCount } = await supabase
-    .from('suspicious_clusters' as any)
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'pending');
-
-  // 8. Abuse events in last 24h
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { count: abuseEvents24h } = await supabase
-    .from('abuse_events')
-    .select('*', { count: 'exact', head: true })
-    .gt('created_at', twentyFourHoursAgo);
-
-  // 9. Recent admin actions audit trail
-  const { data: recentAdminActions } = await supabase
-    .from('admin_actions')
-    .select('id, action, target_table, target_id, reason, admin_id, created_at')
-    .order('created_at', { ascending: false })
-    .limit(8);
-
-  // 10. Fetch ideas for the moderation deck (with author & cycle joins)
-  const { data: allIdeasRaw } = await supabase
-    .from('ideas')
-    .select(
-      `
-      id,
-      title,
-      slug,
-      summary,
-      category,
-      status,
-      vote_count,
-      verified_vote_count,
-      report_count,
-      qualified_at,
-      created_at,
-      profiles:author_id (
-        id,
-        username,
-        display_name,
-        avatar_url,
-        role
-      ),
-      cycles:cycle_id (
-        id,
-        cycle_number,
-        status,
-        vote_threshold
-      )
-    `,
-    )
-    .order('created_at', { ascending: false })
-    .limit(150);
-
-  const initialIdeas: IdeaItem[] = (allIdeasRaw || []).map((idea: any) => ({
-    id: idea.id,
-    title: idea.title,
-    slug: idea.slug,
-    summary: idea.summary,
-    category: idea.category,
-    status: idea.status,
-    vote_count: idea.vote_count ?? 0,
-    verified_vote_count: idea.verified_vote_count ?? 0,
-    report_count: idea.report_count ?? 0,
-    qualified_at: idea.qualified_at,
-    created_at: idea.created_at,
-    author: Array.isArray(idea.profiles) ? idea.profiles[0] : idea.profiles,
-    cycle: Array.isArray(idea.cycles) ? idea.cycles[0] : idea.cycles,
-  }));
-
-  // 11. Fetch all user profiles for Users Directory
-  const { data: allProfilesRaw } = await supabase
-    .from('profiles')
-    .select(
-      `
-      id,
-      username,
-      display_name,
-      avatar_url,
-      role,
-      status,
-      ideas_count,
-      votes_cast_count,
-      votes_received_count,
-      cycles_won,
-      suspended_until,
-      suspension_reason,
-      created_at
-    `,
-    )
-    .order('created_at', { ascending: false })
-    .limit(200);
-
-  const initialUsers = (allProfilesRaw || []) as UserProfileItem[];
-
-  const endsAtDate = activeCycle?.ends_at ? new Date(activeCycle.ends_at) : null;
-  const timeLeft =
-    endsAtDate && endsAtDate > new Date()
-      ? formatDistanceToNow(endsAtDate, { addSuffix: true })
-      : 'Boundary passed';
-
-  const pendingIdeasCount = initialIdeas.filter((i) => i.status === 'under_review').length;
+  // Metrics
+  const totalRevenue = ordersList.reduce((acc, ord) => acc + ord.total, 0);
+  const totalItemsSold = ordersList.reduce(
+    (acc, ord) => acc + ord.items.reduce((sum, it) => sum + (it.quantity || 1), 0),
+    0,
+  );
+  const totalActiveOrders = ordersList.filter((o) => o.status !== 'Delivered').length;
 
   return (
-    <div className="space-y-8">
-      {/* Top Admin Command Header */}
-      <div
-        className="flex flex-col justify-between gap-6 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-md sm:flex-row sm:items-center sm:p-8"
-        style={{
-          boxShadow: '0 20px 48px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 var(--edge-specular)',
-        }}
-      >
-        <div className="space-y-1.5">
+    <div className="min-h-screen bg-[#07090e] px-4 py-8 text-slate-100 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-7xl">
+        {/* Top Header Bar */}
+        <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 transition-colors hover:text-white"
+              title="Return to storefront"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-indigo-400" />
+                <h1 className="font-display text-2xl font-black text-white">
+                  PULSEWEAR ADMIN EXECUTIVE
+                </h1>
+                <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                  ● SYSTEM NOMINAL
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">
+                Outerwear Inventory, Orders Fulfillment & Anti-Abuse Management
+              </p>
+            </div>
+          </div>
+
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--accent-warning)]">
-              <Shield className="h-3 w-3" />
-              <span>Admin Operations Console</span>
-            </span>
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                health?.healthy
-                  ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-                  : 'border border-red-500/30 bg-red-500/10 text-red-400'
-              }`}
+            <Link
+              href="/"
+              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white"
             >
-              <span className="h-1.5 w-1.5 animate-ping rounded-full bg-current" />
-              <span>{health?.healthy ? 'Consensus Healthy' : 'Action Required'}</span>
-            </span>
+              View Live Storefront
+            </Link>
+            <a
+              href="http://localhost/admin.php"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-indigo-500/30 bg-indigo-600/20 px-4 py-2 text-xs font-bold text-indigo-300 transition-colors hover:bg-indigo-600 hover:text-white"
+            >
+              Open PHP Admin Portal
+            </a>
           </div>
-
-          <h1 className="font-display text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl">
-            Master Admin Command Center
-          </h1>
-          <p className="text-xs text-[var(--text-secondary)] sm:text-sm">
-            Control cycles, approve or decline proposals, inspect real-time votes, and manage
-            community accounts.
-          </p>
         </div>
 
-        {/* Global Quick Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
-          {activeCycle && (
-            <ManualFinalizeButton
-              cycleNumber={activeCycle.cycle_number}
-              qualifyingCount={qualifyingCount || 0}
-            />
-          )}
-
-          {activeCycle && (
-            <RecountButton cycleId={activeCycle.id} cycleNumber={activeCycle.cycle_number} />
-          )}
-
-          <Link
-            href="/admin/cycles"
-            className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--surface-2)] px-3.5 py-2 text-xs font-semibold text-[var(--text-primary)] transition-all hover:bg-[var(--surface-3)]"
+        {/* Navigation Tabs */}
+        <div className="mt-6 flex gap-2 border-b border-white/10 pb-3">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+              activeTab === 'overview'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:bg-white/5 hover:text-white'
+            }`}
           >
-            <RefreshCw className="h-3.5 w-3.5" />
-            <span>Cycle Governance Hub</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* 4 Core Platform KPI Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Active Cycle KPI */}
-        <div
-          className="hover:border-[var(--indigo)]/40 rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 shadow-sm backdrop-blur-sm transition-all"
-          style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-              Active Cycle
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(99,102,241,0.3)] bg-[rgba(99,102,241,0.1)] text-[var(--indigo-bright)]">
-              <Clock className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-mono text-3xl font-extrabold text-[var(--text-primary)]">
-              {activeCycle ? `#${activeCycle.cycle_number}` : 'None'}
-            </span>
-            <span className="text-xs text-[var(--text-tertiary)]">{timeLeft}</span>
-          </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span>Qualifiers (≥{threshold}):</span>
-            <span className="font-mono font-bold text-[var(--cyan-bright)]">
-              {qualifyingCount ?? 0} ideas
-            </span>
-          </div>
-          <div className="mt-2 text-[11px] text-[var(--text-tertiary)]">
-            Threshold: {threshold} verified votes
-          </div>
+            Overview & Telemetry
+          </button>
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+              activeTab === 'products'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            Outerwear Catalog ({productsList.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+              activeTab === 'orders'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            Orders Fulfillment ({ordersList.length})
+          </button>
         </div>
 
-        {/* Ideas & Reports KPI */}
-        <div
-          className="hover:border-[var(--indigo)]/40 rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 shadow-sm backdrop-blur-sm transition-all"
-          style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-              Proposals & Moderation
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(245,158,11,0.3)] bg-[rgba(245,158,11,0.1)] text-[var(--accent-warning)]">
-              <Sparkles className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-mono text-3xl font-extrabold text-[var(--text-primary)]">
-              {totalIdeasCount ?? 0}
-            </span>
-            <span className="text-xs text-[var(--text-tertiary)]">total proposals</span>
-          </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span>Needs Review:</span>
-            <span
-              className={`font-bold ${
-                pendingIdeasCount > 0 ? 'font-mono text-amber-400' : 'text-emerald-400'
-              }`}
-            >
-              {pendingIdeasCount} pending
-            </span>
-          </div>
-          <div className="mt-2 text-[11px] text-[var(--text-tertiary)]">
-            {unresolvedReportsCount ?? 0} user flag reports unreviewed
-          </div>
-        </div>
+        {/* Tab 1: Overview */}
+        {activeTab === 'overview' && (
+          <div className="mt-6 space-y-6">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-white/10 bg-[#0e131f] p-5">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-medium">Gross Revenue</span>
+                  <DollarSign className="h-4 w-4 text-emerald-400" />
+                </div>
+                <div className="mt-2 font-display text-2xl font-black text-white">
+                  ${totalRevenue.toFixed(2)}
+                </div>
+                <div className="mt-1 text-[11px] text-emerald-400">↑ 18.4% vs last week</div>
+              </div>
 
-        {/* Total Users KPI */}
-        <div
-          className="hover:border-[var(--indigo)]/40 rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 shadow-sm backdrop-blur-sm transition-all"
-          style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-              Community Accounts
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(168,85,247,0.3)] bg-[rgba(168,85,247,0.1)] text-purple-400">
-              <Users className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-mono text-3xl font-extrabold text-purple-300">
-              {totalUsersCount ?? 0}
-            </span>
-            <span className="text-xs text-[var(--text-tertiary)]">registered</span>
-          </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span>Total Ledger Votes:</span>
-            <span className="font-mono font-bold text-[var(--cyan-bright)]">
-              {totalVotesCount ?? 0} votes
-            </span>
-          </div>
-          <div className="mt-2 text-[11px] text-[var(--text-tertiary)]">
-            Full role assignment & suspension controls
-          </div>
-        </div>
+              <div className="rounded-2xl border border-white/10 bg-[#0e131f] p-5">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-medium">Outerwear Units Sold</span>
+                  <Package className="h-4 w-4 text-indigo-400" />
+                </div>
+                <div className="mt-2 font-display text-2xl font-black text-white">
+                  {totalItemsSold} Garments
+                </div>
+                <div className="mt-1 text-[11px] text-indigo-300">500 GSM French Terry #1</div>
+              </div>
 
-        {/* Abuse Telemetry KPI */}
-        <div
-          className="hover:border-[var(--indigo)]/40 rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 shadow-sm backdrop-blur-sm transition-all"
-          style={{ boxShadow: 'inset 0 1px 0 var(--edge-specular)' }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-              Abuse Events (24h)
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(6,182,212,0.3)] bg-[rgba(6,182,212,0.1)] text-[var(--cyan-bright)]">
-              <Activity className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-mono text-3xl font-extrabold text-[var(--cyan-bright)]">
-              {abuseEvents24h ?? 0}
-            </span>
-            <span className="text-xs text-[var(--text-tertiary)]">events</span>
-          </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span>Suspicious Clusters:</span>
-            <span
-              className={`font-mono font-bold ${
-                (pendingClustersCount ?? 0) > 0 ? 'text-rose-400' : 'text-emerald-400'
-              }`}
-            >
-              {pendingClustersCount ?? 0} flagged
-            </span>
-          </div>
-          <div className="mt-2 text-[11px] text-emerald-400">
-            Automated Sybil & self-vote prevention active
-          </div>
-        </div>
-      </div>
+              <div className="rounded-2xl border border-white/10 bg-[#0e131f] p-5">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-medium">Fulfillment Queue</span>
+                  <ShoppingCart className="h-4 w-4 text-amber-400" />
+                </div>
+                <div className="mt-2 font-display text-2xl font-black text-white">
+                  {totalActiveOrders} Active
+                </div>
+                <div className="mt-1 text-[11px] text-amber-400">All pending COD & Paid</div>
+              </div>
 
-      {/* Main Unified Tabbed Admin Workspace */}
-      <AdminTabsContainer
-        counts={{
-          activeCycleNumber: activeCycle?.cycle_number,
-          ideasCount: totalIdeasCount ?? 0,
-          pendingIdeasCount,
-          usersCount: totalUsersCount ?? 0,
-          abuseCount: abuseEvents24h ?? 0,
-        }}
-        cyclesContent={
-          <CycleControlManager activeCycle={activeCycle} latestCycleNumber={latestCycleNumber} />
-        }
-        ideasContent={
-          <IdeasModerationDeck initialIdeas={initialIdeas} defaultThreshold={threshold} />
-        }
-        usersContent={
-          <UsersDirectoryManager initialUsers={initialUsers} currentAdminId={user.id} />
-        }
-        telemetryContent={
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            {/* Left 7 cols: 3D Telemetry Radar */}
-            <div className="space-y-6 lg:col-span-7">
-              <Admin3DTelemetry
-                healthy={health?.healthy ?? true}
-                activeCycleNumber={activeCycle?.cycle_number ?? 1}
-                unresolvedReportsCount={unresolvedReportsCount ?? 0}
-                pendingClustersCount={pendingClustersCount ?? 0}
-                abuseEvents24h={abuseEvents24h ?? 0}
-              />
+              <div className="rounded-2xl border border-white/10 bg-[#0e131f] p-5">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-medium">Avg. Order Value</span>
+                  <TrendingUp className="h-4 w-4 text-cyan-400" />
+                </div>
+                <div className="mt-2 font-display text-2xl font-black text-white">
+                  ${ordersList.length ? (totalRevenue / ordersList.length).toFixed(2) : '0'}
+                </div>
+                <div className="mt-1 text-[11px] text-slate-400">Across all categories</div>
+              </div>
             </div>
 
-            {/* Right 5 cols: Connected Modules & Audit Log */}
-            <div className="space-y-6 lg:col-span-5">
-              {/* Modules Hub */}
-              <div
-                className="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-xl backdrop-blur-md"
-                style={{
-                  boxShadow:
-                    '0 20px 48px -12px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--edge-specular)',
-                }}
-              >
-                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
-                  Connected Admin Modules
+            {/* Quick Action Banner */}
+            <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-indigo-500/20 bg-gradient-to-r from-indigo-950/40 to-slate-900/60 p-6 sm:flex-row">
+              <div>
+                <h3 className="font-display text-lg font-bold text-white">
+                  Seasonal Inventory Management
                 </h3>
-                <p className="mt-1 text-xs text-[var(--text-tertiary)]">
-                  Direct links to specialized platform moderation subsystems.
+                <p className="mt-1 text-xs text-slate-300">
+                  Update product stock levels or launch new hoodie & jacket drops directly into the
+                  live catalog.
                 </p>
-
-                <div className="mt-4 space-y-3">
-                  <Link
-                    href="/admin/cycles"
-                    className="group flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3.5 transition-all hover:border-[var(--indigo)] hover:bg-[var(--surface-3)]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(99,102,241,0.3)] bg-[rgba(99,102,241,0.1)] text-[var(--indigo-bright)]">
-                        <RefreshCw className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-[var(--text-primary)]">
-                          Cycle Governance
-                        </div>
-                        <div className="text-[11px] text-[var(--text-tertiary)]">
-                          Finalization, tie-breaking, recounts
-                        </div>
-                      </div>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-[var(--text-tertiary)] transition-transform group-hover:translate-x-1" />
-                  </Link>
-
-                  <Link
-                    href="/admin/reports"
-                    className="group flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3.5 transition-all hover:border-[var(--accent-warning)] hover:bg-[var(--surface-3)]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(245,158,11,0.3)] bg-[rgba(245,158,11,0.1)] text-[var(--accent-warning)]">
-                        <Flag className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-[var(--text-primary)]">
-                          Reports Queue
-                        </div>
-                        <div className="text-[11px] text-[var(--text-tertiary)]">
-                          {unresolvedReportsCount ?? 0} flags pending review
-                        </div>
-                      </div>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-[var(--text-tertiary)] transition-transform group-hover:translate-x-1" />
-                  </Link>
-
-                  <Link
-                    href="/admin/clusters"
-                    className="group flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3.5 transition-all hover:border-red-500 hover:bg-[var(--surface-3)]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(239,68,68,0.3)] bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)]">
-                        <Users className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-[var(--text-primary)]">
-                          Ring Detection & Clusters
-                        </div>
-                        <div className="text-[11px] text-[var(--text-tertiary)]">
-                          {pendingClustersCount ?? 0} suspicious voter networks
-                        </div>
-                      </div>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-[var(--text-tertiary)] transition-transform group-hover:translate-x-1" />
-                  </Link>
-
-                  <Link
-                    href="/admin/abuse"
-                    className="group flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3.5 transition-all hover:border-[var(--cyan-bright)] hover:bg-[var(--surface-3)]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[rgba(6,182,212,0.3)] bg-[rgba(6,182,212,0.1)] text-[var(--cyan-bright)]">
-                        <Activity className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-[var(--text-primary)]">
-                          Abuse Audit Stream
-                        </div>
-                        <div className="text-[11px] text-[var(--text-tertiary)]">
-                          Rate breaches, self-vote attempts
-                        </div>
-                      </div>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-[var(--text-tertiary)] transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
               </div>
-
-              {/* Recent Admin Actions Audit Log */}
-              <div
-                className="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-xl backdrop-blur-md"
-                style={{
-                  boxShadow:
-                    '0 20px 48px -12px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--edge-specular)',
-                }}
+              <button
+                onClick={() => setShowAddProductModal(true)}
+                className="flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-indigo-600/30 transition-all hover:bg-indigo-500"
               >
-                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                  <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
-                    Recent Admin Actions
-                  </h3>
-                  <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
-                    Audit Trail (admin_actions)
-                  </span>
-                </div>
-
-                <div className="mt-4 divide-y divide-[var(--border-subtle)]">
-                  {recentAdminActions && recentAdminActions.length > 0 ? (
-                    recentAdminActions.map((action) => (
-                      <div key={action.id} className="py-2.5 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-[var(--indigo-bright)]">
-                            {action.action.toUpperCase()}
-                          </span>
-                          <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
-                            {formatDistanceToNow(new Date(action.created_at), { addSuffix: true })}
-                          </span>
-                        </div>
-                        <p className="mt-1 line-clamp-1 text-[11px] text-[var(--text-secondary)]">
-                          Reason: {action.reason}
-                        </p>
-                        <div className="mt-1 font-mono text-[10px] text-[var(--text-tertiary)]">
-                          Target: {action.target_table} • Admin #{action.admin_id.slice(0, 8)}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="py-6 text-center text-xs text-[var(--text-tertiary)]">
-                      No recent administrative actions recorded.
-                    </div>
-                  )}
-                </div>
-              </div>
+                <Plus className="h-4 w-4" />
+                <span>Add New Outerwear Piece</span>
+              </button>
             </div>
           </div>
-        }
-      />
+        )}
+
+        {/* Tab 2: Products Catalog */}
+        {activeTab === 'products' && (
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-400">
+                Active Styles in Storefront:{' '}
+                <strong className="text-white">{productsList.length}</strong>
+              </span>
+              <button
+                onClick={() => setShowAddProductModal(true)}
+                className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-500"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add Product</span>
+              </button>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#0e131f]">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-white/10 bg-white/[0.02] text-slate-400">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold">Product</th>
+                    <th className="px-4 py-3 font-semibold">Category</th>
+                    <th className="px-4 py-3 font-semibold">Weight</th>
+                    <th className="px-4 py-3 font-semibold">Price</th>
+                    <th className="px-4 py-3 font-semibold">Stock</th>
+                    <th className="px-4 py-3 font-semibold">Rating</th>
+                    <th className="px-4 py-3 text-right font-semibold">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5 text-slate-300">
+                  {productsList.map((item) => (
+                    <tr key={item.id} className="hover:bg-white/[0.01]">
+                      <td className="flex items-center gap-3 px-4 py-3">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="h-10 w-10 rounded-lg object-cover"
+                        />
+                        <div>
+                          <div className="font-bold text-white">{item.title}</div>
+                          <div className="text-[10px] text-slate-400">{item.subtitle}</div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 font-mono text-[11px] uppercase text-indigo-400">
+                        {item.category}
+                      </td>
+                      <td className="px-4 py-3 font-mono">{item.weightGsm} GSM</td>
+                      <td className="px-4 py-3 font-bold text-white">${item.price}</td>
+                      <td className="px-4 py-3">
+                        <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-400">
+                          {item.stock} in stock
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-amber-400">★ {item.rating}</td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => alert(`Edit feature for ${item.title}`)}
+                          className="rounded-lg border border-white/10 px-2.5 py-1 text-[11px] text-slate-300 hover:border-white/20 hover:text-white"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Orders Fulfillment */}
+        {activeTab === 'orders' && (
+          <div className="mt-6 space-y-4">
+            <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#0e131f]">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-white/10 bg-white/[0.02] text-slate-400">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold">Order ID</th>
+                    <th className="px-4 py-3 font-semibold">Customer Details</th>
+                    <th className="px-4 py-3 font-semibold">Garments</th>
+                    <th className="px-4 py-3 font-semibold">Total</th>
+                    <th className="px-4 py-3 font-semibold">Payment</th>
+                    <th className="px-4 py-3 font-semibold">Status</th>
+                    <th className="px-4 py-3 text-right font-semibold">Update Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5 text-slate-300">
+                  {ordersList.map((ord) => (
+                    <tr key={ord.orderId} className="hover:bg-white/[0.01]">
+                      <td className="px-4 py-3 font-mono font-bold text-indigo-400">
+                        {ord.orderId}
+                        <span className="block text-[10px] font-normal text-slate-500">
+                          {ord.date}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-bold text-white">{ord.customer.fullName}</div>
+                        <div className="text-[11px] text-slate-400">@{ord.customer.username}</div>
+                        <div className="font-mono text-[10px] text-indigo-300">
+                          {ord.customer.phone}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {ord.items.map((it, idx) => (
+                          <div key={idx} className="text-[11px] text-slate-300">
+                            {it.title} ({it.size}) x{it.quantity || 1}
+                          </div>
+                        ))}
+                      </td>
+                      <td className="px-4 py-3 font-display font-bold text-white">
+                        ${ord.total.toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3 text-[11px] text-slate-400">{ord.paymentMethod}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                            ord.status === 'Delivered'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : ord.status === 'Shipped'
+                                ? 'bg-cyan-500/20 text-cyan-400'
+                                : 'bg-amber-500/20 text-amber-400'
+                          }`}
+                        >
+                          {ord.status || 'Processing'}
+                        </span>
+                      </td>
+                      <td className="space-x-1 px-4 py-3 text-right">
+                        <button
+                          onClick={() => handleUpdateOrderStatus(ord.orderId, 'Shipped')}
+                          className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-[10px] font-bold text-cyan-300 hover:bg-cyan-500/20"
+                        >
+                          Ship
+                        </button>
+                        <button
+                          onClick={() => handleUpdateOrderStatus(ord.orderId, 'Delivered')}
+                          className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/20"
+                        >
+                          Deliver
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Add Product Modal */}
+        {showAddProductModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+            <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0e131f] p-6 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 className="font-display text-base font-bold text-white">
+                  Add New Outerwear Drop
+                </h3>
+                <button
+                  onClick={() => setShowAddProductModal(false)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateProduct} className="mt-4 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300">Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    placeholder="e.g. Acid Fade Heavy Zip Hoodie"
+                    className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300">Category</label>
+                    <select
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value as any)}
+                      className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090e] px-3 py-2 text-xs text-white"
+                    >
+                      <option value="hoodie">Heavyweight Hoodie</option>
+                      <option value="jacket">Jacket / Shell</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Weight (GSM)
+                    </label>
+                    <input
+                      type="number"
+                      value={newGsm}
+                      onChange={(e) => setNewGsm(e.target.value)}
+                      className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300">Price ($)</label>
+                    <input
+                      type="number"
+                      value={newPrice}
+                      onChange={(e) => setNewPrice(e.target.value)}
+                      className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Stock Count
+                    </label>
+                    <input
+                      type="number"
+                      value={newStock}
+                      onChange={(e) => setNewStock(e.target.value)}
+                      className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddProductModal(false)}
+                    className="rounded-xl border border-white/10 px-4 py-2 text-xs text-slate-400 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-500"
+                  >
+                    Save & Publish
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
