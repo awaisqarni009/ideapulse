@@ -197,8 +197,12 @@ export default function AdminPage() {
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-indigo-400" />
+              <div className="flex items-center gap-2.5">
+                <img
+                  src="/images/pulsewear-logo.jpg"
+                  alt="PulseWear Logo"
+                  className="h-9 w-9 rounded-xl border border-indigo-500/30 object-cover shadow-md shadow-indigo-500/20"
+                />
                 <h1 className="font-display text-2xl font-black text-white">
                   PULSEWEAR ADMIN EXECUTIVE
                 </h1>

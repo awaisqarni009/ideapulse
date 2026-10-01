@@ -9,6 +9,7 @@ import { useWishlist } from '@/lib/store/wishlist-context';
 import { useToast } from '@/app/components/ui/toast';
 import { ThemeToggle } from '@/app/components/ui/theme-toggle';
 import { signOutAction } from '@/app/actions/auth';
+import { PulseWearLogo } from '@/app/components/ui/logo';
 import {
   ShoppingBag,
   Heart,
@@ -105,25 +106,7 @@ export function Header() {
         <div className="container mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Brand Identity */}
           <div className="flex items-center gap-6 lg:gap-8">
-            <Link href="/" className="group flex items-center gap-3">
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/30 bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 shadow-lg shadow-indigo-600/30 transition-all duration-300 group-hover:scale-105 group-hover:shadow-indigo-500/50">
-                <span className="font-display text-base font-black tracking-tighter text-white">
-                  PW
-                </span>
-                <span className="absolute -right-1 -top-1 flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-indigo-400" />
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-display text-xl font-black tracking-tight text-white transition-colors group-hover:text-slate-100">
-                  PULSE<span className="text-indigo-400">WEAR</span>
-                </span>
-                <span className="hidden font-mono text-[9px] uppercase tracking-widest text-slate-400 sm:block">
-                  500 GSM Heavyweight Apparel
-                </span>
-              </div>
-            </Link>
+            <PulseWearLogo size="md" />
 
             {/* Desktop Navigation Links */}
             <nav className="hidden items-center gap-1 md:flex">

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Mail, ArrowUpRight, Truck, RefreshCw, Sparkles } from 'lucide-react';
+import { PulseWearLogo } from '@/app/components/ui/logo';
 
 export function Footer() {
   return (
@@ -11,14 +12,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-5">
           {/* Col 1 & 2: Brand & Streetwear Ethos */}
           <div className="lg:col-span-2">
-            <Link href="/" className="group inline-flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 font-display text-sm font-black text-white shadow-md shadow-indigo-600/30">
-                PW
-              </div>
-              <span className="font-display text-xl font-black tracking-tight text-white">
-                PULSE<span className="text-indigo-400">WEAR</span>
-              </span>
-            </Link>
+            <PulseWearLogo size="md" />
 
             <p className="mt-4 max-w-sm text-xs leading-relaxed text-slate-400 sm:text-sm">
               Engineered for warmth. Cut for the streets. Heavyweight 500 GSM loopback cotton

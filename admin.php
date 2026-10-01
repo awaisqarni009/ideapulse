@@ -333,9 +333,9 @@ $totalUnitsSold = 822;
 <div class="container">
   <header>
     <div class="brand">
-      <div class="brand-badge">PW</div>
+      <img src="public/images/pulsewear-logo.jpg" alt="PulseWear Logo" style="height: 42px; width: 42px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);" onerror="this.style.display='none'">
       <div>
-        <div class="brand-title">PULSEWEAR APPAREL — PHP ADMIN</div>
+        <div class="brand-title">PULSE<span style="color: #818cf8;">WEAR</span> ADMIN EXECUTIVE</div>
         <div style="font-size: 11px; color: var(--text-muted);">
           Independent Course Admin Console • PHP 8.2+ Architecture
         </div>
