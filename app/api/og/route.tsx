@@ -6,10 +6,9 @@ export const runtime = 'edge';
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const title = searchParams.get('title') || 'IdeaPulse — Community Idea Incubator';
-    const category = searchParams.get('category') || 'Community Protocol';
-    const votes = searchParams.get('votes');
-    const cycle = searchParams.get('cycle');
+    const title =
+      searchParams.get('title') || 'PULSEWEAR — Engineered for Warmth. Cut for Streets.';
+    const spec = searchParams.get('spec') || '500 GSM LOOPBACK COTTON · 20,000 MM MEMBRANE';
 
     return new ImageResponse(
       <div
@@ -19,47 +18,46 @@ export async function GET(req: NextRequest) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          backgroundColor: '#07090E',
+          backgroundColor: '#15181B',
           backgroundImage:
-            'radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.05) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(99, 102, 241, 0.15) 15%, transparent 50%)',
-          padding: '60px 80px',
+            'radial-gradient(circle at 100px 100px, rgba(255, 90, 31, 0.12) 0%, transparent 60%), radial-gradient(circle at 1100px 500px, rgba(242, 245, 247, 0.05) 0%, transparent 50%)',
+          padding: '64px 80px',
           fontFamily: 'sans-serif',
-          color: '#FFFFFF',
+          color: '#F2F5F7',
+          border: '1px solid rgba(138, 143, 149, 0.25)',
         }}
       >
-        {/* Top Bar: Brand & Category */}
+        {/* Top Header */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
+            borderBottom: '1px solid rgba(138, 143, 149, 0.25)',
+            paddingBottom: '28px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div
               style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#1F2327',
+                border: '1px solid #FF5A1F',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
+                fontSize: '18px',
+                fontWeight: 900,
+                color: '#FF5A1F',
+                letterSpacing: '-1px',
               }}
             >
-              <div
-                style={{
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
-                }}
-              />
+              PW
             </div>
             <span style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.5px' }}>
-              Idea<span style={{ color: '#06B6D4' }}>Pulse</span>
+              PULSE<span style={{ color: '#FF5A1F' }}>WEAR</span>
             </span>
           </div>
 
@@ -67,87 +65,96 @@ export async function GET(req: NextRequest) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: 'rgba(99, 102, 241, 0.15)',
-              border: '1px solid rgba(99, 102, 241, 0.3)',
-              borderRadius: '9999px',
-              padding: '8px 20px',
-              fontSize: '16px',
-              fontWeight: 600,
-              color: '#818CF8',
-              textTransform: 'uppercase',
+              backgroundColor: '#1F2327',
+              border: '1px solid rgba(138, 143, 149, 0.3)',
+              borderRadius: '2px',
+              padding: '6px 16px',
+              fontSize: '14px',
+              fontWeight: 700,
+              color: '#DEDBD2',
               letterSpacing: '1px',
             }}
           >
-            {category}
+            SPECIFICATION SHEET
           </div>
         </div>
 
-        {/* Main Title */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', margin: '40px 0' }}>
+        {/* Headline */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', margin: '30px 0' }}>
           <div
             style={{
-              fontSize: title.length > 60 ? '48px' : '56px',
+              fontSize: '15px',
+              fontWeight: 700,
+              letterSpacing: '1.5px',
+              color: '#FF5A1F',
+              textTransform: 'uppercase',
+            }}
+          >
+            {spec}
+          </div>
+          <div
+            style={{
+              fontSize: title.length > 50 ? '48px' : '58px',
               fontWeight: 900,
-              lineHeight: 1.15,
+              lineHeight: 1.05,
               letterSpacing: '-1.5px',
-              color: '#F8FAFC',
+              color: '#F2F5F7',
               maxWidth: '1040px',
               display: '-webkit-box',
               WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              textTransform: 'uppercase',
             }}
           >
             {title}
           </div>
         </div>
 
-        {/* Bottom Bar: Stats & Protocol Guarantee */}
+        {/* Bottom Bar: Technical specs */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-            paddingTop: '30px',
+            borderTop: '1px solid rgba(138, 143, 149, 0.25)',
+            paddingTop: '28px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
-            {votes !== null && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '24px', fontWeight: 800, color: '#06B6D4' }}>{votes}</span>
-                <span style={{ fontSize: '16px', color: '#94A3B8' }}>Verified Votes</span>
-              </div>
-            )}
-            {cycle && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '24px', fontWeight: 800, color: '#A855F7' }}>
-                  #{cycle}
-                </span>
-                <span style={{ fontSize: '16px', color: '#94A3B8' }}>Incubation Cycle</span>
-              </div>
-            )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ fontSize: '12px', color: '#8A8F95', letterSpacing: '0.5px' }}>
+                HOODIE WEIGHT
+              </span>
+              <span style={{ fontSize: '20px', fontWeight: 800, color: '#F2F5F7' }}>500 GSM</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ fontSize: '12px', color: '#8A8F95', letterSpacing: '0.5px' }}>
+                SHELL RATING
+              </span>
+              <span style={{ fontSize: '20px', fontWeight: 800, color: '#F2F5F7' }}>20,000 MM</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ fontSize: '12px', color: '#8A8F95', letterSpacing: '0.5px' }}>
+                HARDWARE
+              </span>
+              <span style={{ fontSize: '20px', fontWeight: 800, color: '#F2F5F7' }}>
+                YKK AQUAGUARD
+              </span>
+            </div>
           </div>
 
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              color: '#10B981',
-              fontSize: '16px',
+              gap: '10px',
+              color: '#DEDBD2',
+              fontSize: '15px',
               fontWeight: 600,
             }}
           >
-            <div
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: '#10B981',
-              }}
-            />
-            <span>Verifiable Consensus on PostgreSQL</span>
+            <span>HEAVYWEIGHT TECHNICAL STREETWEAR</span>
           </div>
         </div>
       </div>,

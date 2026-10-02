@@ -149,7 +149,7 @@ export default function AdminPage() {
       price: parseFloat(newPrice) || 99,
       category: newCategory,
       subcategory: newCategory === 'hoodie' ? 'pullover' : 'techwear',
-      badge: 'NEW DROP',
+      badge: 'New drop',
       description: 'Newly added outerwear item via the Admin Management Deck.',
       fabricDetails: ['100% Heavyweight Cotton or DWR Technical Shell'],
       features: ['Architectural silhouette', 'Reinforced stitching'],

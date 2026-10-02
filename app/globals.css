@@ -1,16 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 :root {
+  /* PULSEWEAR Design Tokens (§4.1) */
+  --shell: #15181b;
+  --terry: #1f2327;
+  --bone: #dedbd2;
+  --ash: #8a8f95;
+  --reflect: #f2f5f7;
+  --flight: #ff5a1f;
+
   /* Canvas & surfaces (Bright / Light Mode) */
-  --canvas: #f8fafc;
-  --canvas-deep: #edf2f7;
-  --surface-solid: #ffffff;
-  --surface-1: rgba(255, 255, 255, 0.8);
-  --surface-2: rgba(241, 245, 249, 0.85);
-  --surface-3: rgba(226, 232, 240, 0.75);
-  --surface-4: rgba(255, 255, 255, 0.95);
+  --canvas: #15181b;
+  --canvas-deep: #0f1214;
+  --surface-solid: #1f2327;
+  --surface-1: rgba(31, 35, 39, 0.8);
+  --surface-2: rgba(21, 24, 27, 0.85);
+  --surface-3: rgba(45, 50, 56, 0.75);
+  --surface-4: rgba(31, 35, 39, 0.95);
 
   /* Accents */
   --indigo: #4f46e5;
@@ -864,4 +871,86 @@ svg {
 
 .coin-glow-effect {
   animation: coin-spin-glow 3s ease-in-out infinite;
+}
+
+/* PULSEWEAR Flashlight Hero (§8.4) */
+.flashlight {
+  position: relative;
+  overflow: hidden;
+  --mx: 50%;
+  --my: 40%;
+  --r: 24vmax;
+}
+.flashlight img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.flashlight__base {
+  filter: brightness(0.38) saturate(0.8);
+}
+.flashlight__lit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    circle var(--r) at var(--mx) var(--my),
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 40%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--r) at var(--mx) var(--my),
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 40%,
+    transparent 100%
+  );
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .flashlight__base {
+    filter: none;
+  }
+  .flashlight__lit {
+    display: none;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rhythms (§4.1) */
+.section-shell {
+  background-color: var(--shell);
+  color: var(--reflect);
+}
+.section-bone {
+  background-color: var(--bone);
+  color: var(--shell);
+}
+.bg-shell {
+  background-color: var(--shell);
+}
+.bg-terry {
+  background-color: var(--terry);
+}
+.bg-bone {
+  background-color: var(--bone);
+}
+.text-bone {
+  color: var(--bone);
+}
+.text-ash {
+  color: var(--ash);
+}
+.text-flight {
+  color: var(--flight);
+}
+.bg-flight {
+  background-color: var(--flight);
+}
+.border-ash-25 {
+  border-color: rgba(138, 143, 149, 0.25);
 }
