@@ -30,12 +30,10 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="btn btn-primary group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-[var(--radius-md)] px-6 py-3.5 text-sm font-semibold text-white shadow-[var(--glow-indigo-md)] transition-all duration-200 hover:shadow-[var(--glow-indigo-lg)] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+      className="group relative flex w-full items-center justify-center gap-2.5 rounded-sm bg-[#FF5A1F] px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#e04f1b] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
     >
-      <span className="relative z-10">{pending ? 'Creating account...' : 'Create account'}</span>
-      <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-      {/* Dynamic button sheen */}
-      <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+      <span className="relative z-10">{pending ? 'Creating Account...' : 'Create Account'}</span>
+      <ArrowRight className="relative z-10 h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
     </button>
   );
 }
@@ -56,8 +54,7 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Live password complexity checklist
-  // Requires: alphabet letter, number, and special sign/symbol (min 10 characters)
+  // Live password complexity checklist (Teacher requirement)
   const passwordCriteria = useMemo(() => {
     return {
       hasLength: password.length >= 10,
@@ -72,22 +69,22 @@ export function RegisterForm() {
   if (state?.success) {
     return (
       <div
-        className="glass-card-nextgen rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-8 text-center backdrop-blur-[var(--blur-md)] transition-all sm:p-10"
+        className="rounded-sm border border-white/10 bg-[#1F2327] p-8 text-center shadow-2xl backdrop-blur-md transition-all sm:p-10"
         style={{
-          boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--edge-specular)',
+          boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1)',
         }}
       >
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
-          <CheckCircle2 className="h-8 w-8" />
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-sm border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+          <CheckCircle2 className="h-7 w-7" />
         </div>
-        <h2 className="font-display text-2xl font-bold text-[var(--text-primary)]">
+        <h2 className="font-display text-xl font-bold uppercase tracking-tight text-[#F2F5F7]">
           Check your inbox
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)]">{state.message}</p>
+        <p className="mt-3 text-sm leading-relaxed text-[#8A8F95]">{state.message}</p>
         <div className="mt-8">
           <Link
             href="/login"
-            className="btn btn-primary inline-flex items-center justify-center rounded-[var(--radius-md)] px-6 py-3 text-sm font-semibold text-white shadow-[var(--glow-indigo-sm)] transition-all hover:shadow-[var(--glow-indigo-md)]"
+            className="inline-flex items-center justify-center rounded-sm bg-[#FF5A1F] px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e04f1b]"
           >
             Return to sign in →
           </Link>
@@ -99,23 +96,23 @@ export function RegisterForm() {
   return (
     <form
       action={formAction}
-      className="glass-card-nextgen rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-[var(--blur-md)] transition-all sm:p-8"
+      className="rounded-sm border border-white/10 bg-[#1F2327] p-6 shadow-2xl backdrop-blur-md transition-all sm:p-8"
       style={{
-        boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--edge-specular)',
+        boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1)',
       }}
       noValidate
     >
       {/* Visual Navigation Tabs on Card Top */}
-      <div className="mb-6 flex rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-1">
+      <div className="mb-6 flex rounded-sm border border-white/10 bg-[#15181B] p-1">
         <Link
           href="/login"
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-semibold text-[var(--text-secondary)] transition-all hover:text-[var(--text-primary)]"
+          className="flex flex-1 items-center justify-center gap-2 rounded-sm py-2.5 text-xs font-semibold uppercase tracking-wider text-[#8A8F95] transition-all hover:text-white"
         >
-          <LogIn className="h-4 w-4 text-[var(--text-tertiary)]" />
+          <LogIn className="h-3.5 w-3.5 text-[#8A8F95]" />
           <span>Sign In</span>
         </Link>
-        <div className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[var(--indigo)] to-[var(--violet)] py-2.5 text-xs font-semibold text-white shadow-[var(--glow-indigo-sm)]">
-          <UserPlus className="h-4 w-4 text-white" />
+        <div className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-[#FF5A1F] py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+          <UserPlus className="h-3.5 w-3.5 text-white" />
           <span>Create Account</span>
         </div>
       </div>
@@ -123,7 +120,7 @@ export function RegisterForm() {
       {state?.error && !state?.fieldErrors && (
         <div
           role="alert"
-          className="mb-6 flex items-start gap-3 rounded-[var(--radius-sm)] border border-red-500/30 bg-red-500/10 p-3.5 text-sm text-[var(--accent-danger)]"
+          className="mb-6 flex items-start gap-3 rounded-sm border border-red-500/30 bg-red-500/10 p-3.5 text-xs text-red-400"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <span className="leading-snug">{state.error}</span>
@@ -136,12 +133,12 @@ export function RegisterForm() {
         <div>
           <label
             htmlFor="fullName"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
+            className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
           >
             Full Name
           </label>
           <div className="group relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)] transition-colors group-focus-within:text-[var(--indigo-bright)]">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
               <User className="h-4 w-4" />
             </div>
             <input
@@ -152,21 +149,19 @@ export function RegisterForm() {
               required
               value={fullName}
               onChange={(e) => {
-                // Strictly accept alphabet letters and spaces only (no numbers or signs)
+                // Strictly accept alphabet letters and spaces only per teacher requirement
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, '');
                 setFullName(lettersOnly);
               }}
               placeholder="e.g. Sarah Connor"
               aria-invalid={Boolean(state?.fieldErrors?.fullName)}
-              className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-3.5 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
+              className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-3.5 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
             />
           </div>
           {state?.fieldErrors?.fullName ? (
-            <p className="mt-1 text-xs text-[var(--accent-danger)]">
-              {state.fieldErrors.fullName[0]}
-            </p>
+            <p className="mt-1 text-xs text-red-400">{state.fieldErrors.fullName[0]}</p>
           ) : (
-            <p className="mt-1 text-[11px] text-[var(--text-tertiary)]">Letters and spaces only</p>
+            <p className="mt-1 font-mono text-[10px] text-[#8A8F95]">Letters and spaces only</p>
           )}
         </div>
 
@@ -174,12 +169,12 @@ export function RegisterForm() {
         <div>
           <label
             htmlFor="username"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
+            className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
           >
             Username
           </label>
           <div className="group relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)] transition-colors group-focus-within:text-[var(--indigo-bright)]">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
               <AtSign className="h-4 w-4" />
             </div>
             <input
@@ -192,13 +187,11 @@ export function RegisterForm() {
               onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
               placeholder="e.g. sarah_connor"
               aria-invalid={Boolean(state?.fieldErrors?.username)}
-              className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-3.5 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
+              className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-3.5 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
             />
           </div>
           {state?.fieldErrors?.username && (
-            <p className="mt-1 text-xs text-[var(--accent-danger)]">
-              {state.fieldErrors.username[0]}
-            </p>
+            <p className="mt-1 text-xs text-red-400">{state.fieldErrors.username[0]}</p>
           )}
         </div>
       </div>
@@ -208,17 +201,17 @@ export function RegisterForm() {
         <div className="mb-1.5 flex items-center justify-between">
           <label
             htmlFor="phone"
-            className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
+            className="block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
           >
             Phone Number
           </label>
           <span
-            className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold transition-colors ${
+            className={`rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold transition-colors ${
               isPhoneValid
                 ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
                 : phone.length > 0
                   ? 'border border-amber-500/30 bg-amber-500/10 text-amber-400'
-                  : 'text-[var(--text-tertiary)]'
+                  : 'text-[#8A8F95]'
             }`}
           >
             {phone.length}/11 digits
@@ -227,7 +220,7 @@ export function RegisterForm() {
         <div className="flex gap-2">
           {/* Country Code Selector */}
           <div className="relative w-36 shrink-0">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-[var(--text-tertiary)]">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-[#8A8F95]">
               <Globe className="h-3.5 w-3.5" />
             </div>
             <select
@@ -235,26 +228,26 @@ export function RegisterForm() {
               name="countryCode"
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
-              className="focus:ring-[var(--indigo-bright)]/30 w-full appearance-none rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-8 pr-6 text-xs font-medium text-[var(--text-primary)] transition-all hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2"
+              className="w-full appearance-none rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-8 pr-6 text-xs font-medium text-[#F2F5F7] transition-all hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]"
             >
               {COUNTRY_CODES.map((item) => (
                 <option
                   key={item.code + item.name}
                   value={item.code}
-                  className="bg-[var(--surface-solid)] text-[var(--text-primary)]"
+                  className="bg-[#1F2327] text-white"
                 >
                   {item.flag} {item.code}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-[var(--text-tertiary)]">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-[#8A8F95]">
               <span className="text-[10px]">▼</span>
             </div>
           </div>
 
           {/* 11-Digit Phone Input */}
           <div className="group relative flex-1">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)] transition-colors group-focus-within:text-[var(--indigo-bright)]">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
               <Phone className="h-4 w-4" />
             </div>
             <input
@@ -266,18 +259,18 @@ export function RegisterForm() {
               maxLength={11}
               value={phone}
               onChange={(e) => {
-                // Strictly accept digits only, maximum 11 digits
+                // Strictly accept digits only, maximum 11 digits per teacher requirement
                 const digits = e.target.value.replace(/\D/g, '').slice(0, 11);
                 setPhone(digits);
               }}
               placeholder="11 digits (e.g. 03001234567)"
               aria-invalid={Boolean(state?.fieldErrors?.phone)}
-              className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-3.5 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
+              className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-3.5 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
             />
           </div>
         </div>
         {state?.fieldErrors?.phone && (
-          <p className="mt-1 text-xs text-[var(--accent-danger)]">{state.fieldErrors.phone[0]}</p>
+          <p className="mt-1 text-xs text-red-400">{state.fieldErrors.phone[0]}</p>
         )}
       </div>
 
@@ -285,12 +278,12 @@ export function RegisterForm() {
       <div className="mt-4">
         <label
           htmlFor="email"
-          className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
+          className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
         >
           Email address
         </label>
         <div className="group relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)] transition-colors group-focus-within:text-[var(--indigo-bright)]">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
             <Mail className="h-4 w-4" />
           </div>
           <input
@@ -301,26 +294,26 @@ export function RegisterForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder="name@example.com"
             aria-invalid={Boolean(state?.fieldErrors?.email)}
-            className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-3.5 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
+            className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-3.5 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
           />
         </div>
         {state?.fieldErrors?.email && (
-          <p className="mt-1 text-xs text-[var(--accent-danger)]">{state.fieldErrors.email[0]}</p>
+          <p className="mt-1 text-xs text-red-400">{state.fieldErrors.email[0]}</p>
         )}
       </div>
 
-      {/* 4. PASSWORD (WITH SHOW/HIDE TOGGLE & STRICT COMPLEXITY: ALPHABET, NUMBER, ANY SIGN) */}
+      {/* 4. PASSWORD */}
       <div className="mt-4">
         <label
           htmlFor="password"
-          className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
+          className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
         >
           Password
         </label>
         <div className="group relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)] transition-colors group-focus-within:text-[var(--indigo-bright)]">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
             <Lock className="h-4 w-4" />
           </div>
           <input
@@ -333,21 +326,19 @@ export function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Letters, numbers & symbols (≥ 10 chars)"
             aria-invalid={Boolean(state?.fieldErrors?.password)}
-            className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-10 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
+            className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-10 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
-            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)] focus:outline-none"
+            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#8A8F95] transition-colors hover:text-[#F2F5F7] focus:outline-none"
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
         {state?.fieldErrors?.password && (
-          <p className="mt-1 text-xs text-[var(--accent-danger)]">
-            {state.fieldErrors.password[0]}
-          </p>
+          <p className="mt-1 text-xs text-red-400">{state.fieldErrors.password[0]}</p>
         )}
       </div>
 
@@ -355,12 +346,12 @@ export function RegisterForm() {
       <div className="mt-4">
         <label
           htmlFor="confirmPassword"
-          className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
+          className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
         >
           Confirm Password
         </label>
         <div className="group relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-tertiary)] transition-colors group-focus-within:text-[var(--indigo-bright)]">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
             <ShieldCheck className="h-4 w-4" />
           </div>
           <input
@@ -373,27 +364,25 @@ export function RegisterForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Re-enter your password"
             aria-invalid={Boolean(state?.fieldErrors?.confirmPassword)}
-            className="focus:ring-[var(--indigo-bright)]/30 w-full rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-2)] py-2.5 pl-10 pr-10 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-strong)] focus:border-[var(--indigo)] focus:bg-[var(--surface-solid)] focus:outline-none focus:ring-2 aria-[invalid=true]:border-[var(--accent-danger)]"
+            className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-10 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword((prev) => !prev)}
             aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)] focus:outline-none"
+            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#8A8F95] transition-colors hover:text-[#F2F5F7] focus:outline-none"
           >
             {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
         {state?.fieldErrors?.confirmPassword && (
-          <p className="mt-1 text-xs text-[var(--accent-danger)]">
-            {state.fieldErrors.confirmPassword[0]}
-          </p>
+          <p className="mt-1 text-xs text-red-400">{state.fieldErrors.confirmPassword[0]}</p>
         )}
       </div>
 
-      {/* REAL-TIME PASSWORD COMPLEXITY CHECKLIST */}
-      <div className="my-5 space-y-2 rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3.5 transition-colors">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+      {/* REAL-TIME PASSWORD COMPLEXITY CHECKLIST (Teacher requirement) */}
+      <div className="my-5 space-y-2 rounded-sm border border-white/10 bg-[#15181B] p-3.5 transition-colors">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#8A8F95]">
           Password Requirements
         </p>
 
@@ -404,14 +393,10 @@ export function RegisterForm() {
               <Check className="h-3 w-3 stroke-[3]" />
             </div>
           ) : (
-            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[var(--text-tertiary)] opacity-40" />
+            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
           )}
           <span
-            className={
-              passwordCriteria.hasLetter
-                ? 'font-medium text-[var(--text-primary)]'
-                : 'text-[var(--text-tertiary)]'
-            }
+            className={passwordCriteria.hasLetter ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
             At least one alphabet letter (a-z, A-Z)
           </span>
@@ -424,14 +409,10 @@ export function RegisterForm() {
               <Check className="h-3 w-3 stroke-[3]" />
             </div>
           ) : (
-            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[var(--text-tertiary)] opacity-40" />
+            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
           )}
           <span
-            className={
-              passwordCriteria.hasDigit
-                ? 'font-medium text-[var(--text-primary)]'
-                : 'text-[var(--text-tertiary)]'
-            }
+            className={passwordCriteria.hasDigit ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
             At least one number (0-9)
           </span>
@@ -444,14 +425,10 @@ export function RegisterForm() {
               <Check className="h-3 w-3 stroke-[3]" />
             </div>
           ) : (
-            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[var(--text-tertiary)] opacity-40" />
+            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
           )}
           <span
-            className={
-              passwordCriteria.hasSymbol
-                ? 'font-medium text-[var(--text-primary)]'
-                : 'text-[var(--text-tertiary)]'
-            }
+            className={passwordCriteria.hasSymbol ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
             At least one sign or symbol (!@#$%^&*...)
           </span>
@@ -464,14 +441,10 @@ export function RegisterForm() {
               <Check className="h-3 w-3 stroke-[3]" />
             </div>
           ) : (
-            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[var(--text-tertiary)] opacity-40" />
+            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
           )}
           <span
-            className={
-              passwordCriteria.hasLength
-                ? 'font-medium text-[var(--text-primary)]'
-                : 'text-[var(--text-tertiary)]'
-            }
+            className={passwordCriteria.hasLength ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
             At least 10 characters long
           </span>
@@ -480,11 +453,11 @@ export function RegisterForm() {
 
       <SubmitButton />
 
-      <div className="mt-5 text-center text-xs text-[var(--text-secondary)]">
+      <div className="mt-5 text-center text-xs text-[#8A8F95]">
         Already have an account?{' '}
         <Link
           href="/login"
-          className="font-semibold text-[var(--indigo-bright)] transition-colors hover:text-white hover:underline"
+          className="font-semibold text-[#FF5A1F] transition-colors hover:underline"
         >
           Sign in →
         </Link>

@@ -23,7 +23,9 @@ import {
   User,
   LogOut,
   Shield,
+  ChevronDown,
 } from 'lucide-react';
+import { signOutAction } from '@/app/actions/auth';
 import { ease, dur } from '@/lib/motion';
 
 const ANNOUNCEMENTS = [
@@ -53,6 +55,19 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hoveredNavMenu, setHoveredNavMenu] = useState<'hoodie' | 'jacket' | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close account menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target as Node)) {
+        setAccountMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Keyboard shortcut '/' to trigger search
   useEffect(() => {
@@ -335,8 +350,73 @@ export function Header() {
               </span>
             </button>
 
+            {/* User Account / Auth Controls */}
+            {user ? (
+              <div className="relative" ref={accountMenuRef}>
+                <button
+                  onClick={() => setAccountMenuOpen(!accountMenuOpen)}
+                  className="flex h-9 items-center gap-1.5 rounded-sm border border-white/10 bg-white/[0.03] px-2.5 text-xs font-semibold text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
+                  aria-label="User Account"
+                >
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5A1F] text-[10px] font-bold text-white">
+                    {(
+                      profile?.display_name?.charAt(0) ||
+                      profile?.username?.charAt(0) ||
+                      user.email?.charAt(0) ||
+                      'U'
+                    ).toUpperCase()}
+                  </div>
+                  <span className="hidden max-w-[80px] truncate text-[11px] font-medium sm:inline">
+                    {profile?.username || profile?.display_name || 'Member'}
+                  </span>
+                  <ChevronDown className="h-3 w-3 text-[#8A8F95]" />
+                </button>
+
+                {accountMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-48 rounded-sm border border-white/10 bg-[#1F2327] p-2 shadow-2xl backdrop-blur-md">
+                    <div className="border-b border-white/10 px-2 pb-2">
+                      <p className="truncate text-xs font-bold text-white">
+                        {profile?.display_name || 'Pulse Member'}
+                      </p>
+                      <p className="truncate font-mono text-[10px] text-[#8A8F95]">{user.email}</p>
+                    </div>
+
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setAccountMenuOpen(false)}
+                        className="mt-1 flex items-center gap-2 rounded-sm px-2 py-1.5 text-xs text-[#FF5A1F] hover:bg-white/5"
+                      >
+                        <Shield className="h-3.5 w-3.5" />
+                        <span>Admin Console</span>
+                      </Link>
+                    )}
+
+                    <form action={signOutAction} className="mt-1">
+                      <button
+                        type="submit"
+                        className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-xs text-[#8A8F95] hover:bg-white/5 hover:text-white"
+                      >
+                        <LogOut className="h-3.5 w-3.5" />
+                        <span>Sign Out</span>
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="flex h-9 items-center gap-1.5 rounded-sm border border-white/10 bg-white/[0.03] px-3 text-xs font-semibold text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
+                aria-label="Sign In"
+              >
+                <User className="h-3.5 w-3.5 text-[#8A8F95]" />
+                <span className="hidden sm:inline">Sign In</span>
+              </Link>
+            )}
+
             {/* Only show Admin icon if user role is admin §1 problem 3 */}
-            {isAdmin && (
+            {isAdmin && !user && (
               <Link
                 href="/admin"
                 title="Admin Console"
@@ -395,6 +475,57 @@ export function Header() {
                 Reviews
               </Link>
             </nav>
+
+            {/* Mobile Auth Links */}
+            <div className="mt-6 border-t border-white/10 pt-4">
+              {user ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-xs text-[#8A8F95]">
+                    <User className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                    <span>
+                      Signed in as{' '}
+                      <strong className="text-white">{profile?.username || user.email}</strong>
+                    </span>
+                  </div>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FF5A1F]"
+                    >
+                      <Shield className="h-3.5 w-3.5" />
+                      <span>Admin Console</span>
+                    </Link>
+                  )}
+                  <form action={signOutAction}>
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8A8F95] hover:text-white"
+                    >
+                      <LogOut className="h-3.5 w-3.5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2.5">
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex w-full items-center justify-center rounded-sm bg-[#FF5A1F] py-2.5 text-xs font-bold uppercase tracking-wider text-white"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex w-full items-center justify-center rounded-sm border border-white/15 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#DEDBD2]"
+                  >
+                    Create Account
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </header>

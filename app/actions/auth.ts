@@ -147,7 +147,7 @@ export async function loginAction(
 
   // Sanitize next destination to prevent open redirect vulnerabilities
   const destination =
-    nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/feed';
+    nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/';
 
   revalidatePath('/', 'layout');
   redirect(destination);
