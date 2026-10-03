@@ -39,25 +39,45 @@ export function Catalog({ onQuickView }: CatalogProps) {
     };
   }, []);
 
+  const [allProducts, setAllProducts] = useState<Product[]>(PRODUCTS);
+
+  // Sync custom products added via Admin panel
+  useEffect(() => {
+    try {
+      const custom = localStorage.getItem('pulsewear_custom_products');
+      if (custom) {
+        const parsed: Product[] = JSON.parse(custom);
+        // Avoid duplicates if IDs match
+        const customIds = new Set(parsed.map((p) => p.id));
+        const filteredDefault = PRODUCTS.filter((p) => !customIds.has(p.id));
+        setAllProducts([...parsed, ...filteredDefault]);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const filtered = useMemo(() => {
-    return PRODUCTS.filter((item) => {
-      if (selectedCategory === 'hoodie' && item.category !== 'hoodie') return false;
-      if (selectedCategory === 'jacket' && item.category !== 'jacket') return false;
-      if (selectedCategory === 'bestseller' && item.badge !== 'Bestseller') return false;
-      if (selectedCategory === 'new' && item.badge !== 'New drop') return false;
+    return allProducts
+      .filter((item) => {
+        if (selectedCategory === 'hoodie' && item.category !== 'hoodie') return false;
+        if (selectedCategory === 'jacket' && item.category !== 'jacket') return false;
+        if (selectedCategory === 'bestseller' && item.badge !== 'Bestseller') return false;
+        if (selectedCategory === 'new' && item.badge !== 'New drop') return false;
 
-      if (priceFilter === 'under100' && item.price >= 100) return false;
-      if (priceFilter === '100to160' && (item.price < 100 || item.price > 160)) return false;
-      if (priceFilter === 'over160' && item.price <= 160) return false;
+        if (priceFilter === 'under100' && item.price >= 100) return false;
+        if (priceFilter === '100to160' && (item.price < 100 || item.price > 160)) return false;
+        if (priceFilter === 'over160' && item.price <= 160) return false;
 
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === 'priceAsc') return a.price - b.price;
-      if (sortBy === 'priceDesc') return b.price - a.price;
-      if (sortBy === 'rating') return b.rating - a.rating;
-      return (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0);
-    });
-  }, [selectedCategory, priceFilter, sortBy]);
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'priceAsc') return a.price - b.price;
+        if (sortBy === 'priceDesc') return b.price - a.price;
+        if (sortBy === 'rating') return b.rating - a.rating;
+        return (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0);
+      });
+  }, [allProducts, selectedCategory, priceFilter, sortBy]);
 
   return (
     <section id="catalog" className="w-full bg-[#15181B] px-4 py-16 sm:px-6 lg:px-8">

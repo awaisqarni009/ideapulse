@@ -21,9 +21,10 @@ export interface Product {
   subtitle: string;
   price: number;
   originalPrice?: number;
+  discountOffer?: string;
   category: 'hoodie' | 'jacket';
   subcategory: 'pullover' | 'zip_up' | 'bomber' | 'puffer' | 'techwear' | 'windbreaker';
-  badge?: 'Bestseller' | 'New drop' | 'Limited run' | 'Low stock';
+  badge?: 'Bestseller' | 'New drop' | 'Limited run' | 'Low stock' | string;
   description: string;
   fabricDetails: string[];
   features: string[];
@@ -33,6 +34,7 @@ export interface Product {
   sizes: ('S' | 'M' | 'L' | 'XL' | 'XXL')[];
   image: string;
   secondaryImage?: string;
+  images?: string[];
   stock: number;
   rating: number;
   reviewsCount: number;
