@@ -30,6 +30,9 @@ export function EnergyHubModal() {
     setIsHubOpen,
   } = useEnergy();
 
+  // Energy & Quests removed from UI per customer request
+  return null;
+
   // Dismiss on Escape key
   useEffect(() => {
     if (!isHubOpen) return;

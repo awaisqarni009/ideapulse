@@ -11,6 +11,9 @@ interface EnergyBadgeProps {
 export function EnergyBadge({ className = '' }: EnergyBadgeProps) {
   const { energy, maxEnergy, hasUnclaimedRewards, isHubOpen, setIsHubOpen } = useEnergy();
 
+  // Energy & Quests removed from UI per customer request (pure streetwear e-commerce experience)
+  return null;
+
   return (
     <button
       type="button"

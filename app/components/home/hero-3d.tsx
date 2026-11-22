@@ -41,14 +41,14 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
         perspective: '1400px',
       }}
     >
-      {/* 1. Deep Atmospheric Lighting & Angular Light Beams from Top-Left */}
+      {/* 1. Deep Atmospheric Lighting & Subtle Specular Light Beams */}
       <div className="pointer-events-none absolute inset-0 z-0">
         {/* Directional streak/caustic light ray */}
         <div
           className="absolute -left-32 -top-32 h-[800px] w-[800px] rounded-full opacity-30 blur-[130px] transition-transform duration-700 ease-out"
           style={{
             background:
-              'radial-gradient(circle, rgba(212, 255, 0, 0.18) 0%, rgba(255, 255, 255, 0.08) 35%, transparent 70%)',
+              'radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(34, 211, 238, 0.08) 35%, transparent 70%)',
             transform: `translate3d(${mousePos.x * 25}px, ${mousePos.y * 20}px, 0)`,
           }}
         />
@@ -56,12 +56,12 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
         {/* Ambient bottom-right vignette glow */}
         <div className="absolute -bottom-40 -right-40 h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle,rgba(255,90,31,0.08)_0%,transparent_70%)] blur-[100px]" />
 
-        {/* Light beam diagonal streak simulating the top-left shadow cast in reference */}
+        {/* Light beam diagonal streak simulating high-end studio lighting */}
         <div
-          className="pointer-events-none absolute -left-40 -top-20 h-[1200px] w-[600px] rotate-[35deg] opacity-25 blur-3xl"
+          className="pointer-events-none absolute -left-40 -top-20 h-[1200px] w-[600px] rotate-[35deg] opacity-20 blur-3xl"
           style={{
             background:
-              'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(212,255,0,0.05) 40%, transparent 80%)',
+              'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(99,102,241,0.06) 40%, transparent 80%)',
           }}
         />
       </div>
@@ -73,28 +73,26 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
 
         {/* 3. Center Sandwich Layout: Giant Typography + 3D Model */}
         <div className="relative my-auto flex min-h-[440px] flex-1 items-center justify-center sm:min-h-[500px] lg:min-h-[560px]">
-          {/* LAYER A: Background Giant Typography (Positioned BEHIND the Model in 3D Z-space) */}
+          {/* LAYER A: Background Brand Typography (Positioned BEHIND Model in 3D Z-space) */}
           <div
             className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-transform duration-500 ease-out"
             style={{
               transform: `translate3d(${-mousePos.x * 24}px, ${-mousePos.y * 16}px, -40px) rotateX(${-mousePos.y * 4}deg) rotateY(${mousePos.x * 4}deg)`,
             }}
           >
-            {/* Top Row: [MAKE] (Neon Lime Box on Left) + YOUR (Metallic Embossed on Right) */}
+            {/* Top Row: PULSE (Left) + WEAR (Right) */}
             <div className="flex w-full max-w-6xl items-center justify-between px-2 sm:px-6 lg:px-12">
-              {/* Neon Lime Box: MAKE */}
               <div
-                className="rounded-none bg-[#D4FF00] px-4 py-1.5 shadow-[0_0_45px_rgba(212,255,0,0.35)] transition-transform duration-300 sm:px-8 sm:py-3"
+                className="relative transition-transform duration-300"
                 style={{
                   transform: `translate3d(${-mousePos.x * 10}px, 0, 10px)`,
                 }}
               >
-                <span className="font-display text-5xl font-black uppercase tracking-tighter text-black sm:text-7xl lg:text-8xl xl:text-9xl">
-                  MAKE
+                <span className="font-display text-5xl font-black uppercase tracking-tight text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
+                  PULSE
                 </span>
               </div>
 
-              {/* Metallic Embossed: YOUR */}
               <div
                 className="relative transition-transform duration-300"
                 style={{
@@ -104,40 +102,38 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
                 <span
                   className="font-display text-5xl font-black uppercase tracking-tight sm:text-7xl lg:text-8xl xl:text-9xl"
                   style={{
-                    background: 'linear-gradient(180deg, #FFFFFF 0%, #CBD5E1 50%, #64748B 100%)',
+                    background: 'linear-gradient(180deg, #FFFFFF 0%, #A5B4FC 50%, #6366F1 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     filter: 'drop-shadow(0 10px 25px rgba(0,0,0,0.85))',
                   }}
                 >
-                  YOUR
+                  WEAR
                 </span>
               </div>
             </div>
 
-            {/* Bottom Row: OWN (Solid White 3D on Left) + [OUTFIT] (Neon Lime Box on Right) */}
+            {/* Bottom Row: DROP (Left) + 2026 (Right) */}
             <div className="mt-3 flex w-full max-w-6xl items-center justify-between px-2 sm:mt-5 sm:px-6 lg:px-12">
-              {/* Solid White 3D: OWN */}
               <div
                 className="relative transition-transform duration-300"
                 style={{
                   transform: `translate3d(${-mousePos.x * 8}px, 0, 10px)`,
                 }}
               >
-                <span className="font-display text-5xl font-black uppercase tracking-tight text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
-                  OWN
+                <span className="font-display text-5xl font-black uppercase tracking-tight text-slate-400/60 drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
+                  DROP
                 </span>
               </div>
 
-              {/* Neon Lime Box: OUTFIT */}
               <div
-                className="rounded-none bg-[#D4FF00] px-4 py-1.5 shadow-[0_0_45px_rgba(212,255,0,0.35)] transition-transform duration-300 sm:px-8 sm:py-3"
+                className="relative transition-transform duration-300"
                 style={{
                   transform: `translate3d(${mousePos.x * 10}px, 0, 10px)`,
                 }}
               >
-                <span className="font-display text-5xl font-black uppercase tracking-tighter text-black sm:text-7xl lg:text-8xl xl:text-9xl">
-                  OUTFIT
+                <span className="font-display text-5xl font-black uppercase tracking-tight text-white/90 drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
+                  2026
                 </span>
               </div>
             </div>
@@ -169,42 +165,52 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
           </div>
         </div>
 
-        {/* 4. Bottom HUD Bar: Left Typography + Right Tiered Category Quick-Nav */}
+        {/* 4. Bottom HUD Bar: Left Typography & CTAs + Right Tiered Category Quick-Nav */}
         <div className="relative z-30 flex flex-col justify-between gap-8 pt-4 sm:flex-row sm:items-end">
-          {/* Bottom-Left: "STYLE YOUR LIFE" / Brand Identity */}
-          <div className="flex flex-col">
-            {/* Indigo/Violet Gradient Bar Accent with angled tip */}
-            <div
-              className="mb-3 h-1.5 w-16 bg-gradient-to-r from-indigo-500 via-violet-500 to-cyan-400 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
-              style={{
-                clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)',
-              }}
-            />
-
-            <div className="flex flex-col font-display leading-[0.95]">
-              <span className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl lg:text-5xl">
-                STYLE
-              </span>
-              <span
-                className="my-0.5 text-3xl font-black uppercase tracking-tight sm:text-4xl lg:text-5xl"
-                style={{
-                  WebkitTextStroke: '1.5px #FFFFFF',
-                  color: 'transparent',
-                }}
-              >
-                YOUR
-              </span>
-              <span className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl lg:text-5xl">
-                LIFE
+          {/* Bottom-Left: Storefront Value Proposition & Engaging CTAs */}
+          <div className="flex max-w-xl flex-col">
+            {/* Spec eyebrow badge */}
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/15 px-3 py-1 font-sans text-xs font-semibold tracking-wider text-indigo-300">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
+                DROP 26 · 500 GSM HEAVYWEIGHT
               </span>
             </div>
 
-            {/* Sub-label with Cyan Pulse Beacon */}
-            <div className="mt-3 flex items-center gap-2 font-sans text-xs font-medium tracking-wide text-slate-300">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.9)]" />
-              <span>500 GSM Loopback Cotton</span>
-              <span className="text-slate-600">·</span>
-              <span className="text-slate-400">20,000 MM Tactical Membrane</span>
+            <h1 className="mt-2.5 font-display text-3xl font-black uppercase tracking-tight text-white sm:text-4xl lg:text-5xl">
+              CRAFTED FOR{' '}
+              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                ENDURANCE
+              </span>
+            </h1>
+
+            <p className="mt-2 text-xs leading-relaxed text-slate-300 sm:text-sm">
+              Dense 500 GSM loopback French terry and 20,000 mm waterproof tactical shells.
+              Engineered for supreme cold-weather warmth, structural drape, and zero shrinkage.
+            </p>
+
+            {/* Clear, Engaging Action Buttons */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => {
+                  const catalog = document.getElementById('catalog');
+                  catalog?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/30 transition-all hover:brightness-110 active:scale-[0.98]"
+              >
+                <span>Shop The Collection</span>
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+              </button>
+
+              <button
+                onClick={() => {
+                  const guide = document.getElementById('fabric-guide');
+                  guide?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.05] px-4 py-2.5 text-xs font-semibold text-slate-300 backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-[0.98]"
+              >
+                <span>Why 500 GSM?</span>
+              </button>
             </div>
           </div>
 

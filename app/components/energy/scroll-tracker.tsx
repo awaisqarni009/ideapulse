@@ -9,6 +9,9 @@ export function ScrollTracker() {
   const { tasks, incrementScrollSeconds, claimTask, setIsHubOpen } = useEnergy();
   const scrollTask = tasks.find((t) => t.id === 'scroll_30s');
 
+  // Energy & Quests removed from UI per customer request
+  return null;
+
   const [isActiveScrolling, setIsActiveScrolling] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const lastScrollTimeRef = useRef<number>(0);

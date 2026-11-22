@@ -49,10 +49,10 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         {/* Single badge top-left in sentence case §7.4 */}
         {product.badge && (
           <span
-            className={`absolute left-3 top-3 z-20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+            className={`absolute left-3 top-3 z-20 rounded-md px-2.5 py-0.5 font-sans text-[10px] font-bold uppercase tracking-wider shadow-md ${
               isOrangeBadge
-                ? 'bg-[#FF5A1F] font-bold text-white'
-                : 'border border-white/10 bg-[#15181B]/90 text-[#DEDBD2]'
+                ? 'bg-[#FF5A1F] text-white shadow-[#FF5A1F]/30'
+                : 'border border-indigo-400/30 bg-[#15181B]/95 text-indigo-300 backdrop-blur-md'
             }`}
           >
             {product.badge}
@@ -100,7 +100,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           onClick={(e) => e.stopPropagation()}
           className="duration-280 absolute inset-x-0 bottom-0 z-20 flex translate-y-full items-center justify-between gap-1 border-t border-white/10 bg-[#15181B]/95 px-3 py-2 backdrop-blur-sm transition-transform ease-[cubic-bezier(0.32,0.72,0,1)] group-focus-within:translate-y-0 group-hover:translate-y-0"
         >
-          <span className="font-mono text-[10px] uppercase tracking-wider text-[#8A8F95]">
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-wider text-slate-300">
             Quick add:
           </span>
           <div className="flex gap-1">
@@ -110,14 +110,14 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
                 <button
                   key={size}
                   onClick={(e) => handleQuickAdd(size, e)}
-                  className={`flex h-7 w-7 items-center justify-center font-mono text-[10px] font-bold transition-transform active:scale-95 ${
+                  className={`flex h-7 w-7 items-center justify-center rounded-md font-sans text-[10px] font-bold transition-all active:scale-95 ${
                     isAdded
-                      ? 'bg-[#10B981] text-white'
-                      : 'border border-white/10 bg-[#1F2327] text-white hover:bg-white/20'
+                      ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/50'
+                      : 'border border-white/10 bg-[#1F2327] text-white hover:border-indigo-500/50 hover:bg-white/20'
                   }`}
                   aria-label={`Add size ${size}`}
                 >
-                  {isAdded ? <Check className="h-3 w-3" /> : size}
+                  {isAdded ? <Check className="h-3 w-3 stroke-[3]" /> : size}
                 </button>
               );
             })}

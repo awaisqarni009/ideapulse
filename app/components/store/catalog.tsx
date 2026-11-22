@@ -92,20 +92,31 @@ export function Catalog({ onQuickView }: CatalogProps) {
             >
               {CATEGORIES.map((c) => {
                 const isActive = selectedCategory === c.id;
+                // Compute category item count
+                const count = allProducts.filter((item) => {
+                  if (c.id === 'all') return true;
+                  if (c.id === 'hoodie') return item.category === 'hoodie';
+                  if (c.id === 'jacket') return item.category === 'jacket';
+                  if (c.id === 'bestseller') return item.badge === 'Bestseller';
+                  if (c.id === 'new') return item.badge === 'New drop';
+                  return true;
+                }).length;
+
                 return (
                   <button
                     key={c.id}
                     onClick={() => setSelectedCategory(c.id)}
-                    className={`relative rounded-none px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                    className={`relative rounded-md px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                       isActive ? 'text-white' : 'text-[#8A8F95] hover:text-white'
                     }`}
                   >
                     <span>{c.label}</span>
+                    <span className="ml-1.5 text-[10px] opacity-60">({count})</span>
                     {isActive && (
                       <motion.span
                         layoutId="chip-underline"
                         transition={springHeavy}
-                        className="absolute inset-x-0 bottom-0 h-0.5 bg-[#FF5A1F]"
+                        className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-indigo-500 to-[#FF5A1F]"
                       />
                     )}
                   </button>
@@ -115,20 +126,20 @@ export function Catalog({ onQuickView }: CatalogProps) {
 
             {/* Price Filter Chips & Sort Dropdown */}
             <div className="flex flex-wrap items-center gap-3 text-xs">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 {[
-                  { id: 'all', label: 'All' },
-                  { id: 'under100', label: 'Under $100' },
+                  { id: 'all', label: 'All Prices' },
+                  { id: 'under100', label: '< $100' },
                   { id: '100to160', label: '$100–$160' },
                   { id: 'over160', label: '$160+' },
                 ].map((pf) => (
                   <button
                     key={pf.id}
                     onClick={() => setPriceFilter(pf.id as any)}
-                    className={`px-2.5 py-1 font-mono text-[11px] transition-colors ${
+                    className={`rounded-full px-3 py-1 font-sans text-xs font-medium transition-all ${
                       priceFilter === pf.id
-                        ? 'bg-white/15 font-bold text-white'
-                        : 'text-[#8A8F95] hover:text-white'
+                        ? 'border border-indigo-500/40 bg-indigo-500/20 font-bold text-white shadow-sm'
+                        : 'border border-transparent text-slate-400 hover:text-white'
                     }`}
                   >
                     {pf.label}
@@ -140,18 +151,18 @@ export function Catalog({ onQuickView }: CatalogProps) {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="rounded-none border border-white/10 bg-[#1F2327] px-3 py-1.5 text-xs text-white focus:outline-none"
+                className="rounded-lg border border-white/10 bg-[#1F2327] px-3 py-1.5 font-sans text-xs text-white focus:border-indigo-500 focus:outline-none"
                 aria-label="Sort products"
               >
-                <option value="featured">Featured</option>
-                <option value="priceAsc">Price: low to high</option>
-                <option value="priceDesc">Price: high to low</option>
-                <option value="rating">Rating</option>
+                <option value="featured">Featured First</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
               </select>
 
               {/* Result Count §7.3 */}
-              <span className="hidden pl-2 font-mono text-[11px] tabular-nums text-[#8A8F95] sm:inline">
-                Showing {filtered.length} styles
+              <span className="hidden pl-2 font-sans text-xs font-semibold tabular-nums text-slate-400 sm:inline">
+                {filtered.length} styles
               </span>
             </div>
           </div>
@@ -165,7 +176,7 @@ export function Catalog({ onQuickView }: CatalogProps) {
                   setSelectedCategory('all');
                   setPriceFilter('all');
                 }}
-                className="mt-4 border border-white/20 px-4 py-2 font-mono text-xs uppercase text-white hover:bg-white/10"
+                className="mt-4 rounded-lg border border-white/20 bg-white/5 px-4 py-2 font-sans text-xs font-semibold uppercase text-white hover:bg-white/15 active:scale-95"
               >
                 Clear filters
               </button>
