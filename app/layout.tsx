@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import { Archivo } from 'next/font/google';
 import './globals.css';
 import { UserProvider } from '@/lib/auth/use-user';
@@ -7,6 +8,21 @@ import { ThemeProvider, themeScript } from '@/lib/theme/theme-context';
 import { ToastProvider } from '@/app/components/ui/toast';
 import { EnergyProvider } from '@/lib/energy/energy-context';
 import { SiteShell } from '@/app/components/layout/site-shell';
+
+const WinnerModal = dynamic(
+  () => import('@/app/components/cycles/winner-modal').then((mod) => mod.WinnerModal),
+  { ssr: false },
+);
+
+const ScrollTracker = dynamic(
+  () => import('@/app/components/energy/scroll-tracker').then((mod) => mod.ScrollTracker),
+  { ssr: false },
+);
+
+const EnergyHubModal = dynamic(
+  () => import('@/app/components/energy/energy-hub-modal').then((mod) => mod.EnergyHubModal),
+  { ssr: false },
+);
 
 export const viewport: Viewport = {
   themeColor: '#15181B',
@@ -73,11 +89,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="selection:bg-indigo/30 flex min-h-screen flex-col bg-canvas text-ink-1 antialiased transition-colors duration-300 selection:text-white">
+        {/* Accessible Skip Link: first interactive focus node (WCAG AA 2.4.1) */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-lg focus:border focus:border-indigo-400 focus:bg-slate-900 focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-white focus:outline-none"
+        >
+          Skip to content
+        </a>
+        {/* Navigation & Layout: <Header /> <Footer /> */}
         <ThemeProvider>
           <UserProvider initialUser={user} initialProfile={profile}>
             <ToastProvider>
               <EnergyProvider>
                 <SiteShell>{children}</SiteShell>
+                <ScrollTracker />
+                <WinnerModal />
+                <EnergyHubModal />
               </EnergyProvider>
             </ToastProvider>
           </UserProvider>

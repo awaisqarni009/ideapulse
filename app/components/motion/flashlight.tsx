@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -77,8 +78,23 @@ export default function Flashlight({ src, alt, className = '' }: FlashlightProps
 
   return (
     <div ref={root} className={`flashlight ${className}`}>
-      <img className="flashlight__base" src={src} alt={alt} />
-      <img className="flashlight__lit" src={src} alt="" aria-hidden="true" />
+      <Image
+        className="flashlight__base"
+        src={src}
+        alt={alt}
+        width={1200}
+        height={800}
+        priority={false}
+      />
+      <Image
+        className="flashlight__lit"
+        src={src}
+        alt=""
+        aria-hidden="true"
+        width={1200}
+        height={800}
+        priority={false}
+      />
     </div>
   );
 }

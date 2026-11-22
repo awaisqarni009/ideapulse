@@ -154,7 +154,7 @@ export async function GET(req: NextRequest) {
               fontWeight: 600,
             }}
           >
-            <span>HEAVYWEIGHT TECHNICAL STREETWEAR</span>
+            <span>HEAVYWEIGHT TECHNICAL STREETWEAR · IdeaPulse</span>
           </div>
         </div>
       </div>,

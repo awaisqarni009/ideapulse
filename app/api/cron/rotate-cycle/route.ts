@@ -8,18 +8,15 @@ import { createAdminClient } from '@/lib/supabase/admin';
  */
 async function handleRotateCycle(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
+  const authHeader = req.headers.get('authorization');
+  const customHeader = req.headers.get('x-cron-secret');
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
-  if (cronSecret) {
-    const authHeader = req.headers.get('authorization');
-    const customHeader = req.headers.get('x-cron-secret');
-    const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-
-    if (bearerToken !== cronSecret && customHeader !== cronSecret) {
-      return NextResponse.json(
-        { ok: false, error: 'Unauthorized: Invalid or missing CRON_SECRET' },
-        { status: 401 },
-      );
-    }
+  if (!cronSecret || (bearerToken !== cronSecret && customHeader !== cronSecret)) {
+    return NextResponse.json(
+      { ok: false, error: 'Unauthorized: Invalid or missing CRON_SECRET' },
+      { status: 401 },
+    );
   }
 
   try {

@@ -16,13 +16,13 @@ export function IdeaCardSkeleton({ viewMode = 'grid', className = '' }: IdeaCard
       <div
         role="status"
         aria-label="Loading event item"
-        className={`glass-panel relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] backdrop-blur-[var(--blur-md)] md:flex-row ${className}`}
+        className={`glass-panel relative flex flex-col overflow-hidden rounded-2xl rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-2)] backdrop-blur-[var(--blur-md)] md:flex-row ${className}`}
         style={{
           boxShadow: 'inset 0 1px 0 var(--edge-specular)',
         }}
       >
         <div className="skeleton-shimmer aspect-[16/9] shrink-0 bg-[var(--surface-3)] md:aspect-auto md:w-72" />
-        <div className="flex flex-1 flex-col justify-between space-y-4 p-5">
+        <div className="flex flex-1 flex-col justify-between space-y-4 p-5 p-6">
           <div className="space-y-3">
             <div className="skeleton-shimmer h-3.5 w-48 rounded" />
             <div className="skeleton-shimmer h-5 w-3/4 rounded" />
@@ -41,7 +41,7 @@ export function IdeaCardSkeleton({ viewMode = 'grid', className = '' }: IdeaCard
     <div
       role="status"
       aria-label="Loading event proposal"
-      className={`glass-panel relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] backdrop-blur-[var(--blur-md)] ${className}`}
+      className={`glass-panel relative flex flex-col justify-between overflow-hidden rounded-2xl rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-2)] backdrop-blur-[var(--blur-md)] ${className}`}
       style={{
         boxShadow: 'inset 0 1px 0 var(--edge-specular)',
       }}

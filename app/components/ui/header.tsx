@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/auth/use-user';
 import { useCart } from '@/lib/store/cart-context';
 import { useWishlist } from '@/lib/store/wishlist-context';
 import { useToast } from '@/app/components/ui/toast';
 import { ThemeToggle } from '@/app/components/ui/theme-toggle';
+import { EnergyBadge } from '@/app/components/energy/energy-badge';
 import { PulseWearLogo } from '@/app/components/ui/logo';
 import { SearchOverlay } from '@/app/components/store/search-overlay';
 import { PRODUCTS } from '@/lib/store/products';
@@ -221,9 +223,12 @@ export function Header() {
                           href="/?category=hoodie#catalog"
                           className="group block text-center"
                         >
-                          <img
+                          <Image
                             src={item.image}
                             alt={item.title}
+                            width={80}
+                            height={100}
+                            sizes="24px"
                             className="aspect-[4/5] w-full rounded-none bg-black/40 object-cover transition-opacity group-hover:opacity-85"
                           />
                           <span className="mt-1 block truncate text-[10px] font-medium text-white">
@@ -273,9 +278,12 @@ export function Header() {
                           href="/?category=jacket#catalog"
                           className="group block text-center"
                         >
-                          <img
+                          <Image
                             src={item.image}
                             alt={item.title}
+                            width={80}
+                            height={100}
+                            sizes="24px"
                             className="aspect-[4/5] w-full rounded-none bg-black/40 object-cover transition-opacity group-hover:opacity-85"
                           />
                           <span className="mt-1 block truncate text-[10px] font-medium text-white">
@@ -308,6 +316,11 @@ export function Header() {
 
           {/* Right Section: Search, Wishlist, Bag, Theme, Auth */}
           <div className="flex items-center gap-3">
+            {/* Voting Energy Badge */}
+            <div className="hidden lg:flex">
+              <EnergyBadge />
+            </div>
+
             {/* Search Trigger (Keyboard '/' indicator) */}
             <button
               onClick={() => setIsSearchOpen(true)}

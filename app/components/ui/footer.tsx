@@ -14,7 +14,7 @@ export function Footer() {
             <PulseWearLogo size="md" showTagline={false} />
             <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#8A8F95]">
               Dense 500 GSM loopback French terry hoodies and 20,000 mm waterproof tactical shells,
-              built to outlast the season.
+              built to outlast the season. Powered by IdeaPulse Incubator.
             </p>
             <div className="mt-4 font-mono text-[11px] text-[#8A8F95]">
               Worldwide fulfillment · Carbon neutral shipping
@@ -91,16 +91,31 @@ export function Footer() {
           {/* Legal & Company Col */}
           <div>
             <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-white">
-              Legal
+              Company & Legal
             </h3>
             <ul className="mt-4 space-y-2 text-xs">
               <li>
-                <Link href="/checkout" className="transition-colors hover:text-white">
+                <Link href="/about" className="transition-colors hover:text-white">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/how-it-works" className="transition-colors hover:text-white">
+                  How It Works
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="transition-colors hover:text-white">
+                  FAQ & Support
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="transition-colors hover:text-white">
                   Privacy Notice
                 </Link>
               </li>
               <li>
-                <Link href="/checkout" className="transition-colors hover:text-white">
+                <Link href="/terms" className="transition-colors hover:text-white">
                   Terms of Sale
                 </Link>
               </li>

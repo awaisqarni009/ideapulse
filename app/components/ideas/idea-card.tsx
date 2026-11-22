@@ -122,7 +122,7 @@ export function IdeaCard({
     return (
       <article
         aria-labelledby={`idea-title-${idea.id}`}
-        className={`glass-panel group relative flex flex-col overflow-hidden rounded-2xl border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4),0_0_20px_rgba(99,102,241,0.2)] md:flex-row ${
+        className={`glass-panel feed-card-contain group relative flex flex-col overflow-hidden rounded-2xl rounded-[var(--radius-lg)] border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4),0_0_20px_rgba(99,102,241,0.2)] md:flex-row ${
           isQualified
             ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
             : 'border-[var(--border-default)] hover:border-[var(--border-accent)]'
@@ -131,6 +131,8 @@ export function IdeaCard({
           boxShadow: isQualified
             ? '0 0 20px rgba(139, 92, 246, 0.2), inset 0 1px 0 var(--edge-specular)'
             : 'inset 0 1px 0 var(--edge-specular)',
+          contentVisibility: 'auto',
+          containIntrinsicSize: '0 320px',
         }}
       >
         {/* Thumbnail on left */}
@@ -235,8 +237,9 @@ export function IdeaCard({
                   <Image
                     src={author.avatar_url}
                     alt={author.display_name || author.username || 'Avatar'}
-                    width={28}
-                    height={28}
+                    width={32}
+                    height={32}
+                    sizes="32px"
                     className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
@@ -282,7 +285,7 @@ export function IdeaCard({
   return (
     <article
       aria-labelledby={`idea-title-${idea.id}`}
-      className={`glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45),0_0_24px_rgba(99,102,241,0.22)] ${
+      className={`glass-panel feed-card-contain group relative flex flex-col justify-between overflow-hidden rounded-2xl rounded-[var(--radius-lg)] border bg-[var(--surface-2)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45),0_0_24px_rgba(99,102,241,0.22)] ${
         isQualified
           ? 'border-[rgba(139,92,246,0.4)] shadow-[var(--glow-violet-md)]'
           : 'border-[var(--border-default)] hover:border-[var(--border-accent)]'
@@ -291,6 +294,8 @@ export function IdeaCard({
         boxShadow: isQualified
           ? '0 0 24px rgba(139, 92, 246, 0.22), inset 0 1px 0 var(--edge-specular)'
           : 'inset 0 1px 0 var(--edge-specular)',
+        contentVisibility: 'auto',
+        containIntrinsicSize: '0 320px',
       }}
     >
       {/* Permanent or hover gradient ring */}
@@ -374,7 +379,7 @@ export function IdeaCard({
         </div>
 
         {/* ================= CARD BODY CONTENT ================= */}
-        <div className="p-5">
+        <div className="p-5 p-6">
           {/* Date & Author Header */}
           <div className="flex items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2">
@@ -383,8 +388,9 @@ export function IdeaCard({
                   <Image
                     src={author.avatar_url}
                     alt={author.display_name || author.username || 'Avatar'}
-                    width={24}
-                    height={24}
+                    width={32}
+                    height={32}
+                    sizes="32px"
                     className="h-full w-full rounded-full object-cover"
                   />
                 ) : (

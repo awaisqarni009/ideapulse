@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import {
   checkCycleBoundaryAlert,
   checkAbuseRateSpikeAlert,
@@ -19,7 +19,9 @@ export async function GET() {
 
   try {
     // 1. Database Connectivity Check
-    const supabase = await createClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabase = createSupabaseClient(supabaseUrl, supabaseKey);
     const { data: dbData, error: dbError } = await supabase
       .from('cycles')
       .select('id, cycle_number, status, ends_at')
@@ -83,7 +85,14 @@ export async function GET() {
       {
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
+        uptimeSeconds: Math.floor(process.uptime()),
         error: message,
+        checks: {
+          database: { status: 'error', message },
+          cycleRotation: { status: 'unknown' },
+          abuseRate: { status: 'unknown' },
+          latency: { status: 'unknown' },
+        },
       },
       {
         status: 503,

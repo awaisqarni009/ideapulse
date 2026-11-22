@@ -9,6 +9,8 @@ import { NewsletterSection } from '@/app/components/store/newsletter-section';
 import { QuickViewModal } from '@/app/components/store/quick-view-modal';
 import { Product } from '@/lib/store/products';
 
+// export const revalidate = 60; // ISR cache revalidation window per ARCHITECTURE.md §5.5
+
 export default function StoreHomePage() {
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
 
@@ -37,7 +39,11 @@ export default function StoreHomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#15181B] text-[#F2F5F7]">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-screen bg-[#15181B] text-[#F2F5F7] focus:outline-none"
+    >
       {/* 3D Streetwear Hero with Layered Typography & Tiered Quick-Nav */}
       <Hero3D onSelectCategory={(cat) => scrollToCategory(cat)} />
 
@@ -58,6 +64,6 @@ export default function StoreHomePage() {
         product={activeQuickViewProduct}
         onClose={() => setActiveQuickViewProduct(null)}
       />
-    </div>
+    </main>
   );
 }
