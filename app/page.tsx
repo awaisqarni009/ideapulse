@@ -58,7 +58,7 @@ export default function StoreHomePage() {
       {/* Educational & Engaging Fabric Architecture Comparison */}
       <FabricComparison />
 
-      {/* 6.2 & 7.5 Material Lab: Three-Layer Shell Scroll Set-Piece */}
+      {/* PulseWear in Motion // Brand Cinematic Video Showcase */}
       <ShellStory />
 
       {/* 7.6 Reviews Section in --bone Rhythm */}

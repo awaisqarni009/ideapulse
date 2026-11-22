@@ -46,6 +46,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://elfsightcdn.com https://*.elfsightcdn.com https://*.elfsight.com",
               "font-src 'self' data: https://fonts.gstatic.com https://elfsightcdn.com https://*.elfsightcdn.com https://*.elfsight.com",
               "img-src 'self' blob: data: https: http:",
+              "media-src 'self' blob: data:",
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.posthog.com https://*.elfsight.com https://*.elfsightcdn.com https://elfsightcdn.com",
               "frame-src 'self' https://*.elfsight.com https://*.elfsightcdn.com",
               "frame-ancestors 'none'",
