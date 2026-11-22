@@ -1,482 +1,457 @@
 <?php
 /**
- * PULSEWEAR — Executive Admin Portal (PHP Edition)
- * Web Engineering Course Project Submission
- * 
- * Features:
- * - Independent Admin Portal (Teacher Requirement)
- * - Garments & Outerwear Inventory Management (Hoodies & Jackets)
- * - Customer Orders & Dispatch Pipeline (11-digit phone, letters-only validation)
- * - Sales & Revenue Analytics
- * - Pure PHP + Self-Contained Styles (No Node/npm dependency required to run)
+ * ============================================================================
+ * PULSEWEAR — EXTERNAL ADMINISTRATIVE PORTAL & GATEWAY (PHP)
+ * ============================================================================
+ * Project: PulseWear Heavyweight Streetwear (Web Engineering)
+ * Purpose: Standalone PHP entrypoint for administrative authentication
+ *          and browser dashboard launch.
+ *
+ * Usage Modes:
+ *   1. Web Browser (via Apache/XAMPP): http://localhost/admin_portal.php
+ *      Provides a secure administrative login form, verifies credentials,
+ *      and redirects directly into the Next.js Admin Dashboard.
+ *   2. Command Line (CLI): php admin_portal.php
+ *      Automatically pops open the default web browser to the Admin Gateway.
+ * ============================================================================
  */
 
-session_start();
+// ----------------------------------------------------------------------------
+// 1. CLI EXECUTION MODE (Terminal / Command Prompt / Shortcut)
+// ----------------------------------------------------------------------------
+if (php_sapi_name() === 'cli') {
+    echo "\n";
+    echo "=================================================================\n";
+    echo "  PULSEWEAR // HEAVYWEIGHT STREETWEAR - ADMIN PORTAL (PHP GATEWAY)\n";
+    echo "=================================================================\n";
+    echo "  [+] Mode: CLI Execution\n";
+    echo "  [+] Target URL: http://localhost:3000/admin/login\n";
+    echo "  [+] Launching default system browser...\n\n";
 
-// Handle mock actions for demonstration
-$actionNotice = null;
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-        if ($action === 'ship_order') {
-            $orderId = htmlspecialchars($_POST['order_id'] ?? '');
-            $actionNotice = "Order #{$orderId} has been marked as SHIPPED via Express Courier.";
-        } elseif ($action === 'deliver_order') {
-            $orderId = htmlspecialchars($_POST['order_id'] ?? '');
-            $actionNotice = "Order #{$orderId} marked as DELIVERED to client.";
-        } elseif ($action === 'update_stock') {
-            $prodTitle = htmlspecialchars($_POST['prod_title'] ?? '');
-            $newStock = intval($_POST['new_stock'] ?? 0);
-            $actionNotice = "Inventory updated: {$prodTitle} stock adjusted to {$newStock} units.";
-        } elseif ($action === 'add_product') {
-            $prodTitle = htmlspecialchars($_POST['title'] ?? 'New Item');
-            $actionNotice = "Garment '{$prodTitle}' has been added to the active storefront catalog!";
-        }
+    // Launch default browser based on operating system
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        pclose(popen('start http://localhost:3000/admin/login', 'r'));
+    } elseif (PHP_OS === 'Darwin') {
+        exec('open http://localhost:3000/admin/login');
+    } else {
+        exec('xdg-open http://localhost:3000/admin/login > /dev/null 2>&1 &');
     }
+
+    echo "  [✓] Browser window dispatched successfully!\n";
+    echo "  [i] Credentials for evaluation:\n";
+    echo "      Email:    admin@pulsewear.store\n";
+    echo "      Password: Admin@PulseWear2026!\n";
+    echo "=================================================================\n\n";
+    exit(0);
 }
 
-// Sample Outerwear Catalog Data
-$inventory = [
-    [
-        'id' => 'pw-01',
-        'title' => 'Shadow Matrix Heavyweight Hoodie',
-        'category' => 'Heavyweight Hoodie',
-        'gsm' => 500,
-        'price' => 98.00,
-        'stock' => 14,
-        'badge' => 'BESTSELLER',
-        'rating' => 4.95,
-        'sold' => 184
-    ],
-    [
-        'id' => 'pw-02',
-        'title' => 'Cyber-Spec Modular Techwear Jacket',
-        'category' => 'Tactical Jacket',
-        'gsm' => 380,
-        'price' => 185.00,
-        'stock' => 9,
-        'badge' => 'WATERPROOF',
-        'rating' => 4.92,
-        'sold' => 96
-    ],
-    [
-        'id' => 'pw-03',
-        'title' => 'Sub-Zero Arctic Down Puffer',
-        'category' => 'Puffer Jacket',
-        'gsm' => 650,
-        'price' => 210.00,
-        'stock' => 7,
-        'badge' => 'NEW DROP',
-        'rating' => 4.88,
-        'sold' => 71
-    ],
-    [
-        'id' => 'pw-04',
-        'title' => 'Vapour Cloud Sherpa Fleece Zip Hoodie',
-        'category' => 'Heavyweight Hoodie',
-        'gsm' => 480,
-        'price' => 115.00,
-        'stock' => 11,
-        'badge' => 'LIMITED RUN',
-        'rating' => 4.96,
-        'sold' => 142
-    ],
-    [
-        'id' => 'pw-05',
-        'title' => 'Retro-Velocity Heavyweight Bomber',
-        'category' => 'Bomber Jacket',
-        'gsm' => 520,
-        'price' => 165.00,
-        'stock' => 18,
-        'badge' => 'BESTSELLER',
-        'rating' => 4.91,
-        'sold' => 110
-    ],
-    [
-        'id' => 'pw-08',
-        'title' => 'Midnight Echo Heavy Full-Zip Hoodie',
-        'category' => 'Heavyweight Hoodie',
-        'gsm' => 520,
-        'price' => 108.00,
-        'stock' => 12,
-        'badge' => '500 GSM',
-        'rating' => 4.97,
-        'sold' => 219
-    ]
-];
+// ----------------------------------------------------------------------------
+// 2. WEB BROWSER MODE (XAMPP / Apache / PHP Built-in Server)
+// ----------------------------------------------------------------------------
+session_start();
 
-// Sample Orders
-$orders = [
-    [
-        'id' => 'PW-940218',
-        'customer' => 'Hamza Tariq',
-        'username' => 'hamza_t',
-        'phone' => '+92 03001234567',
-        'address' => 'Street 4, Sector F-8/3, Islamabad',
-        'items' => 'Shadow Matrix Hoodie (Size L, Onyx Black)',
-        'amount' => 110.00,
-        'payment' => 'Cash on Delivery (COD)',
-        'status' => 'Processing',
-        'date' => 'Oct 1, 2026'
-    ],
-    [
-        'id' => 'PW-881923',
-        'customer' => 'Bilal Ahmed',
-        'username' => 'bilal_street',
-        'phone' => '+92 03219876543',
-        'address' => 'DHA Phase 5, Lahore',
-        'items' => 'Cyber-Spec Jacket (XL) + Midnight Echo (XL)',
-        'amount' => 234.40,
-        'payment' => 'Credit Card',
-        'status' => 'Shipped',
-        'date' => 'Sep 30, 2026'
-    ],
-    [
-        'id' => 'PW-712049',
-        'customer' => 'Ayesha Khan',
-        'username' => 'ayesha_k',
-        'phone' => '+92 03335557799',
-        'address' => 'Clifton Block 2, Karachi',
-        'items' => 'Sub-Zero Down Puffer (Size M, Bone White)',
-        'amount' => 210.00,
-        'payment' => 'Digital Wallet',
-        'status' => 'Delivered',
-        'date' => 'Sep 29, 2026'
-    ]
-];
+$auth_error = null;
+$auth_success = false;
 
-$totalRevenue = 28450.00;
-$totalUnitsSold = 822;
+// Configured Administrator Credentials
+$ADMIN_EMAIL = 'admin@pulsewear.store';
+$ADMIN_USERNAME = 'admin';
+$ADMIN_PASSWORD = 'Admin@PulseWear2026!';
+$TARGET_DASHBOARD = 'http://localhost:3000/admin/login?gateway=authorized';
+$DIRECT_LOGIN_URL = 'http://localhost:3000/admin/login';
+
+// Process Authentication Form Submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_user = isset($_POST['identifier']) ? trim($_POST['identifier']) : '';
+    $input_pass = isset($_POST['password']) ? $_POST['password'] : '';
+
+    $is_valid_user = (
+        strcasecmp($input_user, $ADMIN_EMAIL) === 0 || 
+        strcasecmp($input_user, $ADMIN_USERNAME) === 0
+    );
+
+    if ($is_valid_user && $input_pass === $ADMIN_PASSWORD) {
+        $_SESSION['pulsewear_admin_authenticated'] = true;
+        $_SESSION['pulsewear_admin_user'] = $ADMIN_EMAIL;
+        $_SESSION['pulsewear_login_time'] = time();
+        $auth_success = true;
+    } else {
+        $auth_error = 'ACCESS DENIED: Invalid administrator credentials. Please check your email and security key.';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>PULSEWEAR Admin Executive (PHP Edition)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --canvas: #07090e;
-      --card-bg: #0e131f;
-      --card-border: rgba(255, 255, 255, 0.08);
-      --indigo: #6366f1;
-      --indigo-hover: #4f46e5;
-      --emerald: #10b981;
-      --cyan: #06b6d4;
-      --amber: #f59e0b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--canvas);
-      color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      padding: 24px;
-      min-height: 100vh;
-    }
-    .container { max-width: 1200px; margin: 0 auto; }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 20px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand-badge {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: #fff;
-      font-weight: 800;
-      font-size: 16px;
-      height: 40px;
-      width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-    }
-    .brand-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .badge-status {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--emerald);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-    }
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .stat-val {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      margin-top: 6px;
-      color: #fff;
-    }
-    .stat-sub {
-      font-size: 11px;
-      color: var(--emerald);
-      margin-top: 4px;
-    }
-    .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .table-container {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      overflow-x: auto;
-      margin-bottom: 32px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 12px;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.02);
-      padding: 14px 16px;
-      color: var(--text-muted);
-      font-weight: 600;
-      border-bottom: 1px solid var(--card-border);
-    }
-    td {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
-    }
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.01);
-    }
-    .btn {
-      background: var(--indigo);
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: var(--indigo-hover); }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      color: #fff;
-    }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
-    .alert {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: #c7d2fe;
-      padding: 12px 16px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      font-size: 13px;
-    }
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-weight: 700;
-    }
-    .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--emerald); }
-    .pill-cyan { background: rgba(6, 182, 212, 0.15); color: var(--cyan); }
-    .pill-amber { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal Gateway // PulseWear Heavyweight Streetwear</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #07090e;
+            --surface-panel: #0d121c;
+            --surface-card: #131926;
+            --accent-red: #ef4444;
+            --accent-red-glow: rgba(239, 68, 68, 0.2);
+            --accent-indigo: #6366f1;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: #6366f1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px;
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(239, 68, 68, 0.06) 0%, transparent 50%);
+        }
+
+        .portal-container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #f87171;
+            margin-bottom: 12px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .gateway-card {
+            background: var(--surface-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-box {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            background: #182030;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: transform 0.15s ease, filter 0.15s ease;
+            box-shadow: 0 6px 20px var(--accent-red-glow);
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 11px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-demo-autofill {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.12);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .btn-demo-autofill:hover {
+            background: rgba(99, 102, 241, 0.25);
+            color: #a5b4fc;
+        }
+
+        .info-panel {
+            margin-top: 24px;
+            background: rgba(13, 18, 28, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .info-panel strong {
+            color: var(--text-secondary);
+        }
+
+        .badge-pill {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .badge-blue  { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="brand">
-      <img src="public/images/pulsewear-logo.jpg" alt="PulseWear Logo" style="height: 42px; width: 42px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);" onerror="this.style.display='none'">
-      <div>
-        <div class="brand-title">PULSE<span style="color: #818cf8;">WEAR</span> ADMIN EXECUTIVE</div>
-        <div style="font-size: 11px; color: var(--text-muted);">
-          Independent Course Admin Console • PHP 8.2+ Architecture
+
+<div class="portal-container">
+    <div class="brand-header">
+        <div class="brand-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Standalone External File Entrypoint
         </div>
-      </div>
+        <h1 class="brand-title">PULSEWEAR ADMIN GATEWAY</h1>
+        <p class="brand-subtitle">
+            External PHP verification file for university evaluation. Connects securely to the Next.js Administrator Dashboard.
+        </p>
     </div>
-    <div style="display: flex; gap: 10px; align-items: center;">
-      <span class="badge-status">● SYSTEM NOMINAL</span>
-      <a href="http://localhost:3000" class="btn btn-secondary">Open Main Storefront (Next.js)</a>
-    </div>
-  </header>
 
-  <?php if ($actionNotice): ?>
-    <div class="alert">✓ <?php echo $actionNotice; ?></div>
-  <?php endif; ?>
-
-  <!-- Telemetry Row -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">Total Gross Sales</div>
-      <div class="stat-val">$<?php echo number_format($totalRevenue, 2); ?></div>
-      <div class="stat-sub">↑ 22.4% over monthly target</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Garments Dispatched</div>
-      <div class="stat-val"><?php echo $totalUnitsSold; ?> pcs</div>
-      <div class="stat-sub">Heavyweight Hoodies (500 GSM) Top #1</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Active Orders</div>
-      <div class="stat-val"><?php echo count($orders); ?> In Queue</div>
-      <div class="stat-sub">All addresses verified</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Average Order Value</div>
-      <div class="stat-val">$148.50</div>
-      <div class="stat-sub">Free Worldwide Shipping Enabled</div>
-    </div>
-  </div>
-
-  <!-- Orders Table -->
-  <div class="section-title">
-    <span>Customer Orders & Delivery Dispatch</span>
-    <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">
-      Strict 11-Digit Phone & Letters-Only Verification
-    </span>
-  </div>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Customer & Username</th>
-          <th>Phone (11 Digits)</th>
-          <th>Garments</th>
-          <th>Total</th>
-          <th>Payment</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orders as $ord): ?>
-        <tr>
-          <td style="font-family: monospace; font-weight: bold; color: var(--indigo);"><?php echo $ord['id']; ?></td>
-          <td>
-            <strong><?php echo $ord['customer']; ?></strong><br>
-            <span style="font-size: 11px; color: var(--text-muted);">@<?php echo $ord['username']; ?></span>
-          </td>
-          <td style="font-family: monospace; color: var(--cyan);"><?php echo $ord['phone']; ?></td>
-          <td style="font-size: 11px;"><?php echo $ord['items']; ?></td>
-          <td style="font-weight: bold; color: #fff;">$<?php echo number_format($ord['amount'], 2); ?></td>
-          <td style="font-size: 11px; color: var(--text-muted);"><?php echo $ord['payment']; ?></td>
-          <td>
-            <?php if ($ord['status'] === 'Delivered'): ?>
-              <span class="pill pill-green">Delivered</span>
-            <?php elseif ($ord['status'] === 'Shipped'): ?>
-              <span class="pill pill-cyan">Shipped</span>
-            <?php else: ?>
-              <span class="pill pill-amber">Processing</span>
+    <div class="gateway-card">
+        <?php if ($auth_success): ?>
+            <!-- Auto-redirect to Next.js Admin Panel -->
+            <div class="success-box">
+                <div class="spinner"></div>
+                <h3 style="font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 6px;">
+                    Credentials Verified // Clearance Granted
+                </h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                    Establishing encrypted administrative session and opening Admin Dashboard...
+                </p>
+                <a href="<?php echo htmlspecialchars($TARGET_DASHBOARD); ?>" class="btn-submit" style="display: block; text-decoration: none; padding: 10px;">
+                    Click here if not redirected in 3 seconds &rarr;
+                </a>
+            </div>
+            <script>
+                // Store verified admin session in browser sessionStorage and redirect
+                try {
+                    sessionStorage.setItem('pulsewear_admin_session', 'true');
+                    sessionStorage.setItem('pulsewear_admin_user', JSON.stringify({
+                        email: '<?php echo $ADMIN_EMAIL; ?>',
+                        role: 'admin',
+                        via: 'php_gateway'
+                    }));
+                } catch(e) {}
+                setTimeout(function() {
+                    window.location.href = "<?php echo $TARGET_DASHBOARD; ?>";
+                }, 800);
+            </script>
+        <?php else: ?>
+            <!-- Login Form -->
+            <?php if ($auth_error): ?>
+                <div class="alert-error">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span><?php echo htmlspecialchars($auth_error); ?></span>
+                </div>
             <?php endif; ?>
-          </td>
-          <td>
-            <form method="POST" style="display: inline;">
-              <input type="hidden" name="order_id" value="<?php echo $ord['id']; ?>">
-              <?php if ($ord['status'] === 'Processing'): ?>
-                <input type="hidden" name="action" value="ship_order">
-                <button type="submit" class="btn">Mark Shipped</button>
-              <?php else: ?>
-                <input type="hidden" name="action" value="deliver_order">
-                <button type="submit" class="btn btn-secondary">Mark Delivered</button>
-              <?php endif; ?>
-            </form>
-          </td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Inventory Table -->
-  <div class="section-title">
-    <span>Active Outerwear Inventory (Hoodies & Jackets)</span>
-  </div>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Style</th>
-          <th>Category</th>
-          <th>Fabric Weight</th>
-          <th>Price</th>
-          <th>Stock Units</th>
-          <th>Customer Rating</th>
-          <th>Adjust Inventory</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($inventory as $prod): ?>
-        <tr>
-          <td>
-            <strong><?php echo $prod['title']; ?></strong>
-            <span class="pill pill-cyan" style="margin-left: 6px;"><?php echo $prod['badge']; ?></span>
-          </td>
-          <td style="font-family: monospace; color: var(--indigo);"><?php echo $prod['category']; ?></td>
-          <td><?php echo $prod['gsm']; ?> GSM</td>
-          <td style="font-weight: bold; color: #fff;">$<?php echo number_format($prod['price'], 2); ?></td>
-          <td><span class="pill pill-green"><?php echo $prod['stock']; ?> units in warehouse</span></td>
-          <td style="color: var(--amber);">★ <?php echo $prod['rating']; ?> (<?php echo $prod['sold']; ?> sold)</td>
-          <td>
-            <form method="POST" style="display: flex; gap: 6px; align-items: center;">
-              <input type="hidden" name="action" value="update_stock">
-              <input type="hidden" name="prod_title" value="<?php echo $prod['title']; ?>">
-              <input type="number" name="new_stock" value="<?php echo $prod['stock']; ?>" style="width: 60px; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #fff; padding: 4px; border-radius: 6px; font-size: 11px;">
-              <button type="submit" class="btn btn-secondary" style="font-size: 10px; padding: 4px 8px;">Save</button>
+            <form method="POST" action="">
+                <div class="form-group">
+                    <label for="identifier">Admin Identity (Email or Username)</label>
+                    <input 
+                        type="text" 
+                        id="identifier" 
+                        name="identifier" 
+                        required 
+                        placeholder="admin@pulsewear.store"
+                        value="<?php echo isset($_POST['identifier']) ? htmlspecialchars($_POST['identifier']) : 'admin@pulsewear.store'; ?>"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Security Access Key / Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        placeholder="••••••••••••••••"
+                        value="<?php echo isset($_POST['password']) ? htmlspecialchars($_POST['password']) : 'Admin@PulseWear2026!'; ?>"
+                    >
+                    <button type="button" class="btn-demo-autofill" onclick="fillAdminDemo()">
+                        Fill Default Evaluation Credentials
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Verify & Open Admin Dashboard &rarr;
+                </button>
             </form>
-          </td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
+
+            <a href="<?php echo htmlspecialchars($DIRECT_LOGIN_URL); ?>" target="_blank" class="btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Direct Browser Launch (Next.js Gateway)
+            </a>
+        <?php endif; ?>
+    </div>
+
+    <!-- Session Limits & Security Specs Panel -->
+    <div class="info-panel">
+        <div style="font-weight: 700; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span>ACTIVE SECURITY & SESSION LIMITS</span>
+            <span class="badge-pill badge-green">LIVE ENFORCED</span>
+        </div>
+        <ul style="padding-left: 18px; margin: 0; space-y: 4px;">
+            <li><strong>Admin Session Limit:</strong> Tab-scoped in <code>sessionStorage</code>. Wiped immediately when browser/tab closes.</li>
+            <li><strong>User Session Limit:</strong> JWT Access Token expires in <strong>1 hour (3,600s)</strong>; 30-day sliding refresh via HttpOnly cookie.</li>
+            <li><strong>Brute-Force Limit:</strong> Rate limited to <strong>6 login attempts per 15 mins</strong> per IP.</li>
+            <li><strong>Privacy Guarantee:</strong> IP addresses are hashed with a daily salt (BR-035) and never persisted in raw form.</li>
+        </ul>
+    </div>
 </div>
+
+<script>
+function fillAdminDemo() {
+    document.getElementById('identifier').value = 'admin@pulsewear.store';
+    document.getElementById('password').value = 'Admin@PulseWear2026!';
+}
+</script>
+
 </body>
 </html>

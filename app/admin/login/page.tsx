@@ -24,6 +24,21 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // External Gateway Bridge (e.g. from admin_portal.php)
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('gateway') === 'authorized') {
+        sessionStorage.setItem('pulsewear_admin_session', 'true');
+        sessionStorage.setItem(
+          'pulsewear_admin_user',
+          JSON.stringify({ email: 'admin@pulsewear.store', role: 'admin' }),
+        );
+        router.push('/admin');
+      }
+    }
+  }, [router]);
+
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
