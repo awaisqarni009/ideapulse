@@ -8,6 +8,7 @@ import { CartProvider } from '@/lib/store/cart-context';
 import { WishlistProvider } from '@/lib/store/wishlist-context';
 import { CartDrawer } from '@/app/components/store/cart-drawer';
 import { CookieBanner } from '@/app/components/ui/cookie-banner';
+import { ElfsightChatbot } from '@/app/components/ui/elfsight-chatbot';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -34,6 +35,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
         <Footer />
+        {/* Elfsight AI Chatbot */}
+        <ElfsightChatbot />
         {/* Cookie Consent Interface */}
         <CookieBanner />
       </WishlistProvider>
