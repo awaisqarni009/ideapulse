@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { registerSchema, loginSchema } from '@/lib/validation';
 
 export type AuthActionResult = {
@@ -34,7 +35,7 @@ export async function registerAction(
 
   const parseResult = registerSchema.safeParse(rawData);
   if (!parseResult.success) {
-    const fieldErrors = parseResult.error.flatten().fieldErrors;
+    const fieldErrors = parseResult.error.flatten().fieldErrors as Record<string, string[]>;
     return {
       success: false,
       error: 'Please fix the requirements below.',
@@ -98,22 +99,54 @@ export async function loginAction(
   _prevState: AuthActionResult | null,
   formData: FormData,
 ): Promise<AuthActionResult> {
-  const rawData = {
-    email: formData.get('email'),
-    password: formData.get('password'),
-  };
+  const inputEmailOrUser = (
+    formData.get('email') ||
+    formData.get('identifier') ||
+    formData.get('username') ||
+    ''
+  )
+    .toString()
+    .trim();
+  const password = (formData.get('password') || '').toString();
   const nextParam = formData.get('next')?.toString() || '';
+
+  let resolvedEmail = inputEmailOrUser;
+  // Dual Login (Teacher Requirement): If user enters Username, resolve to their email
+  if (inputEmailOrUser && !inputEmailOrUser.includes('@')) {
+    try {
+      const adminClient = createAdminClient();
+      const { data: profile } = await adminClient
+        .from('profiles')
+        .select('id')
+        .ilike('username', inputEmailOrUser)
+        .maybeSingle();
+
+      if (profile?.id) {
+        const { data: userRecord } = await adminClient.auth.admin.getUserById(profile.id);
+        if (userRecord?.user?.email) {
+          resolvedEmail = userRecord.user.email;
+        }
+      }
+    } catch (lookupErr) {
+      console.warn('[auth/login] Username lookup error:', lookupErr);
+    }
+  }
+
+  const rawData = {
+    email: resolvedEmail,
+    password,
+  };
 
   const parseResult = loginSchema.safeParse(rawData);
   if (!parseResult.success) {
     return {
       success: false,
       error: 'Please enter a valid email and password.',
-      fieldErrors: parseResult.error.flatten().fieldErrors,
+      fieldErrors: parseResult.error.flatten().fieldErrors as Record<string, string[]>,
     };
   }
 
-  const { email, password } = parseResult.data;
+  const { email } = parseResult.data;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({

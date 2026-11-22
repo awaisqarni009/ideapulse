@@ -19,9 +19,11 @@ import {
   LogIn,
   UserPlus,
   Globe,
+  Sparkles,
 } from 'lucide-react';
 import { registerAction, type AuthActionResult } from '@/app/actions/auth';
 import { COUNTRY_CODES } from '@/lib/validation';
+import { createClient } from '@/lib/supabase/client';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -54,17 +56,74 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Live password complexity checklist (Teacher requirement)
+  // Teacher Requirement: Username ONLY Alphabets A-Z and a-z, 4 to 22 chars (/^[A-Za-z]{4,22}$/)
+  const isUsernameValid = useMemo(() => {
+    return /^[A-Za-z]{4,22}$/.test(username);
+  }, [username]);
+
+  // Teacher Requirement: Email must contain @
+  const isEmailValid = useMemo(() => {
+    if (!email) return true;
+    return email.includes('@');
+  }, [email]);
+
+  // Live password complexity checklist & 4-rule strength meter (Teacher requirement)
   const passwordCriteria = useMemo(() => {
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasDigit = /[0-9]/.test(password);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>\-_=+]/.test(password);
+    const hasLength = password.length >= 8;
+
+    let score = 0;
+    if (hasUpper) score++;
+    if (hasLower) score++;
+    if (hasDigit) score++;
+    if (hasSymbol) score++;
+
+    let strengthLabel = 'Too Weak';
+    let strengthColor = 'bg-red-500';
+    if (score === 1) {
+      strengthLabel = 'Weak';
+      strengthColor = 'bg-red-500';
+    } else if (score === 2) {
+      strengthLabel = 'Fair';
+      strengthColor = 'bg-amber-500';
+    } else if (score === 3) {
+      strengthLabel = 'Good';
+      strengthColor = 'bg-yellow-400';
+    } else if (score === 4 && hasLength) {
+      strengthLabel = 'Ironclad';
+      strengthColor = 'bg-emerald-400';
+    }
+
     return {
-      hasLength: password.length >= 10,
-      hasLetter: /[a-zA-Z]/.test(password),
-      hasDigit: /[0-9]/.test(password),
-      hasSymbol: /[!@#$%^&*(),.?":{}|<>\-_=+]/.test(password),
+      hasUpper,
+      hasLower,
+      hasDigit,
+      hasSymbol,
+      hasLength,
+      score,
+      strengthLabel,
+      strengthColor,
     };
   }, [password]);
 
   const isPhoneValid = phone.length === 11;
+
+  const handleOAuth = async (provider: 'google' | 'facebook') => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+    } catch (err) {
+      console.error('OAuth initiation failed:', err);
+    }
+  };
 
   if (state?.success) {
     return (
@@ -149,7 +208,6 @@ export function RegisterForm() {
               required
               value={fullName}
               onChange={(e) => {
-                // Strictly accept alphabet letters and spaces only per teacher requirement
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, '');
                 setFullName(lettersOnly);
               }}
@@ -165,14 +223,27 @@ export function RegisterForm() {
           )}
         </div>
 
-        {/* Username */}
+        {/* Username - Strict Teacher Rule: /^[A-Za-z]{4,22}$/ */}
         <div>
-          <label
-            htmlFor="username"
-            className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
-          >
-            Username
-          </label>
+          <div className="mb-1.5 flex items-center justify-between">
+            <label
+              htmlFor="username"
+              className="block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
+            >
+              Username
+            </label>
+            <span
+              className={`font-mono text-[10px] ${
+                username.length >= 4 && username.length <= 22
+                  ? 'text-emerald-400'
+                  : username.length > 0
+                    ? 'text-amber-400'
+                    : 'text-[#8A8F95]'
+              }`}
+            >
+              {username.length}/22
+            </span>
+          </div>
           <div className="group relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
               <AtSign className="h-4 w-4" />
@@ -183,15 +254,26 @@ export function RegisterForm() {
               type="text"
               autoComplete="username"
               required
+              maxLength={22}
               value={username}
-              onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-              placeholder="e.g. sarah_connor"
-              aria-invalid={Boolean(state?.fieldErrors?.username)}
+              onChange={(e) => {
+                // Strict Teacher Rule: ONLY Alphabets A-Z and a-z. NO numbers, NO symbols, NO spaces.
+                const lettersOnly = e.target.value.replace(/[^a-zA-Z]/g, '').slice(0, 22);
+                setUsername(lettersOnly);
+              }}
+              placeholder="e.g. SarahConnor"
+              aria-invalid={Boolean(state?.fieldErrors?.username || (username && !isUsernameValid))}
               className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-3.5 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
             />
           </div>
-          {state?.fieldErrors?.username && (
+          {state?.fieldErrors?.username ? (
             <p className="mt-1 text-xs text-red-400">{state.fieldErrors.username[0]}</p>
+          ) : username && !isUsernameValid ? (
+            <p className="mt-1 text-xs text-amber-400">
+              Must be 4 to 22 letters (no numbers/symbols)
+            </p>
+          ) : (
+            <p className="mt-1 font-mono text-[10px] text-[#8A8F95]">4-22 letters only</p>
           )}
         </div>
       </div>
@@ -259,7 +341,6 @@ export function RegisterForm() {
               maxLength={11}
               value={phone}
               onChange={(e) => {
-                // Strictly accept digits only, maximum 11 digits per teacher requirement
                 const digits = e.target.value.replace(/\D/g, '').slice(0, 11);
                 setPhone(digits);
               }}
@@ -274,7 +355,7 @@ export function RegisterForm() {
         )}
       </div>
 
-      {/* 3. EMAIL ADDRESS */}
+      {/* 3. EMAIL ADDRESS - Teacher Rule: Must contain @ */}
       <div className="mt-4">
         <label
           htmlFor="email"
@@ -295,23 +376,43 @@ export function RegisterForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="name@example.com"
-            aria-invalid={Boolean(state?.fieldErrors?.email)}
+            aria-invalid={Boolean(state?.fieldErrors?.email || (!isEmailValid && email))}
             className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-3.5 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
           />
         </div>
-        {state?.fieldErrors?.email && (
+        {state?.fieldErrors?.email ? (
           <p className="mt-1 text-xs text-red-400">{state.fieldErrors.email[0]}</p>
-        )}
+        ) : !isEmailValid && email ? (
+          <p className="mt-1 text-xs text-amber-400">Please enter valid Gmail with @</p>
+        ) : null}
       </div>
 
-      {/* 4. PASSWORD */}
+      {/* 4. PASSWORD WITH LIVE STRENGTH METER */}
       <div className="mt-4">
-        <label
-          htmlFor="password"
-          className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
-        >
-          Password
-        </label>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label
+            htmlFor="password"
+            className="block font-mono text-[11px] font-semibold uppercase tracking-wider text-[#8A8F95]"
+          >
+            Password
+          </label>
+          {password && (
+            <span className="font-mono text-[10px] font-bold text-white">
+              Strength:{' '}
+              <span
+                className={
+                  passwordCriteria.score === 4
+                    ? 'text-emerald-400'
+                    : passwordCriteria.score === 3
+                      ? 'text-yellow-400'
+                      : 'text-amber-400'
+                }
+              >
+                {passwordCriteria.strengthLabel}
+              </span>
+            </span>
+          )}
+        </div>
         <div className="group relative">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8F95] transition-colors group-focus-within:text-[#FF5A1F]">
             <Lock className="h-4 w-4" />
@@ -324,7 +425,7 @@ export function RegisterForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Letters, numbers & symbols (≥ 10 chars)"
+            placeholder="Capital, small, number & symbol (≥ 8 chars)"
             aria-invalid={Boolean(state?.fieldErrors?.password)}
             className="w-full rounded-sm border border-white/15 bg-[#15181B] py-2.5 pl-10 pr-10 text-sm text-[#F2F5F7] transition-all placeholder:text-[#8A8F95]/50 hover:border-white/30 focus:border-[#FF5A1F] focus:outline-none focus:ring-1 focus:ring-[#FF5A1F] aria-[invalid=true]:border-red-500"
           />
@@ -337,6 +438,21 @@ export function RegisterForm() {
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
+
+        {/* Live Password Strength Progress Bars */}
+        {password && (
+          <div className="mt-2 grid grid-cols-4 gap-1.5">
+            {[1, 2, 3, 4].map((step) => (
+              <div
+                key={step}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  passwordCriteria.score >= step ? passwordCriteria.strengthColor : 'bg-white/10'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+
         {state?.fieldErrors?.password && (
           <p className="mt-1 text-xs text-red-400">{state.fieldErrors.password[0]}</p>
         )}
@@ -380,15 +496,15 @@ export function RegisterForm() {
         )}
       </div>
 
-      {/* REAL-TIME PASSWORD COMPLEXITY CHECKLIST (Teacher requirement) */}
+      {/* REAL-TIME 4-REQUIREMENT CHECKLIST (Teacher Rule) */}
       <div className="my-5 space-y-2 rounded-sm border border-white/10 bg-[#15181B] p-3.5 transition-colors">
         <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#8A8F95]">
-          Password Requirements
+          Password Requirements (All 4 Required)
         </p>
 
-        {/* Condition 1: Alphabet Letters */}
+        {/* Condition 1: Capital Letter */}
         <div className="flex items-center gap-2 text-xs transition-colors">
-          {passwordCriteria.hasLetter ? (
+          {passwordCriteria.hasUpper ? (
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
               <Check className="h-3 w-3 stroke-[3]" />
             </div>
@@ -396,13 +512,29 @@ export function RegisterForm() {
             <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
           )}
           <span
-            className={passwordCriteria.hasLetter ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
+            className={passwordCriteria.hasUpper ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
-            At least one alphabet letter (a-z, A-Z)
+            1) One CAPITAL Letter (A-Z)
           </span>
         </div>
 
-        {/* Condition 2: Numbers */}
+        {/* Condition 2: Small Letter */}
+        <div className="flex items-center gap-2 text-xs transition-colors">
+          {passwordCriteria.hasLower ? (
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
+              <Check className="h-3 w-3 stroke-[3]" />
+            </div>
+          ) : (
+            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
+          )}
+          <span
+            className={passwordCriteria.hasLower ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
+          >
+            2) One Small Letter (a-z)
+          </span>
+        </div>
+
+        {/* Condition 3: Number */}
         <div className="flex items-center gap-2 text-xs transition-colors">
           {passwordCriteria.hasDigit ? (
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
@@ -414,11 +546,11 @@ export function RegisterForm() {
           <span
             className={passwordCriteria.hasDigit ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
-            At least one number (0-9)
+            3) One Number (0-9)
           </span>
         </div>
 
-        {/* Condition 3: Sign / Symbol */}
+        {/* Condition 4: Special Sign */}
         <div className="flex items-center gap-2 text-xs transition-colors">
           {passwordCriteria.hasSymbol ? (
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
@@ -430,28 +562,62 @@ export function RegisterForm() {
           <span
             className={passwordCriteria.hasSymbol ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
           >
-            At least one sign or symbol (!@#$%^&*...)
-          </span>
-        </div>
-
-        {/* Condition 4: Minimum Length */}
-        <div className="flex items-center gap-2 text-xs transition-colors">
-          {passwordCriteria.hasLength ? (
-            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
-              <Check className="h-3 w-3 stroke-[3]" />
-            </div>
-          ) : (
-            <div className="ml-1 mr-1 h-2 w-2 rounded-full bg-[#8A8F95] opacity-40" />
-          )}
-          <span
-            className={passwordCriteria.hasLength ? 'font-medium text-[#F2F5F7]' : 'text-[#8A8F95]'}
-          >
-            At least 10 characters long
+            4) One Special Sign (! @ # $ % ^ & *)
           </span>
         </div>
       </div>
 
       <SubmitButton />
+
+      {/* Divider */}
+      <div className="relative my-6 text-center">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-white/10" />
+        </div>
+        <span className="relative bg-[#1F2327] px-3 font-mono text-[10px] uppercase tracking-wider text-[#8A8F95]">
+          Or register with
+        </span>
+      </div>
+
+      {/* Social Authentication Buttons: Google & Facebook (Teacher Requirement) */}
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => handleOAuth('google')}
+          className="flex items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/[0.04] py-2.5 text-xs font-semibold text-white transition-all hover:border-white/30 hover:bg-white/[0.08]"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24">
+            <path
+              fill="#EA4335"
+              d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"
+            />
+            <path
+              fill="#4285F4"
+              d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 6.3 10.1 6.3z"
+            />
+          </svg>
+          <span>Google</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleOAuth('facebook')}
+          className="flex items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/[0.04] py-2.5 text-xs font-semibold text-white transition-all hover:border-white/30 hover:bg-white/[0.08]"
+        >
+          <svg className="h-4 w-4 fill-[#1877F2]" viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+          </svg>
+          <span>Facebook</span>
+        </button>
+      </div>
 
       <div className="mt-5 text-center text-xs text-[#8A8F95]">
         Already have an account?{' '}

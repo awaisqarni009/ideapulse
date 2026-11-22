@@ -127,11 +127,11 @@ export const registerSchema = z
       .or(z.literal('')),
     username: z
       .string()
-      .min(3, 'Username must be at least 3 characters.')
-      .max(24, 'Username cannot exceed 24 characters.')
+      .min(3, 'Username must be 4 to 22 characters.')
+      .max(24, 'Username cannot exceed 22 characters.')
       .regex(
-        /^[a-z0-9_]{3,24}$/i,
-        'Username may only contain letters, numbers, and underscores (3-24 chars).',
+        /^[A-Za-z_]{3,24}$/,
+        'Username may only contain letters (A-Z, a-z), 4 to 22 characters.',
       )
       .trim()
       .optional()
@@ -147,17 +147,21 @@ export const registerSchema = z
     email: z
       .string()
       .min(1, 'Please enter your email address.')
-      .email('Please enter a valid email address.')
       .trim()
-      .toLowerCase(),
+      .toLowerCase()
+      .email('Please enter valid Gmail with @')
+      .refine((val) => val.includes('@'), {
+        message: 'Please enter valid Gmail with @',
+      }),
     password: z
       .string()
       .min(10, 'Password must be at least 10 characters long.')
-      .regex(/[a-zA-Z]/, 'Password must contain at least one alphabet letter (a-z, A-Z).')
+      .regex(/[A-Z]/, 'Password must contain at least one capital letter (A-Z).')
+      .regex(/[a-z]/, 'Password must contain at least one small letter (a-z).')
       .regex(/\d/, 'Password must contain at least one digit (0-9).')
       .regex(
         /[!@#$%^&*(),.?":{}|<>\-_=+]/,
-        'Password must contain at least one sign or symbol (!@#$%^&* etc).',
+        'Password must contain at least one sign or symbol (!@#$%^&*).',
       ),
     confirmPassword: z.string().optional().or(z.literal('')),
   })

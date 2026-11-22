@@ -9,6 +9,7 @@ import { useCart } from '@/lib/store/cart-context';
 import { useWishlist } from '@/lib/store/wishlist-context';
 import { useToast } from '@/app/components/ui/toast';
 import { ThemeToggle } from '@/app/components/ui/theme-toggle';
+import { FontControls } from '@/app/components/ui/font-controls';
 import { EnergyBadge } from '@/app/components/energy/energy-badge';
 import { PulseWearLogo } from '@/app/components/ui/logo';
 import { SearchOverlay } from '@/app/components/store/search-overlay';
@@ -26,6 +27,7 @@ import {
   LogOut,
   Shield,
   ChevronDown,
+  Home,
 } from 'lucide-react';
 import { signOutAction } from '@/app/actions/auth';
 import { ease, dur } from '@/lib/motion';
@@ -189,6 +191,16 @@ export function Header() {
 
             {/* Desktop Navigation Links */}
             <nav className="hidden items-center gap-6 md:flex">
+              {/* Home button on EVERY page */}
+              <Link
+                href="/"
+                className="flex items-center gap-1.5 py-2 text-xs font-bold uppercase tracking-wider text-[#FF5A1F] transition-colors hover:text-white"
+                title="Return to Home Page"
+              >
+                <Home className="h-3.5 w-3.5" />
+                <span>Home</span>
+              </Link>
+
               {/* Hoodies with preview panel */}
               <div
                 className="relative"
@@ -439,6 +451,11 @@ export function Header() {
               </Link>
             )}
 
+            {/* Accessibility Font Size Controls (A+ / A- / Reset) */}
+            <div className="hidden sm:flex">
+              <FontControls />
+            </div>
+
             {/* Theme Toggle */}
             <ThemeToggle />
 
@@ -457,6 +474,17 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="animate-in fade-in border-b border-white/10 bg-[#15181B] px-6 py-6 duration-200 md:hidden">
             <nav className="flex flex-col space-y-4">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#FF5A1F]"
+              >
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </Link>
+              <div className="py-1">
+                <FontControls className="w-full justify-between py-2" />
+              </div>
               <Link
                 href="/?category=hoodie#catalog"
                 onClick={() => setMobileMenuOpen(false)}

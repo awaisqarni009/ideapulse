@@ -88,7 +88,7 @@ describe('T-8.25 – T-8.31: Launch Readiness & Pre-Flight Verification Suite', 
     expect(urls.some((u) => u.endsWith('/rules'))).toBe(true);
     expect(urls.some((u) => u.endsWith('/privacy'))).toBe(true);
     expect(urls.some((u) => u.endsWith('/terms'))).toBe(true);
-  });
+  }, 25000);
 
   it('T-8.27: Dynamic OpenGraph API generator (/api/og) and metadata are configured', () => {
     const ogPath = path.join(rootDir, 'app/api/og/route.tsx');

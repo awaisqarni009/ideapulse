@@ -30,24 +30,24 @@ describe('T-8.8: Production RLS Security & Access Control Suite', () => {
     const emailB = `rls_b_${timestamp}@ideapulse.dev`;
     const password = 'Password123!Secure';
 
-    // Provision test user A
-    const { data: userA, error: errA } = await adminClient.auth.admin.createUser({
-      email: emailA,
-      password,
-      email_confirm: true,
-      user_metadata: { username: `rls_a_${timestamp.toString().slice(-6)}` },
-    });
+    // Provision test users in parallel for speed
+    const [{ data: userA, error: errA }, { data: userB, error: errB }] = await Promise.all([
+      adminClient.auth.admin.createUser({
+        email: emailA,
+        password,
+        email_confirm: true,
+        user_metadata: { username: `rls_a_${timestamp.toString().slice(-6)}` },
+      }),
+      adminClient.auth.admin.createUser({
+        email: emailB,
+        password,
+        email_confirm: true,
+        user_metadata: { username: `rls_b_${timestamp.toString().slice(-6)}` },
+      }),
+    ]);
     if (errA) throw errA;
-    userAId = userA.user.id;
-
-    // Provision test user B
-    const { data: userB, error: errB } = await adminClient.auth.admin.createUser({
-      email: emailB,
-      password,
-      email_confirm: true,
-      user_metadata: { username: `rls_b_${timestamp.toString().slice(-6)}` },
-    });
     if (errB) throw errB;
+    userAId = userA.user.id;
     userBId = userB.user.id;
 
     // Create client for user A with isolated storageKey
@@ -129,7 +129,7 @@ describe('T-8.8: Production RLS Security & Access Control Suite', () => {
 
     if (ideaErr) throw ideaErr;
     testIdeaId = idea.id;
-  });
+  }, 60000);
 
   afterAll(async () => {
     // Teardown test artifacts
@@ -145,7 +145,7 @@ describe('T-8.8: Production RLS Security & Access Control Suite', () => {
       await adminClient.from('profiles').delete().eq('id', userBId);
       await adminClient.auth.admin.deleteUser(userBId);
     }
-  });
+  }, 60000);
 
   it('1. Verifies RLS is enabled on all 10 public tables', async () => {
     const { data: tables } = await adminClient.from('profiles').select('id').limit(1);

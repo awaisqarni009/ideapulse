@@ -120,6 +120,19 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/privacy" className="transition-colors hover:text-white">
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="mailto:support@pulsewear.store"
+                  className="transition-colors hover:text-white"
+                >
+                  Contact: support@pulsewear.store
+                </a>
+              </li>
+              <li>
                 <Link href="/#reviews" className="transition-colors hover:text-white">
                   Verification
                 </Link>
@@ -128,8 +141,52 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Social Links & Bottom Sub-Bar */}
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-[#8A8F95]">
+          <div className="flex items-center gap-6">
+            <span className="font-mono text-[11px] font-semibold uppercase text-slate-300">
+              Connect:
+            </span>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              Twitter / X
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              Instagram
+            </a>
+            <a
+              href="https://discord.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              Discord
+            </a>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              GitHub
+            </a>
+          </div>
+          <div className="font-mono text-[11px]">
+            <span>Fast Express Courier · 100% Secure Checkout</span>
+          </div>
+        </div>
+
         {/* Bottom Sub-Bar */}
-        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 font-mono text-xs text-[#8A8F95] sm:flex-row">
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 font-mono text-xs text-[#8A8F95] sm:flex-row">
           <p>&copy; {new Date().getFullYear()} PULSEWEAR. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <span>500 GSM Organic Loopback</span>

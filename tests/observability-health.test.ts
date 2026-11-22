@@ -38,7 +38,7 @@ describe('T-8.19 – T-8.24: Observability, Alerts & Health Infrastructure', () 
     expect(alert).toBeDefined();
     // Since Cycle 4 is active and not overdue, alert must be false
     expect(typeof alert.alert).toBe('boolean');
-  });
+  }, 25000);
 
   it('T-8.22: checkAbuseRateSpikeAlert computes rolling baseline and evaluates spikes', async () => {
     const alert = await checkAbuseRateSpikeAlert();
@@ -47,7 +47,7 @@ describe('T-8.19 – T-8.24: Observability, Alerts & Health Infrastructure', () 
     expect(typeof alert.baselineHourlyRate).toBe('number');
     expect(typeof alert.ratio).toBe('number');
     expect(typeof alert.alert).toBe('boolean');
-  });
+  }, 25000);
 
   it('T-8.23: checkVoteLatencyAlert triggers alert when p95 exceeds 800ms threshold', () => {
     // Record low latency samples

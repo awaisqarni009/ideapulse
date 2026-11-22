@@ -7,6 +7,8 @@ import { Footer } from '@/app/components/ui/footer';
 import { CartProvider } from '@/lib/store/cart-context';
 import { WishlistProvider } from '@/lib/store/wishlist-context';
 import { CartDrawer } from '@/app/components/store/cart-drawer';
+import { ChatbotAssistant } from '@/app/components/ui/chatbot-assistant';
+import { CookieBanner } from '@/app/components/ui/cookie-banner';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -33,6 +35,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
         <Footer />
+        {/* Floating AI Website Assistant on bottom-right of EVERY page */}
+        <ChatbotAssistant />
+        {/* Cookie Consent Interface */}
+        <CookieBanner />
       </WishlistProvider>
     </CartProvider>
   );
