@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Product, ProductColor } from '@/lib/store/products';
 import { useCart } from '@/lib/store/cart-context';
 import { useWishlist } from '@/lib/store/wishlist-context';
+import { useCurrency } from '@/lib/store/currency-context';
 import { Heart, Check } from 'lucide-react';
 import { ease } from '@/lib/motion';
 
@@ -15,6 +16,7 @@ interface ProductCardProps {
 export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
 
   const [activeColor] = useState<ProductColor>(
     product.colors[0] ?? { name: 'Onyx', hex: '#15181B', bgClass: 'bg-[#15181B]' },
@@ -145,15 +147,17 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
         {/* Pricing with Tabular Numerals §7.4 */}
         <div className="mt-2 flex items-baseline gap-2 border-t border-white/5 pt-2">
-          <span className="text-sm font-bold tabular-nums text-white">${product.price}</span>
+          <span className="text-sm font-bold tabular-nums text-white">
+            {formatPrice(product.price)}
+          </span>
           {product.originalPrice && (
             <span className="text-xs tabular-nums text-[#8A8F95] line-through">
-              ${product.originalPrice}
+              {formatPrice(product.originalPrice)}
             </span>
           )}
           {product.originalPrice && (
             <span className="font-sans text-[11px] font-semibold text-[#FF5A1F]">
-              Save ${product.originalPrice - product.price}
+              Save {formatPrice(product.originalPrice - product.price)}
             </span>
           )}
         </div>

@@ -65,12 +65,6 @@ export function PulseWearLogo({
             DROP 26
           </span>
         </div>
-
-        {showTagline && (
-          <span className="mt-1 hidden whitespace-nowrap font-sans text-[11px] font-medium tracking-wide text-slate-600 dark:text-slate-300/90 sm:block">
-            500 GSM Heavyweight Streetwear
-          </span>
-        )}
       </div>
     </div>
   );

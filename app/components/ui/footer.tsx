@@ -3,8 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { PulseWearLogo } from '@/app/components/ui/logo';
+import { useCurrency, CurrencyCode } from '@/lib/store/currency-context';
+import { Globe, Check } from 'lucide-react';
 
 export function Footer() {
+  const { currency, setCurrency, currenciesList, currencyConfig } = useCurrency();
+
   return (
     <footer className="w-full border-t border-white/10 bg-[#15181B] px-4 pb-12 pt-16 text-[#8A8F95] sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-7xl">
@@ -141,8 +145,65 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Global Currency Setting Control (§Fully Functional Multi-Currency) */}
+        <div className="mt-12 rounded-2xl border border-white/10 bg-[#12161F]/90 p-5 backdrop-blur-md">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">
+                <Globe className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-white">
+                  <span>Currency & Region</span>
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 font-sans text-[10px] font-bold uppercase text-emerald-400">
+                    Live Rates
+                  </span>
+                </h4>
+                <p className="text-xs text-slate-400">
+                  Select your local currency. Prices update across catalog, cart, and checkout.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Dropdown Selector */}
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
+                aria-label="Select Store Currency"
+                className="cursor-pointer rounded-xl border border-white/15 bg-[#0a0d14] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:border-white/30 focus:border-indigo-500 focus:outline-none"
+              >
+                {currenciesList.map((c) => (
+                  <option key={c.code} value={c.code} className="bg-[#12161F] text-white">
+                    {c.flag} {c.code} ({c.symbol.trim()}) — {c.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* Quick Currency Pills */}
+              <div className="hidden items-center gap-1.5 sm:flex">
+                {currenciesList.map((c) => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => setCurrency(c.code)}
+                    className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-bold transition-all active:scale-95 ${
+                      currency === c.code
+                        ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
+                        : 'border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <span>{c.code}</span>
+                    <span className="text-[10px] opacity-75">{c.symbol.trim()}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Social Links & Bottom Sub-Bar */}
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-[#8A8F95]">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-[#8A8F95]">
           <div className="flex items-center gap-6">
             <span className="font-sans text-[11px] font-semibold uppercase tracking-wider text-slate-300">
               Connect:

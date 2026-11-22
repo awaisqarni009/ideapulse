@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Product, ProductColor } from '@/lib/store/products';
 import { useCart } from '@/lib/store/cart-context';
 import { useWishlist } from '@/lib/store/wishlist-context';
+import { useCurrency } from '@/lib/store/currency-context';
 import { SizeGuideModal } from './size-guide-modal';
 
 interface QuickViewModalProps {
@@ -14,6 +15,7 @@ interface QuickViewModalProps {
 export function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
 
   const [selectedColor, setSelectedColor] = useState<ProductColor | null>(
     product?.colors[0] || null,
@@ -117,15 +119,17 @@ export function QuickViewModal({ product, onClose }: QuickViewModalProps) {
 
             {/* Price section */}
             <div className="mt-3 flex items-baseline gap-3">
-              <span className="text-2xl font-extrabold text-white">${product.price}</span>
+              <span className="text-2xl font-extrabold text-white">
+                {formatPrice(product.price)}
+              </span>
               {product.originalPrice && (
                 <span className="text-sm text-slate-500 line-through">
-                  ${product.originalPrice}
+                  {formatPrice(product.originalPrice)}
                 </span>
               )}
               {product.originalPrice && (
                 <span className="rounded bg-rose-500/20 px-2 py-0.5 text-xs font-semibold text-rose-400">
-                  Save ${product.originalPrice - product.price}
+                  Save {formatPrice(product.originalPrice - product.price)}
                 </span>
               )}
             </div>
@@ -234,7 +238,7 @@ export function QuickViewModal({ product, onClose }: QuickViewModalProps) {
                 {addedAnimation ? (
                   <>✓ Added to Pulse Cart</>
                 ) : (
-                  <>Add to Bag • ${(product.price * quantity).toFixed(2)}</>
+                  <>Add to Bag • {formatPrice(product.price * quantity, true)}</>
                 )}
               </button>
 

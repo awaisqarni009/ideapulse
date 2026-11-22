@@ -7,30 +7,26 @@ import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/auth/use-user';
 import { useCart } from '@/lib/store/cart-context';
 import { useWishlist } from '@/lib/store/wishlist-context';
+import { useCurrency } from '@/lib/store/currency-context';
 import { useToast } from '@/app/components/ui/toast';
 import { ThemeToggle } from '@/app/components/ui/theme-toggle';
 import { FontControls } from '@/app/components/ui/font-controls';
-import { EnergyBadge } from '@/app/components/energy/energy-badge';
 import { PulseWearLogo } from '@/app/components/ui/logo';
-import { SearchOverlay } from '@/app/components/store/search-overlay';
-import { PRODUCTS } from '@/lib/store/products';
+import { PRODUCTS, getStoredCategories, ProductCategory } from '@/lib/store/products';
 import {
   ShoppingBag,
   Heart,
   Search,
   Pause,
   Play,
-  ArrowRight,
   Menu,
   X,
   User,
   LogOut,
   Shield,
   ChevronDown,
-  Home,
 } from 'lucide-react';
 import { signOutAction } from '@/app/actions/auth';
-import { ease, dur } from '@/lib/motion';
 
 const ANNOUNCEMENTS = [
   'Free express shipping over $100',
@@ -41,8 +37,9 @@ const ANNOUNCEMENTS = [
 export function Header() {
   const pathname = usePathname();
   const { user, profile } = useUser();
-  const { itemCount, subtotal, openCart } = useCart();
+  const { itemCount, openCart } = useCart();
   const { wishlistCount } = useWishlist();
+  const { formatPrice } = useCurrency();
   const { info } = useToast();
 
   // Announcement rotator state
@@ -55,42 +52,41 @@ export function Header() {
   const [isHiddenOnScrollDown, setIsHiddenOnScrollDown] = useState(false);
   const lastScrollY = useRef(0);
 
-  // Search & mega menu state
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [hoveredNavMenu, setHoveredNavMenu] = useState<'hoodie' | 'jacket' | null>(null);
+  // Navigation & Dropdown states
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState('');
+  const [categoriesList, setCategoriesList] = useState<ProductCategory[]>([]);
+  const categoryMenuRef = useRef<HTMLDivElement>(null);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close account menu when clicking outside
+  // Load and listen to categories
+  useEffect(() => {
+    setCategoriesList(getStoredCategories());
+    const handleCategoriesUpdate = () => {
+      setCategoriesList(getStoredCategories());
+    };
+    window.addEventListener('pulsewear-categories-updated', handleCategoriesUpdate);
+    return () => window.removeEventListener('pulsewear-categories-updated', handleCategoriesUpdate);
+  }, []);
+
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (accountMenuRef.current && !accountMenuRef.current.contains(e.target as Node)) {
         setAccountMenuOpen(false);
+      }
+      if (categoryMenuRef.current && !categoryMenuRef.current.contains(e.target as Node)) {
+        setCategoryMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Keyboard shortcut '/' to trigger search
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        e.key === '/' &&
-        !isSearchOpen &&
-        document.activeElement?.tagName !== 'INPUT' &&
-        document.activeElement?.tagName !== 'TEXTAREA'
-      ) {
-        e.preventDefault();
-        setIsSearchOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchOpen]);
-
-  // Rotator timer (every 5s, stops on hover, pause control, static under reduced motion)
+  // Rotator timer (every 5s, stops on hover, pause control)
   useEffect(() => {
     if (isAnnouncementPaused || isHoveredAnnouncement) return;
     const interval = setInterval(() => {
@@ -99,15 +95,15 @@ export function Header() {
     return () => clearInterval(interval);
   }, [isAnnouncementPaused, isHoveredAnnouncement]);
 
-  // Scroll direction and elevation listener
+  // Header scroll hide/reveal behavior
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // 80px background switch per spec §7.1
+      // 80px background switch
       setIsScrolledPast80(currentScrollY > 80);
 
-      // Hide on scroll down, show on scroll up (280ms)
+      // Hide on scroll down, show on scroll up
       if (currentScrollY > 200 && currentScrollY > lastScrollY.current + 10) {
         setIsHiddenOnScrollDown(true);
       } else if (currentScrollY < lastScrollY.current - 5) {
@@ -130,21 +126,32 @@ export function Header() {
     }
   };
 
-  const previewHoodies = PRODUCTS.filter((p) => p.category === 'hoodie').slice(0, 3);
-  const previewJackets = PRODUCTS.filter((p) => p.category === 'jacket').slice(0, 3);
-
   const isAdmin = profile?.role === 'admin';
+
+  // Live filtered products & categories inside the category search
+  const filteredProducts = categorySearch.trim()
+    ? PRODUCTS.filter(
+        (p) =>
+          p.title.toLowerCase().includes(categorySearch.toLowerCase()) ||
+          p.category.toLowerCase().includes(categorySearch.toLowerCase()) ||
+          p.subtitle.toLowerCase().includes(categorySearch.toLowerCase()),
+      ).slice(0, 4)
+    : [];
+
+  const filteredCategories = categorySearch.trim()
+    ? categoriesList.filter((cat) => cat.label.toLowerCase().includes(categorySearch.toLowerCase()))
+    : categoriesList;
 
   return (
     <>
       {/* 7.1 Announcement Bar with 5s vertical slide and pause control */}
       <div
+        className="relative z-50 w-full border-b border-white/[0.06] bg-[#0E1012] px-4 py-2 text-white"
         onMouseEnter={() => setIsHoveredAnnouncement(true)}
         onMouseLeave={() => setIsHoveredAnnouncement(false)}
-        className="relative z-50 w-full select-none border-b border-white/[0.08] bg-[#0f1214] text-[11px] text-[#DEDBD2]"
       >
-        <div className="container mx-auto flex h-7 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex h-5 flex-1 items-center justify-center overflow-hidden sm:justify-start">
+        <div className="container mx-auto flex max-w-7xl items-center justify-between">
+          <div className="flex-1 overflow-hidden">
             <div
               key={activeAnnouncement}
               className="animate-in fade-in slide-in-from-bottom-2 flex items-center gap-2 font-sans text-xs font-medium duration-300"
@@ -154,7 +161,7 @@ export function Header() {
             </div>
           </div>
 
-          {/* Pause / Play Control per §5.2 rule 7 */}
+          {/* Pause / Play Control */}
           <button
             onClick={() => setIsAnnouncementPaused(!isAnnouncementPaused)}
             className="hidden items-center gap-1 text-[10px] text-[#8A8F95] transition-colors hover:text-white sm:flex"
@@ -173,7 +180,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* 7.1 Header: Transparent over hero, switches to --shell (#15181B) after 80px */}
+      {/* Main Header Bar */}
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           isHiddenOnScrollDown ? '-translate-y-full' : 'translate-y-0'
@@ -187,172 +194,170 @@ export function Header() {
         }}
       >
         <div className="container mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Brand Monogram & Wordmark */}
-          <div className="flex items-center gap-8 lg:gap-12">
-            <PulseWearLogo size="md" />
+          {/* Left: Brand Monogram & Navigation Buttons */}
+          <div className="flex items-center gap-6 lg:gap-10">
+            <PulseWearLogo size="md" showTagline={false} />
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden items-center gap-6 md:flex">
-              {/* Home button on EVERY page */}
+            {/* Desktop Navigation Buttons: HOME, CATEGORY, ABOUT US, REVIEWS */}
+            <nav className="hidden items-center gap-1 md:flex">
+              {/* HOME BUTTON */}
               <Link
                 href="/"
-                className="flex items-center gap-1.5 py-2 text-xs font-bold uppercase tracking-wider text-[#FF5A1F] transition-colors hover:text-white"
-                title="Return to Home Page"
+                className={`rounded-lg px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                  pathname === '/'
+                    ? 'bg-white/[0.06] text-[#FF5A1F]'
+                    : 'text-[#DEDBD2] hover:bg-white/[0.04] hover:text-white'
+                }`}
               >
-                <Home className="h-3.5 w-3.5" />
-                <span>Home</span>
+                Home
               </Link>
 
-              {/* Hoodies with preview panel */}
-              <div
-                className="relative"
-                onMouseEnter={() => setHoveredNavMenu('hoodie')}
-                onMouseLeave={() => setHoveredNavMenu(null)}
-              >
-                <Link
-                  href="/?category=hoodie#catalog"
-                  className={`py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                    hoveredNavMenu === 'hoodie' ? 'text-white' : 'text-[#DEDBD2] hover:text-white'
+              {/* CATEGORY BUTTON (With Dropdown & Embedded Search) */}
+              <div className="relative" ref={categoryMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
+                  className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    categoryMenuOpen
+                      ? 'bg-white/[0.08] text-[#FF5A1F]'
+                      : 'text-[#DEDBD2] hover:bg-white/[0.04] hover:text-white'
                   }`}
+                  aria-expanded={categoryMenuOpen}
+                  aria-haspopup="true"
                 >
-                  Hoodies
-                </Link>
+                  <span>Category</span>
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                      categoryMenuOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
 
-                {/* Hover Preview Panel §7.1 (3 thumbnails + Shop all link) */}
-                {hoveredNavMenu === 'hoodie' && (
-                  <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full mt-2 w-80 rounded-sm border border-white/10 bg-[#1F2327] p-4 shadow-2xl duration-200">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-2 font-sans text-xs font-semibold tracking-wider text-slate-400">
-                      <span>500 GSM HEAVYWEIGHT</span>
-                      <Link
-                        href="/?category=hoodie#catalog"
-                        className="text-[#FF5A1F] hover:underline"
-                      >
-                        Shop all →
-                      </Link>
+                {/* CATEGORY DROPDOWN MENU */}
+                {categoryMenuOpen && (
+                  <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full z-50 mt-2 w-80 rounded-2xl border border-white/15 bg-[#121620]/95 p-4 shadow-2xl backdrop-blur-xl duration-200">
+                    {/* Embedded Search Input */}
+                    <div className="relative mb-3">
+                      <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Search categories & products..."
+                        value={categorySearch}
+                        onChange={(e) => setCategorySearch(e.target.value)}
+                        className="w-full rounded-xl border border-white/10 bg-[#0a0d14] py-2 pl-9 pr-3 text-xs text-white placeholder-slate-400 shadow-inner focus:border-indigo-500 focus:outline-none"
+                        autoFocus
+                      />
                     </div>
-                    <div className="mt-3 grid grid-cols-3 gap-2">
-                      {previewHoodies.map((item) => (
+
+                    {/* Live Matching Products (if user typed search query) */}
+                    {categorySearch.trim() && (
+                      <div className="mb-3 max-h-48 overflow-y-auto border-b border-white/10 pb-3">
+                        <span className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          Matching Products
+                        </span>
+                        {filteredProducts.length > 0 ? (
+                          <div className="space-y-1">
+                            {filteredProducts.map((p) => (
+                              <Link
+                                key={p.id}
+                                href={`/?category=${p.category}#catalog`}
+                                onClick={() => {
+                                  setCategoryMenuOpen(false);
+                                  setCategorySearch('');
+                                }}
+                                className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs text-slate-200 transition-colors hover:bg-white/10 hover:text-white"
+                              >
+                                <span className="truncate">{p.title}</span>
+                                <span className="font-mono text-[11px] font-bold text-cyan-400">
+                                  {formatPrice(p.price)}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-[11px] italic text-slate-400">
+                            No products matching &quot;{categorySearch}&quot;
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Categories List */}
+                    <div>
+                      <div className="flex items-center justify-between border-b border-white/10 pb-1.5 font-sans text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        <span>Collections</span>
                         <Link
-                          key={item.id}
-                          href="/?category=hoodie#catalog"
-                          className="group block text-center"
+                          href="/#catalog"
+                          onClick={() => setCategoryMenuOpen(false)}
+                          className="text-[#FF5A1F] hover:underline"
                         >
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            width={80}
-                            height={100}
-                            sizes="24px"
-                            className="aspect-[4/5] w-full rounded-none bg-black/40 object-cover transition-opacity group-hover:opacity-85"
-                          />
-                          <span className="mt-1 block truncate text-[10px] font-medium text-white">
-                            {item.title}
-                          </span>
-                          <span className="text-[10px] tabular-nums text-[#8A8F95]">
-                            ${item.price}
+                          All Products →
+                        </Link>
+                      </div>
+
+                      <div className="mt-2 space-y-1">
+                        <Link
+                          href="/#catalog"
+                          onClick={() => setCategoryMenuOpen(false)}
+                          className="flex items-center justify-between rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                          <span>All Categories</span>
+                          <span className="font-mono text-[10px] text-slate-400">
+                            {PRODUCTS.length}
                           </span>
                         </Link>
-                      ))}
+
+                        {filteredCategories.map((cat) => (
+                          <Link
+                            key={cat.id}
+                            href={`/?category=${cat.id}#catalog`}
+                            onClick={() => setCategoryMenuOpen(false)}
+                            className="flex items-center justify-between rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10 hover:text-white"
+                          >
+                            <span>{cat.label}</span>
+                            {cat.badge && (
+                              <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-[9px] font-bold uppercase text-indigo-300">
+                                {cat.badge}
+                              </span>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Jackets with preview panel */}
-              <div
-                className="relative"
-                onMouseEnter={() => setHoveredNavMenu('jacket')}
-                onMouseLeave={() => setHoveredNavMenu(null)}
-              >
-                <Link
-                  href="/?category=jacket#catalog"
-                  className={`py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                    hoveredNavMenu === 'jacket' ? 'text-white' : 'text-[#DEDBD2] hover:text-white'
-                  }`}
-                >
-                  Jackets
-                </Link>
-
-                {/* Hover Preview Panel §7.1 */}
-                {hoveredNavMenu === 'jacket' && (
-                  <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full mt-2 w-80 rounded-sm border border-white/10 bg-[#1F2327] p-4 shadow-2xl duration-200">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-2 font-sans text-xs font-semibold tracking-wider text-slate-400">
-                      <span>20,000 MM WEATHERPROOF</span>
-                      <Link
-                        href="/?category=jacket#catalog"
-                        className="text-[#FF5A1F] hover:underline"
-                      >
-                        Shop all →
-                      </Link>
-                    </div>
-                    <div className="mt-3 grid grid-cols-3 gap-2">
-                      {previewJackets.map((item) => (
-                        <Link
-                          key={item.id}
-                          href="/?category=jacket#catalog"
-                          className="group block text-center"
-                        >
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            width={80}
-                            height={100}
-                            sizes="24px"
-                            className="aspect-[4/5] w-full rounded-none bg-black/40 object-cover transition-opacity group-hover:opacity-85"
-                          />
-                          <span className="mt-1 block truncate text-[10px] font-medium text-white">
-                            {item.title}
-                          </span>
-                          <span className="text-[10px] tabular-nums text-[#8A8F95]">
-                            ${item.price}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
+              {/* ABOUT US BUTTON */}
               <Link
-                href="/#lookbook"
-                className="text-xs font-semibold uppercase tracking-wider text-[#DEDBD2] transition-colors hover:text-white"
+                href="/about"
+                className={`rounded-lg px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                  pathname === '/about'
+                    ? 'bg-white/[0.06] text-[#FF5A1F]'
+                    : 'text-[#DEDBD2] hover:bg-white/[0.04] hover:text-white'
+                }`}
               >
-                Lookbook
+                About Us
               </Link>
+
+              {/* REVIEWS BUTTON */}
               <Link
                 href="/#reviews"
-                className="text-xs font-semibold uppercase tracking-wider text-[#DEDBD2] transition-colors hover:text-white"
+                className="rounded-lg px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-[#DEDBD2] transition-colors hover:bg-white/[0.04] hover:text-white"
               >
                 Reviews
               </Link>
             </nav>
           </div>
 
-          {/* Right Section: Search, Wishlist, Bag, Theme, Auth */}
-          <div className="flex items-center gap-3">
-            {/* Voting Energy Badge */}
-            <div className="hidden lg:flex">
-              <EnergyBadge />
-            </div>
-
-            {/* Search Trigger (Keyboard '/' indicator) */}
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 rounded-sm border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-[#8A8F95] transition-all hover:border-white/25 hover:text-white"
-              aria-label="Open search overlay"
-            >
-              <Search className="h-3.5 w-3.5" />
-              <span className="hidden font-sans font-medium sm:inline">Search</span>
-              <kbd className="hidden rounded bg-white/10 px-1.5 py-0.5 font-sans text-[9px] font-semibold text-white sm:inline">
-                /
-              </kbd>
-            </button>
-
+          {/* Right Section: Wishlist, Zoom, Dark/Light Mode, Auth, and Bag (Bag at far right!) */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Wishlist Pill */}
             <button
               onClick={handleWishlistClick}
-              className="relative flex h-9 w-9 items-center justify-center rounded-sm border border-white/10 bg-white/[0.03] text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
+              className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white active:scale-95"
               aria-label="Wishlist"
+              title="Saved items"
             >
               <Heart
                 className={`h-4 w-4 ${wishlistCount > 0 ? 'fill-[#FF5A1F] text-[#FF5A1F]' : ''}`}
@@ -364,25 +369,18 @@ export function Header() {
               )}
             </button>
 
-            {/* Bag Button: Vertical rolling count §7.1 */}
-            <button
-              onClick={openCart}
-              className="group flex h-9 items-center gap-2 rounded-sm border border-white/10 bg-[#1F2327] px-3.5 text-xs font-semibold text-[#F2F5F7] transition-all hover:border-white/30"
-              aria-label="Open Cart Bag"
-            >
-              <ShoppingBag className="h-4 w-4 text-[#DEDBD2] group-hover:text-white" />
-              <span>Bag</span>
-              <span className="font-mono text-xs font-bold tabular-nums text-white">
-                {itemCount}
-              </span>
-            </button>
+            {/* Small Zoom Button (Pops open small section when clicked) */}
+            <FontControls />
+
+            {/* Small Light/Dark Mode Button (No switch, direct toggle on click) */}
+            <ThemeToggle />
 
             {/* User Account / Auth Controls */}
             {user ? (
               <div className="relative" ref={accountMenuRef}>
                 <button
                   onClick={() => setAccountMenuOpen(!accountMenuOpen)}
-                  className="flex h-9 items-center gap-1.5 rounded-sm border border-white/10 bg-white/[0.03] px-2.5 text-xs font-semibold text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
+                  className="flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 text-xs font-semibold text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
                   aria-label="User Account"
                 >
                   <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5A1F] text-[10px] font-bold text-white">
@@ -400,7 +398,7 @@ export function Header() {
                 </button>
 
                 {accountMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-48 rounded-sm border border-white/10 bg-[#1F2327] p-2 shadow-2xl backdrop-blur-md">
+                  <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 top-full z-50 mt-2 w-48 rounded-xl border border-white/10 bg-[#1F2327] p-2 shadow-2xl backdrop-blur-md">
                     <div className="border-b border-white/10 px-2 pb-2">
                       <p className="truncate text-xs font-bold text-white">
                         {profile?.display_name || 'Pulse Member'}
@@ -412,7 +410,7 @@ export function Header() {
                       <Link
                         href="/admin"
                         onClick={() => setAccountMenuOpen(false)}
-                        className="mt-1 flex items-center gap-2 rounded-sm px-2 py-1.5 text-xs text-[#FF5A1F] hover:bg-white/5"
+                        className="mt-1 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-[#FF5A1F] hover:bg-white/5"
                       >
                         <Shield className="h-3.5 w-3.5" />
                         <span>Admin Console</span>
@@ -422,7 +420,7 @@ export function Header() {
                     <form action={signOutAction} className="mt-1">
                       <button
                         type="submit"
-                        className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-xs text-[#8A8F95] hover:bg-white/5 hover:text-white"
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs text-[#8A8F95] hover:bg-white/5 hover:text-white"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                         <span>Sign Out</span>
@@ -434,7 +432,7 @@ export function Header() {
             ) : (
               <Link
                 href="/login"
-                className="flex h-9 items-center gap-1.5 rounded-sm border border-white/10 bg-white/[0.03] px-3 text-xs font-semibold text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
+                className="flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 text-xs font-semibold text-[#DEDBD2] transition-all hover:border-white/30 hover:text-white"
                 aria-label="Sign In"
               >
                 <User className="h-3.5 w-3.5 text-[#8A8F95]" />
@@ -442,29 +440,23 @@ export function Header() {
               </Link>
             )}
 
-            {/* Only show Admin icon if user role is admin §1 problem 3 */}
-            {isAdmin && !user && (
-              <Link
-                href="/admin"
-                title="Admin Console"
-                className="flex h-9 w-9 items-center justify-center rounded-sm border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 text-[#FF5A1F]"
-              >
-                <Shield className="h-4 w-4" />
-              </Link>
-            )}
+            {/* Shopping Bag Button — Kept at the right side! */}
+            <button
+              onClick={openCart}
+              className="group flex h-9 items-center gap-2 rounded-lg border border-white/10 bg-[#1F2327] px-3.5 text-xs font-semibold text-[#F2F5F7] shadow-sm transition-all hover:border-white/30 active:scale-95"
+              aria-label="Open Cart Bag"
+            >
+              <ShoppingBag className="h-4 w-4 text-[#DEDBD2] transition-colors group-hover:text-white" />
+              <span>Bag</span>
+              <span className="font-mono text-xs font-bold tabular-nums text-white">
+                {itemCount}
+              </span>
+            </button>
 
-            {/* Accessibility Font Size Controls (A+ / A- / Reset) */}
-            <div className="hidden sm:flex">
-              <FontControls />
-            </div>
-
-            {/* Theme Toggle */}
-            <ThemeToggle />
-
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex h-9 w-9 items-center justify-center rounded-sm border border-white/10 text-white md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-white md:hidden"
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -475,45 +467,70 @@ export function Header() {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="animate-in fade-in border-b border-white/10 bg-[#15181B] px-6 py-6 duration-200 md:hidden">
-            <nav className="flex flex-col space-y-4">
+            <nav className="flex flex-col space-y-3">
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#FF5A1F]"
+                className="rounded-lg px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#FF5A1F] hover:bg-white/5"
               >
-                <Home className="h-4 w-4" />
-                <span>Home</span>
+                Home
               </Link>
-              <div className="py-1">
-                <FontControls className="w-full justify-between py-2" />
+
+              {/* Mobile Search Input */}
+              <div className="relative py-1">
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search categories & products..."
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-[#0e121a] py-2 pl-9 pr-3 text-xs text-white placeholder-slate-400"
+                />
               </div>
+
+              {/* Mobile Categories Accordion */}
+              <div className="rounded-xl border border-white/10 bg-[#0e121a] p-3">
+                <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Categories
+                </span>
+                <div className="mt-2 space-y-1.5">
+                  <Link
+                    href="/#catalog"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-xs font-semibold text-slate-200"
+                  >
+                    All Collections ({PRODUCTS.length})
+                  </Link>
+                  {filteredCategories.map((cat) => (
+                    <Link
+                      key={cat.id}
+                      href={`/?category=${cat.id}#catalog`}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between text-xs text-slate-300"
+                    >
+                      <span>{cat.label}</span>
+                      {cat.badge && (
+                        <span className="rounded bg-indigo-500/20 px-1.5 py-0.5 text-[9px] font-bold text-indigo-300">
+                          {cat.badge}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <Link
-                href="/?category=hoodie#catalog"
+                href="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex justify-between text-sm font-semibold uppercase tracking-wider text-white"
+                className="rounded-lg px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#DEDBD2] hover:bg-white/5 hover:text-white"
               >
-                <span>Hoodies</span>
-                <span className="font-sans text-xs font-medium text-slate-400">500 GSM</span>
+                About Us
               </Link>
-              <Link
-                href="/?category=jacket#catalog"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex justify-between text-sm font-semibold uppercase tracking-wider text-white"
-              >
-                <span>Jackets</span>
-                <span className="font-sans text-xs font-medium text-slate-400">20K MM</span>
-              </Link>
-              <Link
-                href="/#lookbook"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-semibold uppercase tracking-wider text-[#DEDBD2]"
-              >
-                Lookbook
-              </Link>
+
               <Link
                 href="/#reviews"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-semibold uppercase tracking-wider text-[#DEDBD2]"
+                className="rounded-lg px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#DEDBD2] hover:bg-white/5 hover:text-white"
               >
                 Reviews
               </Link>
@@ -543,7 +560,7 @@ export function Header() {
                   <form action={signOutAction}>
                     <button
                       type="submit"
-                      className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8A8F95] hover:text-white"
+                      className="flex items-center gap-2 text-xs text-[#8A8F95] hover:text-white"
                     >
                       <LogOut className="h-3.5 w-3.5" />
                       <span>Sign Out</span>
@@ -551,30 +568,19 @@ export function Header() {
                   </form>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2.5">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex w-full items-center justify-center rounded-sm bg-[#FF5A1F] py-2.5 text-xs font-bold uppercase tracking-wider text-white"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex w-full items-center justify-center rounded-sm border border-white/15 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#DEDBD2]"
-                  >
-                    Create Account
-                  </Link>
-                </div>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 text-sm font-semibold text-white"
+                >
+                  <User className="h-4 w-4 text-[#FF5A1F]" />
+                  <span>Sign In / Join Drop Access</span>
+                </Link>
               )}
             </div>
           </div>
         )}
       </header>
-
-      {/* Full-width Search Overlay §7.1 */}
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 }

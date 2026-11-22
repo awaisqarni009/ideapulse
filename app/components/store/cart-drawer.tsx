@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '@/lib/store/cart-context';
+import { useCurrency } from '@/lib/store/currency-context';
 import { X, Trash2, ArrowRight } from 'lucide-react';
 import { ease } from '@/lib/motion';
 
 export function CartDrawer() {
+  const { formatPrice } = useCurrency();
   const {
     items,
     isCartOpen,
@@ -197,7 +199,7 @@ export function CartDrawer() {
                         </div>
 
                         <span className="font-mono text-xs font-bold tabular-nums text-white">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          {formatPrice(item.price * item.quantity, true)}
                         </span>
                       </div>
                     </div>
@@ -250,12 +252,12 @@ export function CartDrawer() {
               <div className="space-y-1.5 font-mono text-xs text-[#8A8F95]">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="tabular-nums text-white">${subtotal.toFixed(2)}</span>
+                  <span className="tabular-nums text-white">{formatPrice(subtotal, true)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-[#10B981]">
                     <span>Discount ({promoDiscountPercent}%)</span>
-                    <span className="tabular-nums">-${discount.toFixed(2)}</span>
+                    <span className="tabular-nums">-{formatPrice(discount, true)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
@@ -264,13 +266,13 @@ export function CartDrawer() {
                     {shipping === 0 ? (
                       <strong className="text-[#10B981]">FREE</strong>
                     ) : (
-                      `$${shipping.toFixed(2)}`
+                      formatPrice(shipping, true)
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between border-t border-white/10 pt-2 text-sm font-bold text-white">
                   <span>Total</span>
-                  <span className="tabular-nums text-white">${total.toFixed(2)}</span>
+                  <span className="tabular-nums text-white">{formatPrice(total, true)}</span>
                 </div>
               </div>
 
