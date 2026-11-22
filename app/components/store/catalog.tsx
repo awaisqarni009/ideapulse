@@ -2,7 +2,13 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
-import { PRODUCTS, CATEGORIES, Product } from '@/lib/store/products';
+import {
+  PRODUCTS,
+  CATEGORIES,
+  Product,
+  ProductCategory,
+  getStoredCategories,
+} from '@/lib/store/products';
 import { ProductCard } from '@/app/components/store/product-card';
 import { springHeavy, ease } from '@/lib/motion';
 
@@ -12,6 +18,7 @@ interface CatalogProps {
 
 export function Catalog({ onQuickView }: CatalogProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [categories, setCategories] = useState<ProductCategory[]>(CATEGORIES);
   const [priceFilter, setPriceFilter] = useState<'all' | 'under100' | '100to160' | 'over160'>(
     'all',
   );
@@ -19,13 +26,27 @@ export function Catalog({ onQuickView }: CatalogProps) {
     'featured',
   );
 
+  // Sync custom categories from storage
+  useEffect(() => {
+    const updateCats = () => {
+      setCategories(getStoredCategories().filter((c) => c.status !== 'hidden'));
+    };
+    updateCats();
+    window.addEventListener('pulsewear-categories-updated', updateCats);
+    window.addEventListener('storage', updateCats);
+    return () => {
+      window.removeEventListener('pulsewear-categories-updated', updateCats);
+      window.removeEventListener('storage', updateCats);
+    };
+  }, []);
+
   // Sync category from URL query parameters (e.g. from header nav links)
   useEffect(() => {
     const handleUrlSync = () => {
       if (typeof window !== 'undefined') {
         const params = new URLSearchParams(window.location.search);
         const cat = params.get('category');
-        if (cat && ['hoodie', 'jacket', 'bestseller', 'new', 'all'].includes(cat)) {
+        if (cat) {
           setSelectedCategory(cat);
         }
       }
@@ -64,6 +85,23 @@ export function Catalog({ onQuickView }: CatalogProps) {
         if (selectedCategory === 'jacket' && item.category !== 'jacket') return false;
         if (selectedCategory === 'bestseller' && item.badge !== 'Bestseller') return false;
         if (selectedCategory === 'new' && item.badge !== 'New drop') return false;
+        if (
+          selectedCategory !== 'all' &&
+          selectedCategory !== 'hoodie' &&
+          selectedCategory !== 'jacket' &&
+          selectedCategory !== 'bestseller' &&
+          selectedCategory !== 'new'
+        ) {
+          const cat = item.category as string;
+          const sub = item.subcategory as string;
+          if (
+            cat !== selectedCategory &&
+            sub !== selectedCategory &&
+            (item as any).categoryId !== selectedCategory
+          ) {
+            return false;
+          }
+        }
 
         if (priceFilter === 'under100' && item.price >= 100) return false;
         if (priceFilter === '100to160' && (item.price < 100 || item.price > 160)) return false;
@@ -90,7 +128,7 @@ export function Catalog({ onQuickView }: CatalogProps) {
               className="flex items-center gap-1 overflow-x-auto pb-1 sm:gap-2 sm:pb-0"
               aria-label="Category filter"
             >
-              {CATEGORIES.map((c) => {
+              {categories.map((c) => {
                 const isActive = selectedCategory === c.id;
                 // Compute category item count
                 const count = allProducts.filter((item) => {
@@ -99,7 +137,11 @@ export function Catalog({ onQuickView }: CatalogProps) {
                   if (c.id === 'jacket') return item.category === 'jacket';
                   if (c.id === 'bestseller') return item.badge === 'Bestseller';
                   if (c.id === 'new') return item.badge === 'New drop';
-                  return true;
+                  return (
+                    (item.category as string) === c.id ||
+                    (item.subcategory as string) === c.id ||
+                    (item as any).categoryId === c.id
+                  );
                 }).length;
 
                 return (

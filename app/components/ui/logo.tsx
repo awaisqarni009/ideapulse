@@ -54,20 +54,20 @@ export function PulseWearLogo({
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5 leading-none">
           <span
-            className={`font-display font-black tracking-tight text-white transition-colors duration-200 group-hover:text-slate-100 ${textSizes[size]}`}
+            className={`font-display font-black tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-slate-100 ${textSizes[size]}`}
           >
             PULSE
-            <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent dark:from-indigo-400 dark:via-violet-400 dark:to-cyan-400">
               WEAR
             </span>
           </span>
-          <span className="rounded-full border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 font-sans text-[9px] font-bold uppercase tracking-wider text-indigo-300">
+          <span className="rounded-full border border-indigo-500/20 bg-indigo-50 px-2 py-0.5 font-sans text-[9px] font-bold uppercase tracking-wider text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/15 dark:text-indigo-300">
             DROP 26
           </span>
         </div>
 
         {showTagline && (
-          <span className="mt-1 hidden font-sans text-[11px] font-medium tracking-wide text-slate-300/90 sm:block">
+          <span className="mt-1 hidden whitespace-nowrap font-sans text-[11px] font-medium tracking-wide text-slate-600 dark:text-slate-300/90 sm:block">
             500 GSM Heavyweight Streetwear
           </span>
         )}

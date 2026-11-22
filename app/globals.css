@@ -194,6 +194,117 @@
   --glow-danger-md: 0 0 0 1px rgba(248, 113, 113, 0.4), 0 8px 28px -8px rgba(248, 113, 113, 0.42);
 }
 
+/* =========================================================
+   LIGHT / BRIGHT MODE STORE ENGINE
+   When <html> does NOT have .dark class (i.e. Light Mode)
+========================================================= */
+html:not(.dark) {
+  color-scheme: light;
+}
+
+html:not(.dark) body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) main {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Transform dark surfaces to clean light surfaces */
+html:not(.dark) .bg-\[\#15181B\],
+html:not(.dark) .bg-\[\#0A0C0E\],
+html:not(.dark) .bg-\[\#0B0F19\],
+html:not(.dark) .bg-\[\#0e1117\],
+html:not(.dark) .bg-\[\#0E121B\],
+html:not(.dark) .bg-\[\#0A0C10\],
+html:not(.dark) .bg-\[\#07090e\] {
+  background-color: #f8fafc !important;
+}
+
+html:not(.dark) .bg-\[\#12161F\],
+html:not(.dark) .bg-\[\#1F2327\],
+html:not(.dark) .bg-\[\#151922\],
+html:not(.dark) .bg-\[\#161B26\],
+html:not(.dark) .bg-\[\#151A24\],
+html:not(.dark) .bg-\[\#121620\],
+html:not(.dark) .bg-\[\#161B28\],
+html:not(.dark) .bg-\[\#0C101A\],
+html:not(.dark) .bg-\[\#0c1017\],
+html:not(.dark) .bg-\[\#12151C\]\/60 {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06) !important;
+}
+
+html:not(.dark) .bg-black\/40,
+html:not(.dark) .bg-black\/50,
+html:not(.dark) .bg-black\/60,
+html:not(.dark) .bg-black\/70 {
+  background-color: rgba(241, 245, 249, 0.85) !important;
+}
+
+/* Light Mode Text High-Contrast Transformation */
+html:not(.dark) .text-\[\#F2F5F7\],
+html:not(.dark) .text-white {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .text-\[\#8A8F95\],
+html:not(.dark) .text-\[\#A0AEC0\],
+html:not(.dark) .text-slate-300,
+html:not(.dark) .text-slate-400 {
+  color: #475569 !important;
+}
+
+html:not(.dark) .text-slate-200,
+html:not(.dark) .text-slate-100 {
+  color: #1e293b !important;
+}
+
+/* Light Mode Borders */
+html:not(.dark) .border-white\/10,
+html:not(.dark) .border-white\/5,
+html:not(.dark) .border-white\/15,
+html:not(.dark) .border-white\/20,
+html:not(.dark) .border-white\/25,
+html:not(.dark) .border-white\/30 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Keep primary buttons and badges with crisp white text */
+html:not(.dark) .bg-gradient-to-r.from-indigo-600,
+html:not(.dark) .bg-gradient-to-r.from-red-600,
+html:not(.dark) .bg-\[\#FF5A1F\],
+html:not(.dark) button.bg-indigo-600,
+html:not(.dark) .bg-emerald-500 {
+  color: #ffffff !important;
+}
+
+html:not(.dark) .bg-gradient-to-r.from-indigo-600 *,
+html:not(.dark) .bg-gradient-to-r.from-red-600 *,
+html:not(.dark) .bg-\[\#FF5A1F\] *,
+html:not(.dark) button.bg-indigo-600 *,
+html:not(.dark) .bg-emerald-500 * {
+  color: #ffffff !important;
+}
+
+/* Light mode header and sticky navs */
+html:not(.dark) header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) .bg-\[\#15181B\]\/95 {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+
+/* Light mode footer */
+html:not(.dark) footer {
+  background-color: #f1f5f9 !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
 /* NextGen Volumetric Lighting, Dual-Tone Gradients & 3D Glass Utilities */
 .text-gradient-dual {
   background: linear-gradient(

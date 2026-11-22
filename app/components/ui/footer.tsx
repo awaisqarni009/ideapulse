@@ -14,7 +14,7 @@ export function Footer() {
             <PulseWearLogo size="md" showTagline={false} />
             <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#8A8F95]">
               Dense 500 GSM loopback French terry hoodies and 20,000 mm waterproof tactical shells,
-              built to outlast the season. Powered by IdeaPulse Incubator.
+              built for cold-weather endurance and architectural drape.
             </p>
             <div className="mt-4 font-sans text-xs font-medium text-slate-400">
               Worldwide fulfillment · Carbon neutral shipping
@@ -96,22 +96,22 @@ export function Footer() {
             <ul className="mt-4 space-y-2 text-xs">
               <li>
                 <Link href="/about" className="transition-colors hover:text-white">
-                  About Us
+                  About PulseWear
                 </Link>
               </li>
               <li>
                 <Link href="/how-it-works" className="transition-colors hover:text-white">
-                  How It Works
+                  How Drops Work
                 </Link>
               </li>
               <li>
                 <Link href="/faq" className="transition-colors hover:text-white">
-                  FAQ & Support
+                  FAQ & Sizing Support
                 </Link>
               </li>
               <li>
                 <Link href="/privacy" className="transition-colors hover:text-white">
-                  Privacy Notice
+                  Privacy Policy
                 </Link>
               </li>
               <li>
@@ -187,7 +187,10 @@ export function Footer() {
 
         {/* Bottom Sub-Bar */}
         <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 font-sans text-xs text-slate-400 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} PULSEWEAR. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} PULSEWEAR · Engineered by IdeaPulse Incubator. All
+            rights reserved.
+          </p>
           <div className="flex items-center gap-4">
             <span>500 GSM Organic Loopback</span>
             <span>·</span>

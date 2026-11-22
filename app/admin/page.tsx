@@ -2,7 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PRODUCTS, Product, ProductColor } from '@/lib/store/products';
+import { useRouter } from 'next/navigation';
+import {
+  PRODUCTS,
+  Product,
+  ProductColor,
+  ProductCategory,
+  getStoredCategories,
+  saveStoredCategories,
+} from '@/lib/store/products';
 import {
   Shield,
   Package,
@@ -296,13 +304,144 @@ const INITIAL_DISCOUNTS: DiscountCode[] = [
 ];
 
 export default function AdminPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'products' | 'users' | 'orders' | 'discounts'
+    'overview' | 'products' | 'categories' | 'users' | 'orders' | 'discounts'
   >('overview');
   const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
+  const [categoriesList, setCategoriesList] = useState<ProductCategory[]>([]);
+  const [categorySearch, setCategorySearch] = useState('');
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
+  const [categoryForm, setCategoryForm] = useState({
+    id: '',
+    label: '',
+    description: '',
+    badge: '',
+    status: 'active' as 'active' | 'hidden',
+  });
   const [usersList, setUsersList] = useState<AdminUser[]>(INITIAL_USERS);
   const [ordersList, setOrdersList] = useState<AdminOrder[]>(INITIAL_DEMO_ORDERS);
   const [discountsList, setDiscountsList] = useState<DiscountCode[]>(INITIAL_DISCOUNTS);
+
+  // Admin Route Access Guard (§4 Separate Admin Gateway)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isAuth = sessionStorage.getItem('pulsewear_admin_session');
+      if (isAuth !== 'true') {
+        router.push('/admin/login');
+      }
+    }
+  }, [router]);
+
+  // Sync Categories from Persistent Store
+  useEffect(() => {
+    setCategoriesList(getStoredCategories());
+  }, []);
+
+  const handleAdminLogout = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('pulsewear_admin_session');
+      sessionStorage.removeItem('pulsewear_admin_user');
+      router.push('/admin/login');
+    }
+  };
+
+  const handleOpenAddCategory = () => {
+    setEditingCategory(null);
+    setCategoryForm({
+      id: '',
+      label: '',
+      description: '',
+      badge: '',
+      status: 'active',
+    });
+    setIsCategoryModalOpen(true);
+  };
+
+  const handleOpenEditCategory = (cat: ProductCategory) => {
+    setEditingCategory(cat);
+    setCategoryForm({
+      id: cat.id,
+      label: cat.label,
+      description: cat.description || '',
+      badge: cat.badge || '',
+      status: cat.status || 'active',
+    });
+    setIsCategoryModalOpen(true);
+  };
+
+  const handleSaveCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!categoryForm.label.trim()) {
+      showToast('Category name is required.');
+      return;
+    }
+    const slug =
+      categoryForm.id.trim() ||
+      categoryForm.label
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+
+    const newCategory: ProductCategory = {
+      id: slug,
+      label: categoryForm.label.trim(),
+      description: categoryForm.description.trim(),
+      badge: categoryForm.badge.trim(),
+      status: categoryForm.status,
+    };
+
+    let updated: ProductCategory[];
+    if (editingCategory) {
+      updated = categoriesList.map((c) => (c.id === editingCategory.id ? newCategory : c));
+      showToast(`Category "${newCategory.label}" updated successfully.`);
+    } else {
+      if (categoriesList.some((c) => c.id === slug)) {
+        showToast('A category with this identifier already exists.');
+        return;
+      }
+      updated = [...categoriesList, newCategory];
+      showToast(`Category "${newCategory.label}" created and live on storefront.`);
+    }
+
+    setCategoriesList(updated);
+    saveStoredCategories(updated);
+    setIsCategoryModalOpen(false);
+  };
+
+  const handleDeleteCategory = (catId: string, catLabel: string) => {
+    if (catId === 'all') {
+      showToast('The "All" root category cannot be removed.');
+      return;
+    }
+    const mappedCount = productsList.filter(
+      (p) => p.category === catId || (p as any).categoryId === catId,
+    ).length;
+    const confirmMsg =
+      mappedCount > 0
+        ? `Warning: ${mappedCount} products belong to "${catLabel}". Are you sure you want to delete this category?`
+        : `Are you sure you want to delete the "${catLabel}" category?`;
+
+    if (window.confirm(confirmMsg)) {
+      const updated = categoriesList.filter((c) => c.id !== catId);
+      setCategoriesList(updated);
+      saveStoredCategories(updated);
+      showToast(`Category "${catLabel}" deleted.`);
+    }
+  };
+
+  const handleToggleCategoryStatus = (catId: string) => {
+    if (catId === 'all') return;
+    const updated = categoriesList.map((c) =>
+      c.id === catId
+        ? { ...c, status: c.status === 'hidden' ? ('active' as const) : ('hidden' as const) }
+        : c,
+    );
+    setCategoriesList(updated);
+    saveStoredCategories(updated);
+    showToast('Category visibility toggled.');
+  };
 
   // Products Tab View Mode: 'table' | 'grid'
   const [productViewMode, setProductViewMode] = useState<'table' | 'grid'>('table');
@@ -805,7 +944,7 @@ export default function AdminPage() {
       {/* Toast Notification */}
       {toastMessage && (
         <div className="animate-in fade-in slide-in-from-bottom-5 fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl border border-indigo-500/40 bg-[#0e1322] px-5 py-3.5 text-sm font-semibold text-white shadow-2xl shadow-indigo-500/30 backdrop-blur-xl">
-          <CheckCircle2 className="h-5 w-5 text-[#D4FF00]" />
+          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -830,19 +969,19 @@ export default function AdminPage() {
                   alt="PulseWear Logo"
                   className="h-8 w-8 rounded-lg border border-indigo-500/40 object-cover shadow-sm"
                 />
-                <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#080B11] bg-[#D4FF00]" />
+                <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#080B11] bg-emerald-400" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-display text-base font-black tracking-tight text-white">
                     PULSEWEAR
                   </span>
-                  <span className="rounded bg-[#D4FF00]/15 px-1.5 py-0.5 font-mono text-[9px] font-black text-[#D4FF00]">
-                    MERCHANT
+                  <span className="rounded border border-indigo-500/30 bg-indigo-500/15 px-1.5 py-0.5 font-sans text-[9px] font-bold text-indigo-300">
+                    ADMIN
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400">
-                  Shopify-Grade Outerwear Management
+                  Heavyweight Streetwear Management Gateway
                 </span>
               </div>
             </div>
@@ -860,8 +999,16 @@ export default function AdminPage() {
             </Link>
 
             <button
+              onClick={handleOpenAddCategory}
+              className="hidden items-center gap-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/15 px-3.5 py-2 text-xs font-bold text-cyan-300 transition-colors hover:bg-cyan-500/25 hover:text-white md:flex"
+            >
+              <Layers className="h-3.5 w-3.5" />
+              <span>+ Category</span>
+            </button>
+
+            <button
               onClick={handleOpenAddProduct}
-              className="flex items-center gap-1.5 rounded-xl bg-[#D4FF00] px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-[#D4FF00]/20 transition-all hover:brightness-105 active:scale-95"
+              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 transition-all hover:brightness-110 active:scale-95"
             >
               <Plus className="h-4 w-4 stroke-[3]" />
               <span>Add Product</span>
@@ -869,10 +1016,19 @@ export default function AdminPage() {
 
             <button
               onClick={() => setShowAddUserModal(true)}
-              className="flex items-center gap-1.5 rounded-xl border border-indigo-500/40 bg-indigo-600/20 px-3.5 py-2 text-xs font-bold text-indigo-300 transition-colors hover:bg-indigo-600/30 hover:text-white"
+              className="hidden items-center gap-1.5 rounded-xl border border-indigo-500/40 bg-indigo-600/20 px-3.5 py-2 text-xs font-bold text-indigo-300 transition-colors hover:bg-indigo-600/30 hover:text-white sm:flex"
             >
               <UserPlus className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Add User</span>
+              <span>Add User</span>
+            </button>
+
+            <button
+              onClick={handleAdminLogout}
+              className="flex items-center gap-1.5 rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-500/20 hover:text-red-300"
+              title="Sign Out of Administrator Session"
+            >
+              <Lock className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
             </button>
           </div>
         </div>
@@ -884,7 +1040,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab('overview')}
               className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
                 activeTab === 'overview'
-                  ? 'border-[#D4FF00] text-white'
+                  ? 'border-indigo-500 text-white'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -896,7 +1052,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab('products')}
               className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
                 activeTab === 'products'
-                  ? 'border-[#D4FF00] text-white'
+                  ? 'border-indigo-500 text-white'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -905,10 +1061,22 @@ export default function AdminPage() {
             </button>
 
             <button
+              onClick={() => setActiveTab('categories')}
+              className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'categories'
+                  ? 'border-indigo-500 text-white'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Layers className="h-3.5 w-3.5" />
+              <span>Categories ({categoriesList.length})</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('users')}
               className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
                 activeTab === 'users'
-                  ? 'border-[#D4FF00] text-white'
+                  ? 'border-indigo-500 text-white'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -920,7 +1088,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab('orders')}
               className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
                 activeTab === 'orders'
-                  ? 'border-[#D4FF00] text-white'
+                  ? 'border-indigo-500 text-white'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -932,7 +1100,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab('discounts')}
               className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
                 activeTab === 'discounts'
-                  ? 'border-[#D4FF00] text-white'
+                  ? 'border-indigo-500 text-white'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -1003,7 +1171,7 @@ export default function AdminPage() {
                   <span className="text-xs font-medium uppercase tracking-wider">
                     Avg. Order Value
                   </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#D4FF00]/10 text-[#D4FF00]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
                     <Tag className="h-4 w-4" />
                   </div>
                 </div>
@@ -1020,7 +1188,7 @@ export default function AdminPage() {
               <div className="rounded-2xl border border-white/10 bg-[#0C101A] p-6 lg:col-span-2">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div className="flex items-center gap-2.5">
-                    <Package className="h-5 w-5 text-[#D4FF00]" />
+                    <Package className="h-5 w-5 text-indigo-400" />
                     <h2 className="font-display text-base font-bold text-white">
                       Inventory Status & Catalog Health
                     </h2>
@@ -1077,7 +1245,7 @@ export default function AdminPage() {
                   <h2 className="font-display text-base font-bold text-white">Latest Orders</h2>
                   <button
                     onClick={() => setActiveTab('orders')}
-                    className="text-xs font-bold text-[#D4FF00] hover:underline"
+                    className="text-xs font-bold text-indigo-400 hover:text-indigo-300 hover:underline"
                   >
                     View All
                   </button>
@@ -1160,7 +1328,7 @@ export default function AdminPage() {
 
                 <button
                   onClick={handleOpenAddProduct}
-                  className="flex items-center gap-1.5 rounded-xl bg-[#D4FF00] px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-[#D4FF00]/20 hover:brightness-105 active:scale-95"
+                  className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 hover:brightness-110 active:scale-95"
                 >
                   <Plus className="h-4 w-4 stroke-[3]" />
                   <span>Add Product</span>
@@ -1178,7 +1346,7 @@ export default function AdminPage() {
                   placeholder="Search by title, SKU, or subtitle..."
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2 pl-10 pr-4 text-xs text-white placeholder-slate-500 focus:border-[#D4FF00] focus:outline-none"
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2 pl-10 pr-4 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
                 />
               </div>
 
@@ -1198,7 +1366,7 @@ export default function AdminPage() {
                   onClick={() => setProductCategoryFilter('hoodie')}
                   className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
                     productCategoryFilter === 'hoodie'
-                      ? 'bg-[#D4FF00] font-black text-black'
+                      ? 'bg-indigo-600 font-bold text-white shadow-sm'
                       : 'border border-white/10 bg-white/[0.02] text-slate-400 hover:text-white'
                   }`}
                 >
@@ -1208,7 +1376,7 @@ export default function AdminPage() {
                   onClick={() => setProductCategoryFilter('jacket')}
                   className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
                     productCategoryFilter === 'jacket'
-                      ? 'bg-[#D4FF00] font-black text-black'
+                      ? 'bg-indigo-600 font-bold text-white shadow-sm'
                       : 'border border-white/10 bg-white/[0.02] text-slate-400 hover:text-white'
                   }`}
                 >
@@ -1257,7 +1425,7 @@ export default function AdminPage() {
                                   className="h-full w-full object-cover"
                                 />
                                 {p.badge && (
-                                  <span className="absolute inset-x-0 bottom-0 bg-black/80 py-0.5 text-center font-mono text-[8px] font-bold text-[#D4FF00]">
+                                  <span className="absolute inset-x-0 bottom-0 bg-black/80 py-0.5 text-center font-mono text-[8px] font-bold text-cyan-300">
                                     {p.badge}
                                   </span>
                                 )}
@@ -1292,7 +1460,7 @@ export default function AdminPage() {
                               )}
                             </div>
                             {p.discountOffer && (
-                              <span className="mt-0.5 inline-block rounded bg-[#D4FF00]/15 px-1.5 py-0.5 font-mono text-[9px] font-bold text-[#D4FF00]">
+                              <span className="mt-0.5 inline-block rounded border border-indigo-500/30 bg-indigo-500/15 px-1.5 py-0.5 font-sans text-[9px] font-bold text-indigo-300">
                                 {p.discountOffer}
                               </span>
                             )}
@@ -1387,12 +1555,12 @@ export default function AdminPage() {
                         {/* Badges */}
                         <div className="absolute left-3 top-3 flex flex-col gap-1">
                           {p.badge && (
-                            <span className="rounded bg-black/80 px-2 py-0.5 font-mono text-[9px] font-bold text-[#D4FF00] backdrop-blur-md">
+                            <span className="rounded bg-black/80 px-2 py-0.5 font-mono text-[9px] font-bold text-cyan-300 backdrop-blur-md">
                               {p.badge}
                             </span>
                           )}
                           {p.discountOffer && (
-                            <span className="rounded bg-[#D4FF00] px-2 py-0.5 font-mono text-[9px] font-black text-black">
+                            <span className="rounded bg-gradient-to-r from-indigo-600 to-violet-600 px-2 py-0.5 font-sans text-[9px] font-bold text-white shadow-sm">
                               {p.discountOffer}
                             </span>
                           )}
@@ -1827,7 +1995,7 @@ export default function AdminPage() {
 
               <button
                 onClick={() => setShowAddDiscountModal(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-[#D4FF00] px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-[#D4FF00]/20 hover:brightness-105"
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 hover:brightness-110"
               >
                 <Plus className="h-4 w-4 stroke-[3]" />
                 <span>Create Discount</span>
@@ -1842,7 +2010,7 @@ export default function AdminPage() {
                 >
                   <div>
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-base font-black tracking-wider text-[#D4FF00]">
+                      <span className="font-mono text-base font-black tracking-wider text-indigo-400">
                         {disc.code}
                       </span>
                       <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold text-emerald-400">
@@ -1869,6 +2037,183 @@ export default function AdminPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================
+            TAB 6: CATEGORY & TAXONOMY MANAGEMENT
+           ======================================================== */}
+        {activeTab === 'categories' && (
+          <div className="animate-in fade-in space-y-6 duration-200">
+            {/* Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-display text-xl font-black text-white">
+                  Category Architecture & Taxonomies
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Add, edit, organize, or remove streetwear categories and product collections. Live
+                  synced to storefront filters.
+                </p>
+              </div>
+
+              <button
+                onClick={handleOpenAddCategory}
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 hover:brightness-110 active:scale-95"
+              >
+                <Plus className="h-4 w-4 stroke-[3]" />
+                <span>Add Category</span>
+              </button>
+            </div>
+
+            {/* Quick KPI Cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-[#0C101A] p-4 shadow-sm">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Total Categories
+                </span>
+                <div className="mt-1 font-display text-2xl font-black text-white">
+                  {categoriesList.length}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-[#0C101A] p-4 shadow-sm">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Active On Storefront
+                </span>
+                <div className="mt-1 font-display text-2xl font-black text-emerald-400">
+                  {categoriesList.filter((c) => c.status !== 'hidden').length}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-[#0C101A] p-4 shadow-sm">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Categorized Garments
+                </span>
+                <div className="mt-1 font-display text-2xl font-black text-cyan-400">
+                  {productsList.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Search Filter */}
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Search categories by name, slug or description..."
+                value={categorySearch}
+                onChange={(e) => setCategorySearch(e.target.value)}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            {/* Categories Table */}
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0C101A] shadow-xl">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-white/10 bg-white/[0.02] font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                    <tr>
+                      <th className="px-4 py-3">Category / Collection</th>
+                      <th className="px-4 py-3">Slug Identifier</th>
+                      <th className="px-4 py-3">Description</th>
+                      <th className="px-4 py-3">Badge Tag</th>
+                      <th className="px-4 py-3 text-center">Items</th>
+                      <th className="px-4 py-3 text-center">Visibility</th>
+                      <th className="px-4 py-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {categoriesList
+                      .filter((c) => {
+                        if (!categorySearch.trim()) return true;
+                        const q = categorySearch.toLowerCase();
+                        return (
+                          c.label.toLowerCase().includes(q) ||
+                          c.id.toLowerCase().includes(q) ||
+                          (c.description && c.description.toLowerCase().includes(q))
+                        );
+                      })
+                      .map((cat) => {
+                        const count = productsList.filter((p) => {
+                          if (cat.id === 'all') return true;
+                          if (cat.id === 'hoodie') return p.category === 'hoodie';
+                          if (cat.id === 'jacket') return p.category === 'jacket';
+                          if (cat.id === 'bestseller') return p.badge === 'Bestseller';
+                          if (cat.id === 'new') return p.badge === 'New drop';
+                          return (
+                            (p.category as string) === cat.id ||
+                            (p.subcategory as string) === cat.id ||
+                            (p as any).categoryId === cat.id
+                          );
+                        }).length;
+
+                        const isHidden = cat.status === 'hidden';
+
+                        return (
+                          <tr key={cat.id} className="transition-colors hover:bg-white/[0.02]">
+                            <td className="px-4 py-3.5">
+                              <div className="flex items-center gap-2">
+                                <Layers className="h-4 w-4 text-indigo-400" />
+                                <span className="font-bold text-white">{cat.label}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3.5 font-mono text-[11px] text-cyan-300">
+                              {cat.id}
+                            </td>
+                            <td className="max-w-xs truncate px-4 py-3.5 text-slate-400">
+                              {cat.description || '—'}
+                            </td>
+                            <td className="px-4 py-3.5">
+                              {cat.badge ? (
+                                <span className="rounded-full border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-[10px] font-bold text-indigo-300">
+                                  {cat.badge}
+                                </span>
+                              ) : (
+                                <span className="text-slate-600">—</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3.5 text-center font-bold text-slate-300">
+                              {count}
+                            </td>
+                            <td className="px-4 py-3.5 text-center">
+                              <button
+                                onClick={() => handleToggleCategoryStatus(cat.id)}
+                                disabled={cat.id === 'all'}
+                                className={`rounded-full px-2.5 py-1 text-[10px] font-bold transition-all ${
+                                  isHidden
+                                    ? 'border border-slate-700 bg-slate-800 text-slate-400 hover:border-slate-600'
+                                    : 'border border-emerald-500/30 bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25'
+                                } ${cat.id === 'all' ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+                              >
+                                {isHidden ? 'Hidden' : 'Active'}
+                              </button>
+                            </td>
+                            <td className="px-4 py-3.5 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => handleOpenEditCategory(cat)}
+                                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-colors hover:border-white/20 hover:text-white"
+                                  title="Edit category"
+                                >
+                                  <Edit3 className="h-3.5 w-3.5" />
+                                </button>
+                                {cat.id !== 'all' && (
+                                  <button
+                                    onClick={() => handleDeleteCategory(cat.id, cat.label)}
+                                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 transition-colors hover:bg-red-500/20 hover:text-red-300"
+                                    title="Delete category"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -1904,7 +2249,7 @@ export default function AdminPage() {
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
                 <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
                   <div className="flex items-center gap-2">
-                    <ImageIcon className="h-4 w-4 text-[#D4FF00]" />
+                    <ImageIcon className="h-4 w-4 text-indigo-400" />
                     <span className="text-xs font-bold uppercase tracking-wider text-white">
                       Product Media ({prodImages.length} / 5 Images)
                     </span>
@@ -1932,7 +2277,7 @@ export default function AdminPage() {
                               alt={`Slot ${slotIdx + 1}`}
                               className="h-full w-full object-cover"
                             />
-                            <span className="absolute left-1.5 top-1.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[8px] font-bold text-[#D4FF00]">
+                            <span className="absolute left-1.5 top-1.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[8px] font-bold text-cyan-300">
                               {slotIdx === 0 ? '★ MAIN' : `#${slotIdx + 1}`}
                             </span>
                             <button
@@ -1963,7 +2308,7 @@ export default function AdminPage() {
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                       {/* Local File Upload Button */}
                       <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-white hover:bg-white/[0.08]">
-                        <Upload className="h-3.5 w-3.5 text-[#D4FF00]" />
+                        <Upload className="h-3.5 w-3.5 text-indigo-400" />
                         <span>Upload File (PNG / JPG)</span>
                         <input
                           type="file"
@@ -2003,7 +2348,7 @@ export default function AdminPage() {
                           key={i}
                           type="button"
                           onClick={() => handleAddImage(preset.url)}
-                          className="shrink-0 rounded-lg border border-white/10 bg-white/[0.02] px-2 py-1 text-[10px] text-slate-300 hover:border-[#D4FF00] hover:text-white"
+                          className="shrink-0 rounded-lg border border-white/10 bg-white/[0.02] px-2 py-1 text-[10px] text-slate-300 hover:border-indigo-500 hover:text-white"
                         >
                           + {preset.label}
                         </button>
@@ -2023,7 +2368,7 @@ export default function AdminPage() {
                     value={prodTitle}
                     onChange={(e) => setProdTitle(e.target.value)}
                     placeholder="e.g. Acid Matrix Heavyweight Zip Hoodie"
-                    className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 text-xs text-white focus:border-[#D4FF00] focus:outline-none"
+                    className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
 
@@ -2036,14 +2381,14 @@ export default function AdminPage() {
                     value={prodSubtitle}
                     onChange={(e) => setProdSubtitle(e.target.value)}
                     placeholder="e.g. 500 GSM loopback French terry"
-                    className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 text-xs text-white focus:border-[#D4FF00] focus:outline-none"
+                    className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* SECTION 3: PRICING & DISCOUNT OFFER (SHOPIFY LEVEL) */}
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-                <span className="mb-3 block text-xs font-bold uppercase tracking-wider text-[#D4FF00]">
+                <span className="mb-3 block text-xs font-bold uppercase tracking-wider text-indigo-400">
                   Pricing & Promotional Discounts
                 </span>
 
@@ -2062,7 +2407,7 @@ export default function AdminPage() {
                         value={prodPrice}
                         onChange={(e) => setProdPrice(e.target.value)}
                         placeholder="98.00"
-                        className="w-full rounded-xl border border-white/10 bg-[#07090E] py-2 pl-7 pr-3 text-xs text-white focus:border-[#D4FF00] focus:outline-none"
+                        className="w-full rounded-xl border border-white/10 bg-[#07090E] py-2 pl-7 pr-3 text-xs text-white focus:border-indigo-500 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -2091,7 +2436,7 @@ export default function AdminPage() {
                           }
                         }}
                         placeholder="125.00"
-                        className="w-full rounded-xl border border-white/10 bg-[#07090E] py-2 pl-7 pr-3 text-xs text-white focus:border-[#D4FF00] focus:outline-none"
+                        className="w-full rounded-xl border border-white/10 bg-[#07090E] py-2 pl-7 pr-3 text-xs text-white focus:border-indigo-500 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -2106,7 +2451,7 @@ export default function AdminPage() {
                       value={prodDiscountBadge}
                       onChange={(e) => setProdDiscountBadge(e.target.value)}
                       placeholder="e.g. 20% OFF or Save $27"
-                      className="mt-1 w-full rounded-xl border border-[#D4FF00]/30 bg-[#07090E] px-3 py-2 text-xs font-bold text-[#D4FF00] focus:border-[#D4FF00] focus:outline-none"
+                      className="mt-1 w-full rounded-xl border border-indigo-500/30 bg-[#07090E] px-3 py-2 text-xs font-bold text-indigo-300 focus:border-indigo-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -2189,9 +2534,10 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-[#D4FF00] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-[#D4FF00]/20 hover:brightness-105 active:scale-95"
+                  className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 hover:brightness-110 active:scale-95"
                 >
-                  {editingProductId ? 'Save Changes' : 'Publish to Store'}
+                  <Check className="h-4 w-4" />
+                  <span>{editingProductId ? 'Save Changes' : 'Publish to Store'}</span>
                 </button>
               </div>
             </form>
@@ -2323,7 +2669,7 @@ export default function AdminPage() {
           <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[#0C101A] p-6 shadow-2xl sm:p-8">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-2">
-                <Percent className="h-5 w-5 text-[#D4FF00]" />
+                <Percent className="h-5 w-5 text-indigo-400" />
                 <h3 className="font-display text-base font-bold text-white">
                   Create Promo Discount
                 </h3>
@@ -2345,7 +2691,7 @@ export default function AdminPage() {
                   value={newDiscCode}
                   onChange={(e) => setNewDiscCode(e.target.value.toUpperCase())}
                   placeholder="e.g. STREET25"
-                  className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 font-mono text-xs uppercase text-[#D4FF00]"
+                  className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 font-mono text-xs uppercase text-indigo-400 focus:border-indigo-500 focus:outline-none"
                 />
               </div>
 
@@ -2398,9 +2744,156 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-[#D4FF00] px-5 py-2 text-xs font-black uppercase text-black hover:brightness-105"
+                  className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 hover:brightness-110 active:scale-95"
                 >
-                  Create Code
+                  <Check className="h-4 w-4" />
+                  <span>Create Code</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: ADD / EDIT CATEGORY
+         ======================================================== */}
+      {isCategoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/85 p-4 backdrop-blur-md">
+          <div className="my-8 w-full max-w-md rounded-3xl border border-white/10 bg-[#0C101A] p-6 shadow-2xl sm:p-8">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-500/15 text-indigo-400">
+                  <Layers className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-black text-white">
+                    {editingCategory ? 'Edit Category' : 'Create New Category'}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Defines storefront classification and product filters
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsCategoryModalOpen(false)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCategory} className="mt-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                  Category Name / Label <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Heavyweight Tees, Cargo Pants"
+                  value={categoryForm.label}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setCategoryForm((prev) => ({
+                      ...prev,
+                      label: val,
+                      id:
+                        prev.id ||
+                        val
+                          .toLowerCase()
+                          .replace(/[^a-z0-9]+/g, '-')
+                          .replace(/^-|-$/g, ''),
+                    }));
+                  }}
+                  className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:border-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                  Slug / Unique ID
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. tees, cargo-pants"
+                  value={categoryForm.id}
+                  disabled={editingCategory?.id === 'all'}
+                  onChange={(e) =>
+                    setCategoryForm((prev) => ({
+                      ...prev,
+                      id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''),
+                    }))
+                  }
+                  className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2.5 font-mono text-xs text-cyan-300 placeholder-slate-600 focus:border-indigo-500 focus:outline-none disabled:opacity-50"
+                />
+                <span className="mt-1 block text-[10px] text-slate-500">
+                  Used in URL params: /?category={categoryForm.id || 'slug'}
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                  Description
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Short description for storefront collection preview..."
+                  value={categoryForm.description}
+                  onChange={(e) =>
+                    setCategoryForm((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                  className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3.5 py-2 text-xs text-white placeholder-slate-600 focus:border-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Badge Tag
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 500 GSM, 20K MM"
+                    value={categoryForm.badge}
+                    onChange={(e) =>
+                      setCategoryForm((prev) => ({ ...prev, badge: e.target.value }))
+                    }
+                    className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3 py-2 text-xs text-white placeholder-slate-600 focus:border-indigo-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Storefront Status
+                  </label>
+                  <select
+                    value={categoryForm.status}
+                    onChange={(e) =>
+                      setCategoryForm((prev) => ({ ...prev, status: e.target.value as any }))
+                    }
+                    className="mt-1 w-full rounded-xl border border-white/10 bg-[#07090E] px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
+                  >
+                    <option value="active">Active (Visible)</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3 border-t border-white/10 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryModalOpen(false)}
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-white/[0.08] hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-600/20 hover:brightness-110 active:scale-95"
+                >
+                  <Check className="h-4 w-4" />
+                  <span>{editingCategory ? 'Update Category' : 'Save Category'}</span>
                 </button>
               </div>
             </form>

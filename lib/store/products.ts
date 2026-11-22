@@ -391,13 +391,79 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
-export const CATEGORIES = [
-  { id: 'all', label: 'All' },
-  { id: 'hoodie', label: 'Hoodies' },
-  { id: 'jacket', label: 'Jackets' },
-  { id: 'bestseller', label: 'Best sellers' },
-  { id: 'new', label: 'New drops' },
+export interface ProductCategory {
+  id: string;
+  label: string;
+  description?: string;
+  badge?: string;
+  status?: 'active' | 'hidden';
+}
+
+export const INITIAL_CATEGORIES: ProductCategory[] = [
+  {
+    id: 'all',
+    label: 'All',
+    description: 'Complete PulseWear streetwear collection',
+    status: 'active',
+  },
+  {
+    id: 'hoodie',
+    label: 'Hoodies',
+    description: '500 GSM loopback French terry oversized hoodies',
+    badge: '500 GSM',
+    status: 'active',
+  },
+  {
+    id: 'jacket',
+    label: 'Jackets',
+    description: '20,000 MM hydrostatic weatherproof technical outerwear',
+    badge: '20K Waterproof',
+    status: 'active',
+  },
+  {
+    id: 'bestseller',
+    label: 'Best sellers',
+    description: 'Top community voted favorites and highest rated garments',
+    badge: 'Top Rated',
+    status: 'active',
+  },
+  {
+    id: 'new',
+    label: 'New drops',
+    description: 'Fresh seasonal drops and limited archival releases',
+    badge: 'New Drop',
+    status: 'active',
+  },
 ];
+
+export const CATEGORIES = INITIAL_CATEGORIES;
+
+export const CATEGORIES_STORAGE_KEY = 'pulsewear_custom_categories';
+
+export function getStoredCategories(): ProductCategory[] {
+  if (typeof window === 'undefined') return INITIAL_CATEGORIES;
+  try {
+    const raw = localStorage.getItem(CATEGORIES_STORAGE_KEY);
+    if (!raw) return INITIAL_CATEGORIES;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed;
+    }
+  } catch {
+    // fallback
+  }
+  return INITIAL_CATEGORIES;
+}
+
+export function saveStoredCategories(categories: ProductCategory[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    window.dispatchEvent(new Event('pulsewear-categories-updated'));
+  } catch {
+    // fallback
+  }
+}
 
 export const SIZE_CHART = [
   { size: 'S', chestCm: 112, lengthCm: 68, sleeveCm: 61, recommendedHeight: '160 - 172 cm' },

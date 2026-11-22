@@ -25,29 +25,29 @@ export default function AboutPage() {
   const stats = [
     {
       value: '10K+',
-      label: 'Active Creators',
-      detail: 'Building real solutions across 30+ countries',
+      label: 'Orders Fulfilled',
+      detail: 'Shipped with express tracking to 30+ countries worldwide',
       icon: Users,
       glowColor: 'from-indigo-500 to-purple-600',
     },
     {
       value: '4.9 / 5',
-      label: 'Consensus Rating',
-      detail: 'High signal, anti-spam verified participation',
+      label: 'Customer Rating',
+      detail: 'Over 12,000+ verified deliveries with 5-star reviews',
       icon: Star,
       glowColor: 'from-cyan-500 to-blue-600',
     },
     {
-      value: '500+',
-      label: 'Ideas Validated',
-      detail: 'Reaching qualified status across weekly cycles',
+      value: '500 GSM',
+      label: 'French Terry',
+      detail: 'Dense double-knit organic cotton with zero shrinkage',
       icon: Award,
       glowColor: 'from-violet-500 to-fuchsia-600',
     },
     {
-      value: '100%',
-      label: 'Anti-Sybil Verified',
-      detail: 'Immutable PostgreSQL audit trail & verified accounts',
+      value: '20,000 MM',
+      label: 'Weatherproof',
+      detail: 'Microporous membrane resisting torrential blizzards',
       icon: ShieldCheck,
       glowColor: 'from-emerald-500 to-teal-600',
     },
@@ -97,32 +97,33 @@ export default function AboutPage() {
           {/* Top Pill Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-accent)] bg-[var(--tint-indigo)] px-4 py-1.5 text-xs font-semibold text-[var(--indigo-bright)] shadow-[var(--glow-indigo-sm)]">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>The Next Generation Community Incubator</span>
+            <span>PULSEWEAR · Heavyweight Streetwear Architecture</span>
           </div>
 
           <h1 className="mt-6 font-display text-4xl font-extrabold tracking-tight sm:text-6xl sm:leading-[1.15]">
-            Creative Solutions for a <span className="text-gradient-dual">Brighter Future</span>
+            Creative Solutions for a <span className="text-gradient-dual">Heavyweight Era</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
-            IdeaPulse is a community-governed innovation engine where creators propose bold visions
-            and verified peers validate, elevate, and fund the most promising initiatives without
-            corporate intermediaries.
+            PulseWear is an independent technical streetwear label built on dense 500 GSM loopback
+            cotton and 20,000 mm waterproof tactical shells. We reject disposable fast fashion in
+            favor of structural silhouettes, pre-shrunk organic yarns, and extreme cold-weather
+            endurance.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/submit"
+              href="/?category=all#catalog"
               className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-accent)] bg-[var(--indigo)] px-6 py-3 text-sm font-semibold text-white shadow-[var(--glow-indigo-md)] transition-all hover:bg-[var(--indigo-bright)] hover:shadow-[var(--glow-indigo-lg)] active:scale-95"
             >
-              <span>Submit Your Idea</span>
+              <span>Explore The Collection</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/how-it-works"
               className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--surface-2)] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition-all hover:border-[var(--border-accent)] hover:bg-[var(--surface-3)]"
             >
-              <span>How It Works</span>
+              <span>How Drops Work</span>
             </Link>
           </div>
         </section>
