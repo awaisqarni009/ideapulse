@@ -1,7 +1,7 @@
 # MEMORY.md — IdeaPulse
 
 **Project Memory & Session Continuity**
-Last updated: 2026-09-22 (Session 14) · Maintained by: Antigravity Agent
+Last updated: 2026-11-22 (Session 22) · Maintained by: Antigravity Agent
 
 ---
 
@@ -20,17 +20,17 @@ If a fact lives in `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, or `TAS
 
 ## 1. Project status
 
-| Field                | Value                                                                                                                                                                                         |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current phase**    | Phase 8 — Launch (🟢 Complete)                                                                                                                                                                |
-| **Phase progress**   | 31 / 31 tasks (100% Complete: Batches 1, 2, 3, 4, 5 Complete: T-8.1 through T-8.31)                                                                                                           |
-| **Overall progress** | 199 / 199 tasks (100% of all specifications complete)                                                                                                                                         |
-| **Status**           | Phase 8 PASSED & EXIT GATE MET! Full launch readiness achieved. 226/226 Vitest tests passing across 34 suites. 0 TypeScript errors. Next.js production build 100% green across all 33 routes. |
-| **Blocked on**       | None. Repository is fully launch-ready.                                                                                                                                                       |
-| **Next action**      | Final sign-off and 48-hour post-launch watch monitoring (`docs/post-launch-watch.md`).                                                                                                        |
-| **Target launch**    | Launch Ready (Live)                                                                                                                                                                           |
-| **Active branch**    | `main`                                                                                                                                                                                        |
-| **Last deploy**      | Production Ready                                                                                                                                                                              |
+| Field                | Value                                                                                                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current phase**    | Phase 8 — Launch (🟢 Complete)                                                                                                                                                |
+| **Phase progress**   | 31 / 31 tasks (100% Complete: Batches 1, 2, 3, 4, 5 Complete: T-8.1 through T-8.31)                                                                                           |
+| **Overall progress** | 199 / 199 tasks (100% of all specifications complete)                                                                                                                         |
+| **Status**           | 100% Launch Ready & Teacher Rubric Implemented. 226/226 Vitest tests passing across 34 suites. 0 TypeScript errors. Next.js production build 100% green across all 34 routes. |
+| **Blocked on**       | None. Repository is fully launch-ready.                                                                                                                                       |
+| **Next action**      | Final sign-off and 48-hour post-launch watch monitoring (`docs/post-launch-watch.md`).                                                                                        |
+| **Target launch**    | Launch Ready (Live)                                                                                                                                                           |
+| **Active branch**    | `main`                                                                                                                                                                        |
+| **Last deploy**      | Production Ready                                                                                                                                                              |
 
 ### 1.1 Phase board
 
@@ -326,6 +326,26 @@ Newest first. One entry per working session. Keep entries short — this is a lo
 
 - The single next action, specific enough to begin without re-reading anything
 ```
+
+---
+
+### 2026-11-22 — Session 22 (Teacher Rubric Full Implementation — Store Assistant, Strict Auth, Admin Portal & Accessibility)
+
+**Phase:** Course Project Rubric Fulfillment & Technical Polish
+**Duration:** ~45m
+**Tasks completed:** Implementation of strict registration validation, dual login, floating AI Store Assistant with 1,000-token limit and token counter, dedicated `/admin/login` portal, font-size accessibility controls, reading page zoom controls, fixed footer with full social & legal links, cookie consent manager, and database migration 150.
+
+**What shipped**
+
+- **Database Migration `150_store_and_assistant.sql`:** Designed and created normalized PostgreSQL tables: `categories`, `products`, `orders`, `order_items`, `chatbot_sessions`, `admin_audit_logs`, and `cookie_consents`, complete with Row Level Security (RLS) policies and seed categories.
+- **Strict Registration Validation:** Enforced `/^[A-Za-z]{4,22}$/` regex for usernames (only letters A-Z, no numbers, symbols or spaces, 4–22 length), Gmail validation requiring `@` with message `"Please enter valid Gmail with @"`, and strict 4-requirement password rule with live 4-tier strength meter (Weak -> Fair -> Good -> Ironclad) and Google & Facebook OAuth buttons.
+- **Dual Login Identifier:** Upgraded `loginAction` and `LoginForm` to allow users to sign in seamlessly using either their **Username OR their Gmail address**, with "Remember me" option, password show/hide toggle, and administrative login gateway link.
+- **AI Website Assistant (`ChatbotAssistant`):** Developed docked floating widget on bottom-right of every page (`fixed bottom-6 right-6 z-50`). Features grounded store knowledge (garments, 500 GSM loopback cotton, 20,000mm hydrostatic waterproofing, sizing, shipping, policies), domain guardrail strictly answering only website questions, a live header token counter (`Tokens: X / 1000 used`), and automatic cutoff when 1,000 tokens are reached.
+- **Accessibility Controls (`FontControls` & `ArticleZoomControls`):** Added visible `A+`, `A-`, and `Reset` font size controls in the global header with `localStorage` persistence, plus dedicated interactive `+`, `-`, and `Reset` zoom controls on the `/how-it-works` reading page.
+- **Fixed Navigation & Professional Footer:** Embedded dedicated Home button and Logo + Name on every page in header; fixed footer at bottom with legal notices, Cookie Policy, contact email (`support@pulsewear.store`), and social links.
+- **Cookie Consent Banner (`CookieBanner`):** Built cookie preferences bar with Accept All, Reject Non-Essential, and customizable settings (Essential, Analytics, Marketing).
+- **Dedicated Admin Login (`/admin/login`):** Separate route verifying administrator clearance with database-enforced RBAC.
+- **Full Verification:** 226/226 Vitest tests passing across all 34 suites; `npm run typecheck` zero errors; `npm run build` compiles all 34 static/dynamic routes cleanly.
 
 ---
 
