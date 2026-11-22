@@ -147,7 +147,7 @@ export function Header() {
           <div className="flex h-5 flex-1 items-center justify-center overflow-hidden sm:justify-start">
             <div
               key={activeAnnouncement}
-              className="animate-in fade-in slide-in-from-bottom-2 flex items-center gap-2 font-mono duration-300"
+              className="animate-in fade-in slide-in-from-bottom-2 flex items-center gap-2 font-sans text-xs font-medium duration-300"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-[#FF5A1F]" />
               <span>{ANNOUNCEMENTS[activeAnnouncement]}</span>
@@ -166,7 +166,9 @@ export function Header() {
             ) : (
               <Pause className="h-2.5 w-2.5" />
             )}
-            <span className="font-mono">{isAnnouncementPaused ? 'play' : 'pause'}</span>
+            <span className="font-sans text-[10px] font-medium">
+              {isAnnouncementPaused ? 'Play' : 'Pause'}
+            </span>
           </button>
         </div>
       </div>
@@ -219,7 +221,7 @@ export function Header() {
                 {/* Hover Preview Panel §7.1 (3 thumbnails + Shop all link) */}
                 {hoveredNavMenu === 'hoodie' && (
                   <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full mt-2 w-80 rounded-sm border border-white/10 bg-[#1F2327] p-4 shadow-2xl duration-200">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-2 font-mono text-xs text-[#8A8F95]">
+                    <div className="flex items-center justify-between border-b border-white/5 pb-2 font-sans text-xs font-semibold tracking-wider text-slate-400">
                       <span>500 GSM HEAVYWEIGHT</span>
                       <Link
                         href="/?category=hoodie#catalog"
@@ -274,7 +276,7 @@ export function Header() {
                 {/* Hover Preview Panel §7.1 */}
                 {hoveredNavMenu === 'jacket' && (
                   <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full mt-2 w-80 rounded-sm border border-white/10 bg-[#1F2327] p-4 shadow-2xl duration-200">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-2 font-mono text-xs text-[#8A8F95]">
+                    <div className="flex items-center justify-between border-b border-white/5 pb-2 font-sans text-xs font-semibold tracking-wider text-slate-400">
                       <span>20,000 MM WEATHERPROOF</span>
                       <Link
                         href="/?category=jacket#catalog"
@@ -340,8 +342,8 @@ export function Header() {
               aria-label="Open search overlay"
             >
               <Search className="h-3.5 w-3.5" />
-              <span className="hidden font-mono sm:inline">Search</span>
-              <kbd className="hidden rounded bg-white/10 px-1.5 py-0.5 font-mono text-[9px] text-white sm:inline">
+              <span className="hidden font-sans font-medium sm:inline">Search</span>
+              <kbd className="hidden rounded bg-white/10 px-1.5 py-0.5 font-sans text-[9px] font-semibold text-white sm:inline">
                 /
               </kbd>
             </button>
@@ -491,7 +493,7 @@ export function Header() {
                 className="flex justify-between text-sm font-semibold uppercase tracking-wider text-white"
               >
                 <span>Hoodies</span>
-                <span className="font-mono text-xs text-[#8A8F95]">500 GSM</span>
+                <span className="font-sans text-xs font-medium text-slate-400">500 GSM</span>
               </Link>
               <Link
                 href="/?category=jacket#catalog"
@@ -499,7 +501,7 @@ export function Header() {
                 className="flex justify-between text-sm font-semibold uppercase tracking-wider text-white"
               >
                 <span>Jackets</span>
-                <span className="font-mono text-xs text-[#8A8F95]">20K MM</span>
+                <span className="font-sans text-xs font-medium text-slate-400">20K MM</span>
               </Link>
               <Link
                 href="/#lookbook"

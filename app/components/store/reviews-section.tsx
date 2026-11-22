@@ -73,7 +73,7 @@ export function ReviewsSection() {
             <h2 className="font-display text-3xl font-extrabold tracking-tight text-[#15181B] sm:text-4xl">
               Verified Reviews
             </h2>
-            <div className="mt-2 flex items-center gap-2 font-mono text-xs text-[#8A8F95]">
+            <div className="mt-2 flex items-center gap-2 font-sans text-xs font-medium text-slate-500">
               <span className="flex text-[#FF5A1F]">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-3.5 w-3.5 fill-[#FF5A1F]" />
@@ -124,12 +124,12 @@ export function ReviewsSection() {
                 </p>
               </div>
 
-              <div className="mt-6 flex items-center justify-between border-t border-black/5 pt-3 font-mono text-[11px]">
+              <div className="mt-6 flex items-center justify-between border-t border-black/5 pt-3 font-sans text-xs">
                 <div>
                   <span className="font-bold text-[#15181B]">{rev.author}</span>
-                  <div className="text-[#8A8F95]">{rev.size}</div>
+                  <div className="text-[11px] text-slate-500">{rev.size}</div>
                 </div>
-                <span className="text-[#8A8F95]">{rev.product}</span>
+                <span className="text-[11px] text-slate-500">{rev.product}</span>
               </div>
             </motion.div>
           ))}

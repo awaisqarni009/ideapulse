@@ -61,13 +61,13 @@ export function PulseWearLogo({
               WEAR
             </span>
           </span>
-          <span className="py-0.2 rounded-[4px] border border-white/10 bg-white/[0.05] px-1 font-mono text-[8px] font-bold uppercase tracking-widest text-slate-400">
+          <span className="rounded-full border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 font-sans text-[9px] font-bold uppercase tracking-wider text-indigo-300">
             DROP 26
           </span>
         </div>
 
         {showTagline && (
-          <span className="mt-1 hidden font-mono text-[9px] uppercase tracking-widest text-slate-400 sm:block">
+          <span className="mt-1 hidden font-sans text-[11px] font-medium tracking-wide text-slate-300/90 sm:block">
             500 GSM Heavyweight Streetwear
           </span>
         )}

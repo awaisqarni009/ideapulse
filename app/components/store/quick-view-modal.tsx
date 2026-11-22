@@ -88,7 +88,7 @@ export function QuickViewModal({ product, onClose }: QuickViewModalProps) {
               className="h-full max-h-[460px] w-full rounded-xl object-cover transition-transform duration-500 hover:scale-105"
             />
             {/* GSM & Fit Watermark */}
-            <div className="absolute bottom-4 left-4 rounded-lg border border-white/10 bg-black/70 px-3 py-1.5 font-mono text-[11px] tracking-wider text-slate-300 backdrop-blur-md">
+            <div className="absolute bottom-4 left-4 rounded-lg border border-white/10 bg-black/70 px-3 py-1.5 font-sans text-xs font-medium tracking-wide text-slate-300 backdrop-blur-md">
               {product.weightGsm} GSM • {product.fit}
             </div>
           </div>
@@ -97,7 +97,7 @@ export function QuickViewModal({ product, onClose }: QuickViewModalProps) {
           <div className="flex w-full flex-col overflow-y-auto p-6 md:w-1/2 md:p-8">
             {/* Category & Rating */}
             <div className="flex items-center justify-between text-xs text-slate-400">
-              <span className="font-mono uppercase tracking-wider text-indigo-400">
+              <span className="font-sans font-semibold uppercase tracking-wider text-indigo-400">
                 {`${product.category} // ${product.subcategory}`}
               </span>
               <div className="flex items-center gap-1 text-amber-400">

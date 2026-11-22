@@ -136,8 +136,10 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           </div>
 
           {/* Spec line: the only place GSM appears §7.4 */}
-          <div className="mt-1 font-mono text-[11px] text-[#8A8F95]">
-            {product.weightGsm} GSM · {activeColor.name}
+          <div className="mt-1 font-sans text-xs font-medium text-slate-400">
+            <span className="text-slate-300">{product.weightGsm} GSM</span>
+            <span className="mx-1.5 text-slate-600">·</span>
+            <span>{activeColor.name}</span>
           </div>
         </div>
 
@@ -150,7 +152,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             </span>
           )}
           {product.originalPrice && (
-            <span className="font-mono text-[10px] text-[#FF5A1F]">
+            <span className="font-sans text-[11px] font-semibold text-[#FF5A1F]">
               Save ${product.originalPrice - product.price}
             </span>
           )}

@@ -160,9 +160,9 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
 
               {/* Ambient Specular Highlight following cursor */}
               <div
-                className="pointer-events-none absolute inset-0 opacity-20 mix-blend-overlay transition-opacity duration-300"
+                className="pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay transition-opacity duration-300"
                 style={{
-                  background: `radial-gradient(circle at ${50 + mousePos.x * 30}% ${40 + mousePos.y * 30}%, rgba(212,255,0,0.3) 0%, transparent 60%)`,
+                  background: `radial-gradient(circle at ${50 + mousePos.x * 30}% ${40 + mousePos.y * 30}%, rgba(99,102,241,0.3) 0%, transparent 60%)`,
                 }}
               />
             </div>
@@ -173,9 +173,9 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
         <div className="relative z-30 flex flex-col justify-between gap-8 pt-4 sm:flex-row sm:items-end">
           {/* Bottom-Left: "STYLE YOUR LIFE" / Brand Identity */}
           <div className="flex flex-col">
-            {/* Neon Bar Accent with angled tip matching reference */}
+            {/* Indigo/Violet Gradient Bar Accent with angled tip */}
             <div
-              className="mb-3 h-1.5 w-16 bg-[#D4FF00] shadow-[0_0_15px_rgba(212,255,0,0.6)]"
+              className="mb-3 h-1.5 w-16 bg-gradient-to-r from-indigo-500 via-violet-500 to-cyan-400 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
               style={{
                 clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)',
               }}
@@ -199,61 +199,63 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
               </span>
             </div>
 
-            {/* Sub-label */}
-            <div className="mt-3 flex items-center gap-2 font-mono text-[11px] text-[#A0AEC0]">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#D4FF00]" />
-              <span>500 GSM LOOPBACK COTTON // 20K MM MEMBRANE</span>
+            {/* Sub-label with Cyan Pulse Beacon */}
+            <div className="mt-3 flex items-center gap-2 font-sans text-xs font-medium tracking-wide text-slate-300">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.9)]" />
+              <span>500 GSM Loopback Cotton</span>
+              <span className="text-slate-600">·</span>
+              <span className="text-slate-400">20,000 MM Tactical Membrane</span>
             </div>
           </div>
 
-          {/* Bottom-Right: Tiered Category Quick-Nav (Exact from Reference) */}
-          <div className="flex w-full flex-col shadow-2xl sm:w-72 lg:w-80">
+          {/* Bottom-Right: Tiered Category Quick-Nav (Luxury Obsidian Glassmorphism) */}
+          <div className="flex w-full flex-col overflow-hidden rounded-xl border border-white/10 bg-[#12161F]/90 shadow-2xl backdrop-blur-xl sm:w-72 lg:w-80">
             {/* Tier 1: HOODIES */}
             <button
               onClick={() => onSelectCategory('hoodie')}
-              className="group flex items-center justify-between border-b border-black/20 bg-[#D4FF00] px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all duration-200 hover:pl-8 hover:brightness-105 active:scale-[0.99]"
+              className="group flex items-center justify-between border-b border-white/10 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-indigo-600/15 hover:pl-6 active:scale-[0.99]"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-black tracking-tight">HOODIES</span>
-                <span className="rounded bg-black/15 px-1.5 py-0.5 font-mono text-[9px] font-bold">
+              <div className="flex items-center gap-2.5">
+                <span className="text-sm font-black tracking-tight text-white">HOODIES</span>
+                <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 font-sans text-[10px] font-semibold text-indigo-300">
                   500 GSM
                 </span>
               </div>
-              <div className="flex items-center -space-x-1 transition-transform duration-200 group-hover:translate-x-1">
-                <ChevronRight className="h-4 w-4 stroke-[3]" />
-                <ChevronRight className="h-4 w-4 stroke-[3]" />
+              <div className="flex items-center -space-x-1 text-indigo-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-indigo-300">
+                <ChevronRight className="h-4 w-4 stroke-[2.5]" />
+                <ChevronRight className="h-4 w-4 stroke-[2.5]" />
               </div>
             </button>
 
             {/* Tier 2: JACKETS */}
             <button
               onClick={() => onSelectCategory('jacket')}
-              className="group flex items-center justify-between border-b border-black/20 bg-[#D4FF00] px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all duration-200 hover:pl-8 hover:brightness-105 active:scale-[0.99]"
+              className="group flex items-center justify-between border-b border-white/10 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-cyan-600/15 hover:pl-6 active:scale-[0.99]"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-black tracking-tight">JACKETS</span>
-                <span className="rounded bg-black/15 px-1.5 py-0.5 font-mono text-[9px] font-bold">
+              <div className="flex items-center gap-2.5">
+                <span className="text-sm font-black tracking-tight text-white">JACKETS</span>
+                <span className="rounded-md border border-cyan-500/30 bg-cyan-500/15 px-2 py-0.5 font-sans text-[10px] font-semibold text-cyan-300">
                   20,000 MM
                 </span>
               </div>
-              <div className="flex items-center -space-x-1 transition-transform duration-200 group-hover:translate-x-1">
-                <ChevronRight className="h-4 w-4 stroke-[3]" />
-                <ChevronRight className="h-4 w-4 stroke-[3]" />
+              <div className="flex items-center -space-x-1 text-cyan-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-cyan-300">
+                <ChevronRight className="h-4 w-4 stroke-[2.5]" />
+                <ChevronRight className="h-4 w-4 stroke-[2.5]" />
               </div>
             </button>
 
             {/* Tier 3: ALL PRODUCTS */}
             <button
               onClick={() => onSelectCategory('all')}
-              className="group flex items-center justify-between bg-[#D4FF00] px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all duration-200 hover:pl-8 hover:brightness-105 active:scale-[0.99]"
+              className="group flex items-center justify-between bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:pl-6 hover:brightness-110 active:scale-[0.99]"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-black tracking-tight">ALL PRODUCTS</span>
-                <span className="rounded bg-black/15 px-1.5 py-0.5 font-mono text-[9px] font-bold">
+              <div className="flex items-center gap-2.5">
+                <span className="text-sm font-black tracking-tight text-white">ALL PRODUCTS</span>
+                <span className="rounded-md border border-white/30 bg-white/20 px-2 py-0.5 font-sans text-[10px] font-bold text-white">
                   DROP 26
                 </span>
               </div>
-              <div className="flex items-center -space-x-1 transition-transform duration-200 group-hover:translate-x-1">
+              <div className="flex items-center -space-x-1 text-white transition-transform duration-200 group-hover:translate-x-1">
                 <ChevronRight className="h-4 w-4 stroke-[3]" />
                 <ChevronRight className="h-4 w-4 stroke-[3]" />
               </div>

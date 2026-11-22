@@ -47,7 +47,7 @@ export function AuthVisualHero({ mode }: AuthVisualHeroProps) {
       <div className="relative z-10">
         <div className="inline-flex items-center gap-2 rounded-sm border border-white/10 bg-[#1F2327] px-3.5 py-1.5 text-xs font-semibold text-[#DEDBD2] shadow-sm backdrop-blur-md">
           <Flame className="h-3.5 w-3.5 text-[#FF5A1F]" />
-          <span className="font-mono text-[11px] uppercase tracking-wider">
+          <span className="font-sans text-[11px] font-medium tracking-wide">
             Technical Heavyweight Streetwear
           </span>
         </div>
@@ -90,7 +90,9 @@ export function AuthVisualHero({ mode }: AuthVisualHeroProps) {
               </div>
               <div>
                 <div className="text-xs font-bold text-[#F2F5F7]">Midnight Echo Heavyweight</div>
-                <div className="font-mono text-[11px] text-[#8A8F95]">500 GSM · Onyx Black</div>
+                <div className="font-sans text-[11px] font-medium text-[#8A8F95]">
+                  500 GSM · Onyx Black
+                </div>
               </div>
             </div>
             <span className="inline-flex items-center gap-1 rounded-sm border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#FF5A1F]">
@@ -102,7 +104,7 @@ export function AuthVisualHero({ mode }: AuthVisualHeroProps) {
           <div className="mt-4 space-y-2.5">
             <div className="flex items-center justify-between text-xs">
               <span className="text-[#8A8F95]">Batch Allocation</span>
-              <span className="font-mono font-bold text-[#F2F5F7]">88% Reserved</span>
+              <span className="font-sans font-bold tabular-nums text-[#F2F5F7]">88% Reserved</span>
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-none bg-black/40">
               <div
@@ -117,7 +119,7 @@ export function AuthVisualHero({ mode }: AuthVisualHeroProps) {
               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
               <span>YKK AquaGuard Hardware</span>
             </span>
-            <span className="font-mono font-bold text-[#F2F5F7]">$98</span>
+            <span className="font-sans font-bold tabular-nums text-[#F2F5F7]">$98</span>
           </div>
         </motion.div>
 
@@ -133,7 +135,7 @@ export function AuthVisualHero({ mode }: AuthVisualHeroProps) {
             <Award className="h-3.5 w-3.5" />
           </div>
           <div>
-            <div className="font-mono text-xs font-bold text-[#F2F5F7]">500 GSM Loopback</div>
+            <div className="font-sans text-xs font-bold text-[#F2F5F7]">500 GSM Loopback</div>
             <div className="text-[10px] text-[#8A8F95]">Zero Shrinkage French Terry</div>
           </div>
         </motion.div>
@@ -162,7 +164,7 @@ export function AuthVisualHero({ mode }: AuthVisualHeroProps) {
           <Lock className="h-3.5 w-3.5 text-[#FF5A1F]" />
           <span>Encrypted Session Credentials</span>
         </span>
-        <span className="font-mono text-[#DEDBD2]">Free Express Shipping &gt;$100</span>
+        <span className="font-sans font-medium text-[#DEDBD2]">Free Express Shipping &gt;$100</span>
       </div>
     </div>
   );

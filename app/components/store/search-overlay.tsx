@@ -149,8 +149,8 @@ export function SearchOverlay({ isOpen, onClose, onSelectProduct }: SearchOverla
                     />
                     <div className="flex flex-1 flex-col justify-between">
                       <div>
-                        <div className="flex items-center justify-between font-mono text-[11px] text-[#8A8F95]">
-                          <span className="uppercase">{item.category}</span>
+                        <div className="flex items-center justify-between font-sans text-xs font-medium text-slate-400">
+                          <span className="uppercase tracking-wider">{item.category}</span>
                           <span>{item.weightGsm} GSM</span>
                         </div>
                         <h4 className="mt-1 font-display text-sm font-bold text-white group-hover:text-white">

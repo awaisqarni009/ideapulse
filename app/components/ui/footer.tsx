@@ -16,14 +16,14 @@ export function Footer() {
               Dense 500 GSM loopback French terry hoodies and 20,000 mm waterproof tactical shells,
               built to outlast the season. Powered by IdeaPulse Incubator.
             </p>
-            <div className="mt-4 font-mono text-[11px] text-[#8A8F95]">
+            <div className="mt-4 font-sans text-xs font-medium text-slate-400">
               Worldwide fulfillment · Carbon neutral shipping
             </div>
           </div>
 
           {/* Shop Col */}
           <div>
-            <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-white">
+            <h3 className="font-sans text-xs font-bold uppercase tracking-wider text-white">
               Shop
             </h3>
             <ul className="mt-4 space-y-2 text-xs">
@@ -61,7 +61,7 @@ export function Footer() {
 
           {/* Help Col (§7.8: Shipping, Returns, Size guide, Track order) */}
           <div>
-            <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-white">
+            <h3 className="font-sans text-xs font-bold uppercase tracking-wider text-white">
               Help
             </h3>
             <ul className="mt-4 space-y-2 text-xs">
@@ -90,7 +90,7 @@ export function Footer() {
 
           {/* Legal & Company Col */}
           <div>
-            <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-white">
+            <h3 className="font-sans text-xs font-bold uppercase tracking-wider text-white">
               Company & Legal
             </h3>
             <ul className="mt-4 space-y-2 text-xs">
@@ -144,7 +144,7 @@ export function Footer() {
         {/* Social Links & Bottom Sub-Bar */}
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-[#8A8F95]">
           <div className="flex items-center gap-6">
-            <span className="font-mono text-[11px] font-semibold uppercase text-slate-300">
+            <span className="font-sans text-[11px] font-semibold uppercase tracking-wider text-slate-300">
               Connect:
             </span>
             <a
@@ -180,13 +180,13 @@ export function Footer() {
               GitHub
             </a>
           </div>
-          <div className="font-mono text-[11px]">
+          <div className="font-sans text-xs text-slate-400">
             <span>Fast Express Courier · 100% Secure Checkout</span>
           </div>
         </div>
 
         {/* Bottom Sub-Bar */}
-        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 font-mono text-xs text-[#8A8F95] sm:flex-row">
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 font-sans text-xs text-slate-400 sm:flex-row">
           <p>&copy; {new Date().getFullYear()} PULSEWEAR. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <span>500 GSM Organic Loopback</span>

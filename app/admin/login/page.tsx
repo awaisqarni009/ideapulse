@@ -106,7 +106,7 @@ export default function AdminLoginPage() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10 text-red-400">
             <Shield className="h-7 w-7" />
           </div>
-          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-red-400">
+          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 font-sans text-[11px] font-bold uppercase tracking-wider text-red-400">
             <Terminal className="h-3 w-3" />
             <span>Restricted Gateway</span>
           </div>
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
           <div>
             <label
               htmlFor="adminIdentifier"
-              className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400"
+              className="mb-1.5 block font-sans text-xs font-semibold uppercase tracking-wider text-slate-400"
             >
               Admin Email / Identifier
             </label>
@@ -155,7 +155,7 @@ export default function AdminLoginPage() {
           <div>
             <label
               htmlFor="adminPassword"
-              className="mb-1.5 block font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400"
+              className="mb-1.5 block font-sans text-xs font-semibold uppercase tracking-wider text-slate-400"
             >
               Administrative Password
             </label>
@@ -194,7 +194,7 @@ export default function AdminLoginPage() {
         </form>
 
         <div className="mt-6 border-t border-white/10 pt-4 text-center">
-          <p className="font-mono text-[10px] text-slate-500">
+          <p className="font-sans text-xs text-slate-500">
             PULSEWEAR Security Enforcement · Multi-tenant RBAC Active
           </p>
         </div>
