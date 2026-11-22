@@ -12,15 +12,36 @@ import {
   Lightbulb,
   Mail,
   ArrowRight,
+  ShoppingBag,
+  Truck,
+  Award,
 } from 'lucide-react';
 
 interface FAQItem {
   question: string;
   answer: string;
-  category: 'voting' | 'proposals' | 'cycles' | 'security';
+  category: 'voting' | 'proposals' | 'cycles' | 'security' | 'streetwear';
 }
 
 const FAQ_ITEMS: FAQItem[] = [
+  {
+    category: 'streetwear',
+    question: 'What makes 500 GSM loopback French terry superior to commercial hoodies?',
+    answer:
+      'Commercial fast fashion uses light 240–280 GSM polyester blends that shrink, lose shape, and pill. PulseWear custom-mills dense 500 GSM 100% organic cotton loopback French terry, offering an architectural drape, double-lined hood that stays erect without drawstrings, and lifetime durability.',
+  },
+  {
+    category: 'streetwear',
+    question: 'How does the 20,000 MM waterproof membrane in tactical outerwear work?',
+    answer:
+      'Our technical shells utilize a microporous 3-tier membrane rated at 20,000 mm hydrostatic pressure combined with YKK Aquaguard water-sealed zippers, blocking torrential rain and sub-zero blizzard chills while releasing internal body vapor.',
+  },
+  {
+    category: 'streetwear',
+    question: 'What is your worldwide shipping and return policy?',
+    answer:
+      'We provide carbon-neutral express shipping globally within 2 to 4 business days. All orders include a 30-day no-questions-asked return and exchange policy on unworn garments with intact streetwear security tags.',
+  },
   {
     category: 'voting',
     question: 'How does the rolling 5 votes per 24 hours quota work?',
@@ -101,6 +122,7 @@ export function FAQClient() {
 
   const categories = [
     { id: 'all', label: 'All Questions', icon: HelpCircle },
+    { id: 'streetwear', label: 'Streetwear & Shipping', icon: ShoppingBag },
     { id: 'voting', label: 'Voting & Quotas', icon: Vote },
     { id: 'proposals', label: 'Proposals', icon: Lightbulb },
     { id: 'cycles', label: 'Cycles & Leaderboard', icon: Trophy },
