@@ -14,7 +14,6 @@ import {
   LogIn,
   UserPlus,
   User,
-  ShieldAlert,
 } from 'lucide-react';
 import { loginAction, type AuthActionResult } from '@/app/actions/auth';
 import { createClient } from '@/lib/supabase/client';
@@ -266,25 +265,14 @@ export function LoginForm() {
         </button>
       </div>
 
-      <div className="mt-6 flex flex-col gap-2 text-center text-xs text-[#8A8F95]">
-        <div>
-          Don&apos;t have an account?{' '}
-          <Link
-            href={nextParam ? `/register?next=${encodeURIComponent(nextParam)}` : '/register'}
-            className="font-semibold text-[#FF5A1F] transition-colors hover:underline"
-          >
-            Create one now →
-          </Link>
-        </div>
-        <div className="border-t border-white/5 pt-2">
-          <Link
-            href="/admin/login"
-            className="inline-flex items-center gap-1 font-mono text-[10px] text-slate-400 transition-colors hover:text-red-400"
-          >
-            <ShieldAlert className="h-3 w-3" />
-            <span>Administrator Portal Access →</span>
-          </Link>
-        </div>
+      <div className="mt-6 text-center text-xs text-[#8A8F95]">
+        Don&apos;t have an account?{' '}
+        <Link
+          href={nextParam ? `/register?next=${encodeURIComponent(nextParam)}` : '/register'}
+          className="font-semibold text-[#FF5A1F] transition-colors hover:underline"
+        >
+          Create one now →
+        </Link>
       </div>
     </form>
   );

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/auth/use-user';
 import { useCart } from '@/lib/store/cart-context';
@@ -10,6 +11,7 @@ import { useCurrency } from '@/lib/store/currency-context';
 import { useToast } from '@/app/components/ui/toast';
 import { ThemeToggle } from '@/app/components/ui/theme-toggle';
 import { FontControls } from '@/app/components/ui/font-controls';
+import { EnergyBadge } from '@/app/components/energy/energy-badge';
 import { PulseWearLogo } from '@/app/components/ui/logo';
 import { PRODUCTS, getStoredCategories, ProductCategory } from '@/lib/store/products';
 import { createClient } from '@/lib/supabase/client';
@@ -235,7 +237,17 @@ export function Header() {
                                 }}
                                 className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs text-slate-200 transition-colors hover:bg-white/10 hover:text-white"
                               >
-                                <span className="truncate">{p.title}</span>
+                                <div className="flex items-center gap-2 truncate">
+                                  <Image
+                                    src={p.image}
+                                    alt={p.title}
+                                    width={24}
+                                    height={24}
+                                    sizes="24px"
+                                    className="h-6 w-6 rounded object-cover"
+                                  />
+                                  <span className="truncate">{p.title}</span>
+                                </div>
                                 <span className="font-mono text-[11px] font-bold text-cyan-400">
                                   {formatPrice(p.price)}
                                 </span>
@@ -342,6 +354,9 @@ export function Header() {
 
             {/* Small Light/Dark Mode Button (No switch, direct toggle on click) */}
             <ThemeToggle />
+
+            {/* Energy Badge Container (Preserved for system invariants) */}
+            <EnergyBadge />
 
             {/* User Account / Auth Controls */}
             {user ? (
