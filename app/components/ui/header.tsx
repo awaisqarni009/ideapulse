@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/auth/use-user';
 import { useCart } from '@/lib/store/cart-context';
@@ -13,12 +12,11 @@ import { ThemeToggle } from '@/app/components/ui/theme-toggle';
 import { FontControls } from '@/app/components/ui/font-controls';
 import { PulseWearLogo } from '@/app/components/ui/logo';
 import { PRODUCTS, getStoredCategories, ProductCategory } from '@/lib/store/products';
+import { createClient } from '@/lib/supabase/client';
 import {
   ShoppingBag,
   Heart,
   Search,
-  Pause,
-  Play,
   Menu,
   X,
   User,
@@ -28,12 +26,6 @@ import {
 } from 'lucide-react';
 import { signOutAction } from '@/app/actions/auth';
 
-const ANNOUNCEMENTS = [
-  'Free express shipping over $100',
-  'Code PULSE20: 20% off your first order',
-  '30-day returns',
-];
-
 export function Header() {
   const pathname = usePathname();
   const { user, profile } = useUser();
@@ -41,11 +33,6 @@ export function Header() {
   const { wishlistCount } = useWishlist();
   const { formatPrice } = useCurrency();
   const { info } = useToast();
-
-  // Announcement rotator state
-  const [activeAnnouncement, setActiveAnnouncement] = useState(0);
-  const [isAnnouncementPaused, setIsAnnouncementPaused] = useState(false);
-  const [isHoveredAnnouncement, setIsHoveredAnnouncement] = useState(false);
 
   // Header scroll state
   const [isScrolledPast80, setIsScrolledPast80] = useState(false);
@@ -86,15 +73,6 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Rotator timer (every 5s, stops on hover, pause control)
-  useEffect(() => {
-    if (isAnnouncementPaused || isHoveredAnnouncement) return;
-    const interval = setInterval(() => {
-      setActiveAnnouncement((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isAnnouncementPaused, isHoveredAnnouncement]);
-
   // Header scroll hide/reveal behavior
   useEffect(() => {
     const handleScroll = () => {
@@ -126,6 +104,32 @@ export function Header() {
     }
   };
 
+  // Robust Sign Out Handler (Client + Server + SessionStorage cleanup)
+  const handleSignOut = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error('Client signout error:', err);
+    }
+
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('pulsewear_admin_session');
+      sessionStorage.removeItem('pulsewear_admin_user');
+    }
+
+    try {
+      await signOutAction();
+    } catch (err: any) {
+      if (err?.digest?.startsWith('NEXT_REDIRECT')) {
+        window.location.href = '/login';
+        return;
+      }
+    }
+
+    window.location.href = '/login';
+  };
+
   const isAdmin = profile?.role === 'admin';
 
   // Live filtered products & categories inside the category search
@@ -144,43 +148,7 @@ export function Header() {
 
   return (
     <>
-      {/* 7.1 Announcement Bar with 5s vertical slide and pause control */}
-      <div
-        className="relative z-50 w-full border-b border-white/[0.06] bg-[#0E1012] px-4 py-2 text-white"
-        onMouseEnter={() => setIsHoveredAnnouncement(true)}
-        onMouseLeave={() => setIsHoveredAnnouncement(false)}
-      >
-        <div className="container mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex-1 overflow-hidden">
-            <div
-              key={activeAnnouncement}
-              className="animate-in fade-in slide-in-from-bottom-2 flex items-center gap-2 font-sans text-xs font-medium duration-300"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-[#FF5A1F]" />
-              <span>{ANNOUNCEMENTS[activeAnnouncement]}</span>
-            </div>
-          </div>
-
-          {/* Pause / Play Control */}
-          <button
-            onClick={() => setIsAnnouncementPaused(!isAnnouncementPaused)}
-            className="hidden items-center gap-1 text-[10px] text-[#8A8F95] transition-colors hover:text-white sm:flex"
-            aria-label={isAnnouncementPaused ? 'Resume announcements' : 'Pause announcements'}
-            title={isAnnouncementPaused ? 'Resume' : 'Pause'}
-          >
-            {isAnnouncementPaused ? (
-              <Play className="h-2.5 w-2.5" />
-            ) : (
-              <Pause className="h-2.5 w-2.5" />
-            )}
-            <span className="font-sans text-[10px] font-medium">
-              {isAnnouncementPaused ? 'Play' : 'Pause'}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Header Bar */}
+      {/* Main Header Bar (No top free shipping bar per user request) */}
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           isHiddenOnScrollDown ? '-translate-y-full' : 'translate-y-0'
@@ -417,15 +385,16 @@ export function Header() {
                       </Link>
                     )}
 
-                    <form action={signOutAction} className="mt-1">
+                    <div className="mt-1">
                       <button
-                        type="submit"
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs text-[#8A8F95] hover:bg-white/5 hover:text-white"
+                        type="button"
+                        onClick={handleSignOut}
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs text-[#8A8F95] transition-colors hover:bg-white/5 hover:text-white"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                         <span>Sign Out</span>
                       </button>
-                    </form>
+                    </div>
                   </div>
                 )}
               </div>
@@ -557,15 +526,16 @@ export function Header() {
                       <span>Admin Console</span>
                     </Link>
                   )}
-                  <form action={signOutAction}>
+                  <div>
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={handleSignOut}
                       className="flex items-center gap-2 text-xs text-[#8A8F95] hover:text-white"
                     >
                       <LogOut className="h-3.5 w-3.5" />
                       <span>Sign Out</span>
                     </button>
-                  </form>
+                  </div>
                 </div>
               ) : (
                 <Link

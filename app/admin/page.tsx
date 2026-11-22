@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import {
   PRODUCTS,
   Product,
@@ -339,7 +340,11 @@ export default function AdminPage() {
     setCategoriesList(getStoredCategories());
   }, []);
 
-  const handleAdminLogout = () => {
+  const handleAdminLogout = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {}
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('pulsewear_admin_session');
       sessionStorage.removeItem('pulsewear_admin_user');
