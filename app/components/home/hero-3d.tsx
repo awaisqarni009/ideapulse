@@ -36,7 +36,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
       onPointerMove={handlePointerMove}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
-      className="relative flex min-h-[85vh] w-full select-none items-center justify-center overflow-hidden border-b border-white/10 bg-[#0A0C0E] lg:h-[calc(100vh-80px)]"
+      className="relative flex min-h-[85vh] w-full select-none items-center justify-center overflow-hidden border-b border-white/10 bg-[#0A0C0E] lg:min-h-[calc(100vh-80px)]"
       style={{
         perspective: '1400px',
       }}
@@ -67,12 +67,12 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
       </div>
 
       {/* 2. Main 3D Stage Container */}
-      <div className="container relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-between px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+      <div className="container relative z-10 mx-auto flex min-h-full max-w-7xl flex-col justify-between px-4 pb-12 pt-4 sm:px-6 sm:pb-14 sm:pt-6 lg:px-8 lg:pb-16">
         {/* Top Empty Space to allow clearance for header */}
         <div className="h-2 sm:h-4" />
 
         {/* 3. Center Sandwich Layout: Giant Typography + 3D Model */}
-        <div className="relative my-auto flex min-h-[440px] flex-1 items-center justify-center sm:min-h-[500px] lg:min-h-[560px]">
+        <div className="relative my-auto flex min-h-[340px] flex-1 items-center justify-center py-4 sm:min-h-[400px] lg:min-h-[460px]">
           {/* LAYER A: Background Brand Typography (Positioned BEHIND Model in 3D Z-space) */}
           <div
             className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-transform duration-500 ease-out"
@@ -147,7 +147,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
             }}
           >
             {/* Model Cutout Image - Pure Transparent PNG */}
-            <div className="relative h-[440px] w-auto max-w-[90vw] sm:h-[520px] lg:h-[580px] xl:h-[620px]">
+            <div className="relative h-[360px] w-auto max-w-[90vw] sm:h-[440px] lg:h-[500px] xl:h-[540px]">
               <img
                 src="/images/streetwear-hero-model.png"
                 alt="PULSEWEAR 3D Streetwear Model"
@@ -166,7 +166,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
         </div>
 
         {/* 4. Bottom HUD Bar: Left Typography & CTAs + Right Tiered Category Quick-Nav */}
-        <div className="relative z-30 flex flex-col justify-between gap-8 pt-4 sm:flex-row sm:items-end">
+        <div className="relative z-30 mt-6 flex flex-col justify-between gap-6 pt-4 sm:mt-8 sm:flex-row sm:items-end lg:gap-8">
           {/* Bottom-Left: Storefront Value Proposition & Engaging CTAs */}
           <div className="flex max-w-xl flex-col">
             {/* Spec eyebrow badge */}
