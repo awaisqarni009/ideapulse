@@ -83,9 +83,16 @@ describe('T-8.8: Production RLS Security & Access Control Suite', () => {
     // Get active cycle or create/use latest
     let { data: cycle } = await adminClient
       .from('cycles')
-      .select('id')
+      .select('id, ends_at')
       .eq('status', 'active')
       .maybeSingle();
+
+    if (cycle && new Date(cycle.ends_at) < new Date()) {
+      await adminClient
+        .from('cycles')
+        .update({ ends_at: new Date(Date.now() + 7 * 86400000).toISOString() })
+        .eq('id', cycle.id);
+    }
 
     if (!cycle) {
       const { data: latest } = await adminClient
@@ -106,7 +113,7 @@ describe('T-8.8: Production RLS Security & Access Control Suite', () => {
           vote_threshold: 50,
           daily_vote_limit: 5,
         })
-        .select('id')
+        .select('id, ends_at')
         .single();
       cycle = newCycle;
     }

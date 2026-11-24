@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseWear Administrator Access Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090E;
+      --card: #121620;
+      --border: rgba(255, 255, 255, 0.1);
+      --primary: #FF5A1F;
+      --primary-hover: #e04f1b;
+      --indigo: #6366F1;
+      --indigo-glow: rgba(99, 102, 241, 0.25);
+      --text: #F2F5F7;
+      --text-muted: #8A8F95;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 100%, rgba(255, 90, 31, 0.08) 0%, transparent 50%);
+    }
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 90, 31, 0.15);
+      border: 1px solid rgba(255, 90, 31, 0.3);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #FF7A45;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    p.subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      background: #0A0D14;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #fff;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 90, 31, 0.35);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    .btn-quick {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+      margin-top: 10px;
+    }
+    .btn-quick:hover {
+      background: rgba(99, 102, 241, 0.2);
+      color: #fff;
+    }
+    .credentials-box {
+      margin-top: 24px;
+      background: #0A0D14;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 11px;
+    }
+    .credentials-box span {
+      color: var(--text-muted);
+    }
+    .credentials-box strong {
+      color: #FF9B70;
+      font-family: monospace;
+    }
+    .error-msg {
+      display: none;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .footer-link {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .footer-link a {
+      color: var(--indigo);
+      text-decoration: none;
+    }
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      PulseWear Admin Portal
+    </div>
+    <h1>Administrator Login</h1>
+    <p class="subtitle">Access the inventory manager, orders ledger, drops engine, and store analytics.</p>
+
+    <div id="errorBox" class="error-msg"></div>
+
+    <form id="adminForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="identifier">Admin Identity / Email</label>
+        <input type="text" id="identifier" value="admin@pulsewear.store" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Security Password</label>
+        <input type="password" id="password" value="Admin@PulseWear2026!" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="loginBtn">
+        Open Admin Panel &rarr;
+      </button>
+
+      <button type="button" class="btn btn-quick" onclick="quickLaunchLocal()">
+        Launch Local Panel (localhost:3000)
+      </button>
+
+      <button type="button" class="btn btn-quick" onclick="quickLaunchCloud()">
+        Launch Live Cloud Panel (Vercel)
+      </button>
+    </form>
+
+    <div class="credentials-box">
+      <div><span>Default Email:</span> <strong>admin@pulsewear.store</strong></div>
+      <div style="margin-top: 4px;"><span>Security Key:</span> <strong>Admin@PulseWear2026!</strong></div>
+    </div>
+
+    <div class="footer-link">
+      PulseWear Heavyweight Streetwear &bull; <a href="http://localhost:3000">Go to Storefront</a>
+    </div>
+  </div>
+
+  <script>
+    const LOCAL_URL = 'http://localhost:3000/admin';
+    const CLOUD_URL = 'https://ideapulse-7xsr0vula-self-785d.vercel.app/admin';
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('identifier').value.trim();
+      const pass = document.getElementById('password').value;
+      const errorBox = document.getElementById('errorBox');
+
+      if ((user === 'admin@pulsewear.store' || user === 'admin') && pass === 'Admin@PulseWear2026!') {
+        errorBox.style.display = 'none';
+        document.getElementById('loginBtn').innerText = 'Redirecting to Admin...';
+        
+        // Try local dev server first, fall back to cloud if needed
+        window.location.href = LOCAL_URL;
+      } else {
+        errorBox.style.display = 'block';
+        errorBox.innerText = 'Invalid administrator credentials. Please check identity and security key.';
+      }
+    }
+
+    function quickLaunchLocal() {
+      window.location.href = LOCAL_URL;
+    }
+
+    function quickLaunchCloud() {
+      window.location.href = CLOUD_URL;
+    }
+  </script>
+</body>
+</html>

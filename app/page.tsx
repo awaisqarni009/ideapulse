@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Hero3D } from '@/app/components/home/hero-3d';
-import { TrustFeatures } from '@/app/components/home/trust-features';
 import { FabricComparison } from '@/app/components/home/fabric-comparison';
 import ShellStory from '@/app/components/motion/shell-story';
 import { Catalog } from '@/app/components/store/catalog';
@@ -48,9 +47,6 @@ export default function StoreHomePage() {
     >
       {/* 3D Streetwear Hero with Layered Typography & Tiered Quick-Nav */}
       <Hero3D onSelectCategory={(cat) => scrollToCategory(cat)} />
-
-      {/* Trust & Value Proposition Pillars */}
-      <TrustFeatures />
 
       {/* 7.3 Catalog with Filter Bar & Product Cards */}
       <Catalog onQuickView={(p) => setActiveQuickViewProduct(p)} />

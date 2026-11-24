@@ -36,13 +36,13 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
       onPointerMove={handlePointerMove}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
-      className="relative flex min-h-[85vh] w-full select-none items-center justify-center overflow-hidden border-b border-white/10 bg-[#0A0C0E] lg:min-h-[calc(100vh-80px)]"
+      className="relative flex min-h-[75vh] w-full select-none flex-col justify-between border-b border-white/10 bg-[#0A0C0E] lg:min-h-[calc(100vh-80px)]"
       style={{
         perspective: '1400px',
       }}
     >
       {/* 1. Deep Atmospheric Lighting & Subtle Specular Light Beams */}
-      <div className="pointer-events-none absolute inset-0 z-0">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         {/* Directional streak/caustic light ray */}
         <div
           className="absolute -left-32 -top-32 h-[800px] w-[800px] rounded-full opacity-30 blur-[130px] transition-transform duration-700 ease-out"
@@ -67,12 +67,12 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
       </div>
 
       {/* 2. Main 3D Stage Container */}
-      <div className="container relative z-10 mx-auto flex min-h-full max-w-7xl flex-col justify-between px-4 pb-12 pt-4 sm:px-6 sm:pb-14 sm:pt-6 lg:px-8 lg:pb-16">
+      <div className="container relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between px-4 pb-8 pt-4 sm:px-6 sm:pb-10 sm:pt-6 lg:px-8 lg:pb-12">
         {/* Top Empty Space to allow clearance for header */}
-        <div className="h-2 sm:h-4" />
+        <div className="h-2 sm:h-3" />
 
         {/* 3. Center Sandwich Layout: Giant Typography + 3D Model */}
-        <div className="relative my-auto flex min-h-[340px] flex-1 items-center justify-center py-4 sm:min-h-[400px] lg:min-h-[460px]">
+        <div className="relative my-auto flex min-h-[260px] flex-1 items-center justify-center py-2 sm:min-h-[300px] lg:min-h-[360px]">
           {/* LAYER A: Background Brand Typography (Positioned BEHIND Model in 3D Z-space) */}
           <div
             className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-transform duration-500 ease-out"
@@ -88,7 +88,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
                   transform: `translate3d(${-mousePos.x * 10}px, 0, 10px)`,
                 }}
               >
-                <span className="font-display text-5xl font-black uppercase tracking-tight text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
+                <span className="font-display text-4xl font-black uppercase tracking-tight text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl">
                   PULSE
                 </span>
               </div>
@@ -100,7 +100,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
                 }}
               >
                 <span
-                  className="font-display text-5xl font-black uppercase tracking-tight sm:text-7xl lg:text-8xl xl:text-9xl"
+                  className="font-display text-4xl font-black uppercase tracking-tight sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
                   style={{
                     background: 'linear-gradient(180deg, #FFFFFF 0%, #A5B4FC 50%, #6366F1 100%)',
                     WebkitBackgroundClip: 'text',
@@ -114,14 +114,14 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
             </div>
 
             {/* Bottom Row: DROP (Left) + 2026 (Right) */}
-            <div className="mt-3 flex w-full max-w-6xl items-center justify-between px-2 sm:mt-5 sm:px-6 lg:px-12">
+            <div className="mt-2 flex w-full max-w-6xl items-center justify-between px-2 sm:mt-4 sm:px-6 lg:px-12">
               <div
                 className="relative transition-transform duration-300"
                 style={{
                   transform: `translate3d(${-mousePos.x * 8}px, 0, 10px)`,
                 }}
               >
-                <span className="font-display text-5xl font-black uppercase tracking-tight text-slate-400/60 drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
+                <span className="font-display text-4xl font-black uppercase tracking-tight text-slate-400/60 drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl">
                   DROP
                 </span>
               </div>
@@ -132,7 +132,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
                   transform: `translate3d(${mousePos.x * 10}px, 0, 10px)`,
                 }}
               >
-                <span className="font-display text-5xl font-black uppercase tracking-tight text-white/90 drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-7xl lg:text-8xl xl:text-9xl">
+                <span className="font-display text-4xl font-black uppercase tracking-tight text-white/90 drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl">
                   2026
                 </span>
               </div>
@@ -147,7 +147,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
             }}
           >
             {/* Model Cutout Image - Pure Transparent PNG */}
-            <div className="relative h-[360px] w-auto max-w-[90vw] sm:h-[440px] lg:h-[500px] xl:h-[540px]">
+            <div className="relative h-[280px] w-auto max-w-[85vw] sm:h-[340px] lg:h-[400px] xl:h-[450px]">
               <img
                 src="/images/streetwear-hero-model.png"
                 alt="PULSEWEAR 3D Streetwear Model"
@@ -166,7 +166,7 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
         </div>
 
         {/* 4. Bottom HUD Bar: Left Typography & CTAs + Right Tiered Category Quick-Nav */}
-        <div className="relative z-30 mt-6 flex flex-col justify-between gap-6 pt-4 sm:mt-8 sm:flex-row sm:items-end lg:gap-8">
+        <div className="relative z-30 mt-4 flex flex-col justify-between gap-6 pt-2 sm:mt-6 sm:flex-row sm:items-end lg:gap-8">
           {/* Bottom-Left: Storefront Value Proposition & Engaging CTAs */}
           <div className="flex max-w-xl flex-col">
             {/* Spec eyebrow badge */}
@@ -177,20 +177,20 @@ export function Hero3D({ onSelectCategory }: Hero3DProps) {
               </span>
             </div>
 
-            <h1 className="mt-2.5 font-display text-3xl font-black uppercase tracking-tight text-white sm:text-4xl lg:text-5xl">
+            <h1 className="mt-2 font-display text-2xl font-black uppercase tracking-tight text-white sm:text-3xl lg:text-4xl xl:text-5xl">
               CRAFTED FOR{' '}
               <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
                 ENDURANCE
               </span>
             </h1>
 
-            <p className="mt-2 text-xs leading-relaxed text-slate-300 sm:text-sm">
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-300 sm:text-sm">
               Dense 500 GSM loopback French terry and 20,000 mm waterproof tactical shells.
               Engineered for supreme cold-weather warmth, structural drape, and zero shrinkage.
             </p>
 
             {/* Clear, Engaging Action Buttons */}
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-3.5 flex flex-wrap items-center gap-3">
               <button
                 onClick={() => {
                   const catalog = document.getElementById('catalog');
