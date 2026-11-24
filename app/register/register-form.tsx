@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import { registerAction, type AuthActionResult } from '@/app/actions/auth';
 import { COUNTRY_CODES } from '@/lib/validation';
-import { createClient } from '@/lib/supabase/client';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -109,42 +108,7 @@ export function RegisterForm() {
     };
   }, [password]);
 
-  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
-
   const isPhoneValid = phone.length === 11;
-
-  const handleOAuth = async (provider: 'google' | 'facebook') => {
-    setSocialLoading(provider);
-    try {
-      const supabase = createClient();
-
-      // Verified social member accounts provisioned in Supabase
-      const demoEmail =
-        provider === 'google' ? 'google.member@pulsewear.store' : 'facebook.member@pulsewear.store';
-      const demoPass = provider === 'google' ? 'Google@PulseWear2026!' : 'Facebook@PulseWear2026!';
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPass,
-      });
-
-      if (!error && data.session) {
-        window.location.href = '/';
-        return;
-      }
-
-      await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-    } catch (err) {
-      console.error('OAuth initiation failed:', err);
-    } finally {
-      setSocialLoading(null);
-    }
-  };
 
   if (state?.success) {
     return (
@@ -600,13 +564,11 @@ export function RegisterForm() {
         </span>
       </div>
 
-      {/* Social Authentication Buttons: Google & Facebook (Teacher Requirement) */}
+      {/* Social Authentication: Direct to Google & Facebook Sign-In (Teacher Requirement) */}
       <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          disabled={socialLoading !== null}
-          onClick={() => handleOAuth('google')}
-          className="flex items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/[0.04] py-2.5 text-xs font-semibold text-white transition-all hover:border-white/30 hover:bg-white/[0.08] disabled:opacity-50"
+        <Link
+          href="/auth/google"
+          className="flex items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/[0.04] py-2.5 text-xs font-semibold text-white transition-all hover:border-white/30 hover:bg-white/[0.08]"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -626,20 +588,18 @@ export function RegisterForm() {
               d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 6.3 10.1 6.3z"
             />
           </svg>
-          <span>{socialLoading === 'google' ? 'Connecting...' : 'Google'}</span>
-        </button>
+          <span>Google</span>
+        </Link>
 
-        <button
-          type="button"
-          disabled={socialLoading !== null}
-          onClick={() => handleOAuth('facebook')}
-          className="flex items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/[0.04] py-2.5 text-xs font-semibold text-white transition-all hover:border-white/30 hover:bg-white/[0.08] disabled:opacity-50"
+        <Link
+          href="/auth/facebook"
+          className="flex items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/[0.04] py-2.5 text-xs font-semibold text-white transition-all hover:border-white/30 hover:bg-white/[0.08]"
         >
           <svg className="h-4 w-4 fill-[#1877F2]" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
-          <span>{socialLoading === 'facebook' ? 'Connecting...' : 'Facebook'}</span>
-        </button>
+          <span>Facebook</span>
+        </Link>
       </div>
 
       <div className="mt-5 text-center text-xs text-[#8A8F95]">

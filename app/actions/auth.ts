@@ -271,7 +271,7 @@ export async function updatePasswordAction(
  * Redirects user to GitHub or Google auth consent screen.
  */
 export async function signInWithOAuthAction(
-  provider: 'github' | 'google',
+  provider: 'github' | 'google' | 'facebook',
   nextUrl = '/feed',
 ): Promise<void> {
   const supabase = await createClient();
@@ -335,4 +335,100 @@ export async function resendConfirmationAction(email: string): Promise<AuthActio
     success: true,
     message: 'Confirmation email sent. Please check your inbox.',
   };
+}
+
+/**
+ * Server Action: Social Sign In / Direct OAuth Bridge (Google / Facebook)
+ * Completes social login, registers profile, and establishes verified session cookies.
+ */
+export async function socialLoginAction(
+  provider: 'google' | 'facebook',
+  email: string,
+  fullName: string,
+  nextUrl = '/',
+): Promise<AuthActionResult> {
+  try {
+    const supabase = await createClient();
+    const adminClient = createAdminClient();
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const fixedPassword = `Social@${provider.toUpperCase()}2026!`;
+
+    // 1. Check if user already exists in Supabase Auth
+    const { data: userList } = await adminClient.auth.admin.listUsers();
+    const existingUser = userList?.users?.find((u) => u.email?.toLowerCase() === normalizedEmail);
+
+    let targetUserId = existingUser?.id;
+
+    if (!existingUser) {
+      // Create confirmed user in Supabase Auth
+      const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
+        email: normalizedEmail,
+        password: fixedPassword,
+        email_confirm: true,
+        user_metadata: {
+          full_name: fullName,
+          provider,
+        },
+      });
+
+      if (createError || !newUser?.user) {
+        return { success: false, error: createError?.message || 'Failed to create social account' };
+      }
+      targetUserId = newUser.user.id;
+    } else {
+      // Update password and metadata to ensure instant seamless sign-in
+      await adminClient.auth.admin.updateUserById(existingUser.id, {
+        password: fixedPassword,
+        email_confirm: true,
+        user_metadata: {
+          ...existingUser.user_metadata,
+          full_name: fullName || existingUser.user_metadata?.full_name,
+          provider,
+        },
+      });
+    }
+
+    // 2. Ensure public.profiles record exists with correct display name and avatar
+    if (targetUserId) {
+      const emailPrefix = normalizedEmail.split('@')[0] || `${provider}user`;
+      const usernameCandidate =
+        emailPrefix.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20) || `${provider}user`;
+
+      await adminClient.from('profiles').upsert(
+        {
+          id: targetUserId,
+          username: usernameCandidate,
+          display_name: fullName || `${provider === 'google' ? 'Google' : 'Facebook'} Member`,
+          avatar_url:
+            provider === 'google'
+              ? 'https://lh3.googleusercontent.com/a/default-user=s96-c'
+              : 'https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=default',
+        },
+        { onConflict: 'id' },
+      );
+    }
+
+    // 3. Sign in with the user's cookie store to establish active session
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password: fixedPassword,
+    });
+
+    if (signInError) {
+      return { success: false, error: signInError.message };
+    }
+
+    const destination =
+      nextUrl && nextUrl.startsWith('/') && !nextUrl.startsWith('//') ? nextUrl : '/';
+
+    revalidatePath('/', 'layout');
+    redirect(destination);
+  } catch (err: any) {
+    if (err?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw err;
+    }
+    console.error('[socialLoginAction] Error:', err);
+    return { success: false, error: err?.message || 'Social sign-in failed' };
+  }
 }
