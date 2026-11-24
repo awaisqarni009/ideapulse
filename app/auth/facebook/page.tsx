@@ -210,15 +210,27 @@ export default function FacebookSignInPage() {
         </div>
 
         {/* Direct Facebook OAuth Launcher */}
-        <div className="mt-8 border-t border-black/10 pt-4 dark:border-white/10">
+        <div className="mt-8 border-t border-black/10 pt-5 dark:border-white/10">
+          <p className="text-[11px] font-semibold text-[#65676B] dark:text-[#B0B3B8]">
+            Direct Supabase Facebook Provider
+          </p>
+          <p className="mt-0.5 text-[10px] text-[#8A8D91] dark:text-[#8A8D91]">
+            Connects via Supabase Auth (
+            <code className="font-mono">provider: &apos;facebook&apos;</code>). Redirects directly
+            to Meta login screen if enabled in Supabase Dashboard.
+          </p>
           <button
             type="button"
             onClick={handleDirectOAuth}
             disabled={oauthLoading || loading}
-            className="flex w-full items-center justify-center gap-1.5 text-[11px] text-[#65676B] transition-colors hover:text-[#1877F2] dark:text-[#B0B3B8] dark:hover:text-[#4599FF]"
+            className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl border border-black/15 bg-black/[0.02] py-2.5 text-xs font-semibold text-[#1C1E21] transition-all hover:border-[#1877F2] hover:bg-black/[0.04] dark:border-white/15 dark:bg-white/[0.03] dark:text-white dark:hover:border-[#4599FF]"
           >
-            <span>Launch raw facebook.com OAuth redirect</span>
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3.5 w-3.5 text-[#1877F2] dark:text-[#4599FF]" />
+            <span>
+              {oauthLoading
+                ? 'Redirecting to Supabase OAuth...'
+                : 'Launch Direct Supabase Facebook OAuth'}
+            </span>
           </button>
         </div>
 

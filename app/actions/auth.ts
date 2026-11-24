@@ -272,7 +272,7 @@ export async function updatePasswordAction(
  */
 export async function signInWithOAuthAction(
   provider: 'github' | 'google' | 'facebook',
-  nextUrl = '/feed',
+  nextUrl = '/',
 ): Promise<void> {
   const supabase = await createClient();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';

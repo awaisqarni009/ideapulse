@@ -227,15 +227,27 @@ export default function GoogleSignInPage() {
         </div>
 
         {/* Direct Google Cloud OAuth Launcher */}
-        <div className="mt-8 border-t border-black/10 pt-4 dark:border-white/10">
+        <div className="mt-8 border-t border-black/10 pt-5 dark:border-white/10">
+          <p className="text-[11px] font-semibold text-[#444746] dark:text-[#C4C7C5]">
+            Direct Supabase Google Provider
+          </p>
+          <p className="mt-0.5 text-[10px] text-[#747775] dark:text-[#8E918F]">
+            Connects via Supabase Auth (
+            <code className="font-mono">provider: &apos;google&apos;</code>). Redirects directly to
+            Google consent screen if enabled in Supabase Dashboard.
+          </p>
           <button
             type="button"
             onClick={handleDirectOAuth}
             disabled={oauthLoading || loading}
-            className="flex w-full items-center justify-center gap-1.5 text-[11px] text-[#444746] transition-colors hover:text-[#1A73E8] dark:text-[#9AA0A6] dark:hover:text-[#8AB4F8]"
+            className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl border border-black/15 bg-black/[0.02] py-2.5 text-xs font-semibold text-[#1F1F1F] transition-all hover:border-[#1A73E8] hover:bg-black/[0.04] dark:border-white/15 dark:bg-white/[0.03] dark:text-white dark:hover:border-[#8AB4F8]"
           >
-            <span>Launch raw accounts.google.com OAuth redirect</span>
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3.5 w-3.5 text-[#1A73E8] dark:text-[#8AB4F8]" />
+            <span>
+              {oauthLoading
+                ? 'Redirecting to Supabase OAuth...'
+                : 'Launch Direct Supabase Google OAuth'}
+            </span>
           </button>
         </div>
 
